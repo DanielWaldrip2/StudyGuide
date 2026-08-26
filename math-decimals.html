@@ -22,7 +22,7 @@
         </div>
         <div>
           <h1 class="font-bold text-lg bg-gradient-to-r from-amber-400 via-orange-300 to-rose-400 bg-clip-text text-transparent">MATH QUEST</h1>
-          <p class="text-xs text-slate-400 font-medium">Part 1 • Decimal Operations (+, -, ×, ÷)</p>
+          <p class="text-xs text-slate-400 font-medium">Unit 1 • Decimal Operations (+, -, ×, ÷)</p>
         </div>
       </div>
 
@@ -45,7 +45,7 @@
     <div id="screen-menu" class="space-y-8 py-4">
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-          Part 1: Decimal Mastery
+          Unit 1: Decimal Mastery
         </div>
         <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
           Decimal <span class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Operations</span> Arena
@@ -272,7 +272,7 @@
         question: "348.72 + 59.45 = ?",
         answer: "408.17",
         distractors: ["407.17", "398.17", "418.17"],
-        hint: "Line up the decimal points and add each column from right to left.",
+        hint: "Line up the decimal points vertically and add column by column from right to left.",
         explanation: "348.72 + 59.45 = 408.17"
       },
       {
@@ -280,7 +280,7 @@
         question: "1,245.8 + 834.65 = ?",
         answer: "2,080.45",
         distractors: ["2,079.45", "2,080.15", "1,980.45"],
-        hint: "Pad with a zero (1,245.80) and line up the decimal point.",
+        hint: "Pad 1,245.8 with a placeholder zero (1,245.80) to keep hundredths aligned.",
         explanation: "1,245.80 + 834.65 = 2,080.45"
       },
       {
@@ -288,7 +288,7 @@
         question: "62.08 + 14.935 = ?",
         answer: "77.015",
         distractors: ["76.915", "77.115", "76.015"],
-        hint: "62.080 + 14.935 = 77.015",
+        hint: "Add a trailing zero to 62.08 so both numbers have three decimal places.",
         explanation: "62.080 + 14.935 = 77.015"
       },
 
@@ -298,7 +298,7 @@
         question: "500.2 - 174.68 = ?",
         answer: "325.52",
         distractors: ["326.52", "325.62", "335.52"],
-        hint: "Add placeholder zero: 500.20 - 174.68 (regroup across zeros).",
+        hint: "Write 500.2 as 500.20 and regroup across the zeros carefully.",
         explanation: "500.20 - 174.68 = 325.52"
       },
       {
@@ -306,7 +306,7 @@
         question: "82.4 - 29.75 = ?",
         answer: "52.65",
         distractors: ["53.65", "52.35", "53.35"],
-        hint: "82.40 - 29.75",
+        hint: "Pad the top number with a zero (82.40) before borrowing.",
         explanation: "82.40 - 29.75 = 52.65"
       },
       {
@@ -314,7 +314,7 @@
         question: "1,000 - 456.78 = ?",
         answer: "543.22",
         distractors: ["544.22", "543.32", "643.22"],
-        hint: "Write 1,000.00 and subtract 456.78.",
+        hint: "Rewrite 1,000 as 1,000.00 to align decimal places before subtracting.",
         explanation: "1,000.00 - 456.78 = 543.22"
       },
 
@@ -324,15 +324,15 @@
         question: "4.5 × 0.6 = ?",
         answer: "2.7",
         distractors: ["27", "0.27", "0.027"],
-        hint: "Multiply 45 × 6 = 270, then count 2 total decimal places from right: 2.70 = 2.7",
-        explanation: "45 × 6 = 270. With 2 decimal places: 2.70 = 2.7"
+        hint: "Multiply 45 × 6, then count total decimal places across both factors (1 + 1 = 2 places).",
+        explanation: "45 × 6 = 270 -> place decimal 2 spots in: 2.70 = 2.7"
       },
       {
         type: "mult",
         question: "12.4 × 3.2 = ?",
         answer: "39.68",
         distractors: ["396.8", "3.968", "38.68"],
-        hint: "Multiply 124 × 32 = 3968. Place decimal 2 places in from right.",
+        hint: "Multiply as whole numbers (124 × 32), then move the decimal point two places to the left.",
         explanation: "124 × 32 = 3,968 -> 39.68 (2 decimal places total)."
       },
       {
@@ -340,7 +340,7 @@
         question: "0.25 × 0.4 = ?",
         answer: "0.1",
         distractors: ["0.01", "1.0", "0.001"],
-        hint: "25 × 4 = 100. Count 3 decimal places: 0.100 = 0.1",
+        hint: "Multiply 25 × 4, then move the decimal point three total places to the left.",
         explanation: "25 × 4 = 100 -> 3 decimal places -> 0.100 = 0.1"
       },
       {
@@ -348,7 +348,7 @@
         question: "7.08 × 100 = ?",
         answer: "708",
         distractors: ["70.8", "7,080", "0.0708"],
-        hint: "Multiplying by 100 shifts the decimal point 2 places to the right.",
+        hint: "Multiplying by 100 shifts the decimal point two places to the right.",
         explanation: "7.08 × 100 = 708"
       },
 
@@ -358,7 +358,7 @@
         question: "15.6 ÷ 3 = ?",
         answer: "5.2",
         distractors: ["52", "0.52", "5.02"],
-        hint: "Bring the decimal straight up into the quotient: 15.6 ÷ 3 = 5.2",
+        hint: "Since the divisor is a whole number, place the decimal point directly above in the quotient and divide.",
         explanation: "15.6 ÷ 3 = 5.2"
       },
       {
@@ -366,7 +366,7 @@
         question: "4.8 ÷ 0.6 = ?",
         answer: "8",
         distractors: ["0.8", "80", "0.08"],
-        hint: "Shift decimal 1 place right in both numbers: 48 ÷ 6 = 8.",
+        hint: "Shift the decimal point 1 place right in both numbers so the divisor becomes a whole number (6).",
         explanation: "4.8 ÷ 0.6 = 48 ÷ 6 = 8"
       },
       {
@@ -374,7 +374,7 @@
         question: "7.5 ÷ 0.25 = ?",
         answer: "30",
         distractors: ["3", "300", "0.3"],
-        hint: "Shift decimal 2 places right in both: 750 ÷ 25 = 30.",
+        hint: "Shift the decimal point 2 places right in both numbers so the divisor becomes 25.",
         explanation: "7.50 ÷ 0.25 = 750 ÷ 25 = 30"
       },
       {
@@ -382,7 +382,7 @@
         question: "128.4 ÷ 10 = ?",
         answer: "12.84",
         distractors: ["1.284", "1284", "128.04"],
-        hint: "Dividing by 10 shifts the decimal 1 place to the left.",
+        hint: "Dividing by 10 shifts the decimal point one place to the left.",
         explanation: "128.4 ÷ 10 = 12.84"
       },
       {
@@ -390,7 +390,7 @@
         question: "0.96 ÷ 1.2 = ?",
         answer: "0.8",
         distractors: ["8", "0.08", "0.008"],
-        hint: "Shift 1 decimal place: 9.6 ÷ 12 = 0.8.",
+        hint: "Shift the decimal point 1 place right in both numbers before dividing by 12.",
         explanation: "0.96 ÷ 1.2 = 9.6 ÷ 12 = 0.8"
       }
     ];
