@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Science Quest • Atmosphere & Air Masses</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+      50% { box-shadow: 0 0 25px rgba(14, 165, 233, 0.6); }
+    }
+    .glow-box { animation: pulseGlow 2.5s infinite; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Navigation Bar -->
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 text-xl font-bold">
+          🌍
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">SCIENCE QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Topic 2 • Lessons 2 & 3</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- ==================== 1. MENU SCREEN ==================== -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+          Earth Science Master
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Atmosphere & <span class="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Weather Quest</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master water cycles, dew points, fronts, air masses, and cyclones based directly on your guided class notes!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        
+        <!-- Mode 1: Storm Chaser RPG Battle -->
+        <div onclick="startGame('battle')" class="group relative bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+              🌪️
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-full border border-emerald-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-emerald-300 transition">Storm Chaser Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat severe weather systems by answering questions on weather fronts, air masses, and Coriolis forces.</p>
+          <div class="mt-4 flex items-center text-emerald-400 text-xs font-bold gap-1">
+            PLAY STORM CHASER <span>→</span>
+          </div>
+        </div>
+
+        <!-- Mode 2: Speed Match Blitz -->
+        <div onclick="startGame('speed')" class="group relative bg-slate-900 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+              ⚡
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-cyan-300 transition">Science Speed Match</h3>
+          <p class="text-sm text-slate-400 mt-2">Match terms like Maritime Tropical, Evaporation, Transpiration, and Occluded Fronts before time expires!</p>
+          <div class="mt-4 flex items-center text-cyan-400 text-xs font-bold gap-1">
+            RACE THE CLOCK <span>→</span>
+          </div>
+        </div>
+
+        <!-- Mode 3: Memory Matrix -->
+        <div onclick="startGame('memory')" class="group relative bg-slate-900 border border-slate-800 hover:border-teal-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+              🧩
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-teal-500/10 text-teal-300 rounded-full border border-teal-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-teal-300 transition">Memory Match Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Flip and pair atmospheric science concepts with their exact explanations.</p>
+          <div class="mt-4 flex items-center text-teal-400 text-xs font-bold gap-1">
+            START MATCHING <span>→</span>
+          </div>
+        </div>
+
+        <!-- Mode 4: Science Vault -->
+        <div onclick="showScreen('vault')" class="group relative bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
+              📖
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Notes Vault & Study Cards</h3>
+          <p class="text-sm text-slate-400 mt-2">Review all definitions, 4 front types, 4 air mass categories, and humidity concepts with voice read-aloud.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">
+            OPEN STUDY DECK <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== 2. BOSS BATTLE SCREEN ==================== -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center text-2xl shadow-lg shadow-emerald-600/40">
+            🧭
+          </div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-emerald-300">Meteorologist</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-cyan-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Low Pressure Cyclone</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">
+            🌀
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"></div>
+
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span class="text-xs uppercase tracking-wider text-emerald-400 font-bold">Guided Notes Question</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- ==================== 3. SPEED MATCH SCREEN ==================== -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-cyan-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-cyan-500/10 text-cyan-400 text-xs font-bold rounded-full uppercase tracking-wider">
+          Identify the Term
+        </span>
+        <h3 id="speedDefinition" class="text-xl md:text-2xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- ==================== 4. MEMORY MATCH SCREEN ==================== -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-teal-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Pair science terms with their correct definitions and note facts!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- ==================== 5. VAULT SCREEN ==================== -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Science Notes Vault</h2>
+          <p class="text-xs text-slate-400">All key concepts from Topic 2 Lessons 2 & 3 guided notes.</p>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-emerald-600 text-white">All Notes</button>
+          <button onclick="filterVault('water')" id="tab-water" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Water in Air</button>
+          <button onclick="filterVault('masses')" id="tab-masses" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Air Masses & Fronts</button>
+        </div>
+      </div>
+
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- ==================== 6. GAME OVER / VICTORY MODAL ==================== -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center text-4xl">
+          🌟
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Mission Complete!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">You conquered the atmospheric challenge.</p>
+        </div>
+
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Rank</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">Master</span>
+          </div>
+        </div>
+
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">
+            Menu
+          </button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-emerald-600/30 transition">
+            Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    const SCIENCE_DATA = [
+      // Topic 2 • Lesson 2: Water in the Atmosphere
+      {
+        term: "Evaporation",
+        category: "water",
+        question: "Energy from the sun causes liquid water molecules to speed up, collide, and turn into water vapor gas. This process is called _____.",
+        definition: "Process where liquid water changes into water vapor gas driven by energy from the sun.",
+        clue: "Liquid to Gas"
+      },
+      {
+        term: "Condensation",
+        category: "water",
+        question: "When water vapor cools down and changes back into liquid water droplets creating clouds, it is called _____.",
+        definition: "Process where water vapor gas cools and changes back into liquid droplets to form clouds.",
+        clue: "Gas to Liquid"
+      },
+      {
+        term: "Transpiration",
+        category: "water",
+        question: "Plants and trees absorb water through roots and release the vapor through their leaves in a process called _____.",
+        definition: "The release of water vapor into the atmosphere from plant leaves.",
+        clue: "Plant Water Release"
+      },
+      {
+        term: "Respiration",
+        category: "water",
+        question: "Animals and humans release water vapor into the atmosphere when exhaling through _____.",
+        definition: "Process where animals and humans exhale water vapor into the air.",
+        clue: "Exhaling Water"
+      },
+      {
+        term: "Dew Point",
+        category: "water",
+        question: "The temperature where water vapor condensation begins is known as the _____.",
+        definition: "The temperature at which air becomes saturated and condensation begins.",
+        clue: "Condensation Temperature"
+      },
+      {
+        term: "Frost",
+        category: "water",
+        question: "If the dew point temperature is below freezing, water vapor freezes directly into _____.",
+        definition: "Ice crystals formed when the dew point is below freezing.",
+        clue: "Below Freezing Condensation"
+      },
+      {
+        term: "Water Vapor",
+        category: "water",
+        question: "Water in its invisible gas phase in the atmosphere is called _____.",
+        definition: "Water in the form of an invisible gas in the atmosphere.",
+        clue: "Gas form of water"
+      },
+      {
+        term: "Gravity & Sun",
+        category: "water",
+        question: "The two main forces that drive water molecules through the never-ending water cycle are _____.",
+        definition: "The solar energy and gravitational pull driving the water cycle.",
+        clue: "Drivers of Water Cycle"
+      },
+
+      // Topic 2 • Lesson 3: Air Masses & Fronts
+      {
+        term: "Air Mass",
+        category: "masses",
+        question: "Huge bodies of air that have similar temperature, humidity, and air pressure throughout are called _____.",
+        definition: "A huge body of air with similar temperature, humidity, and air pressure throughout.",
+        clue: "Huge body of uniform air"
+      },
+      {
+        term: "Jet Stream",
+        category: "masses",
+        question: "A high-speed band of winds about 6 to 14 km above Earth's surface moving air masses west-to-east is the _____.",
+        definition: "Bands of high-speed winds 6 to 14 km high moving air masses.",
+        clue: "High Altitude Wind Band"
+      },
+      {
+        term: "Maritime Tropical",
+        category: "masses",
+        question: "An air mass that forms over warm ocean water and brings moist, warm/hot air is _____.",
+        definition: "Moist, warm air mass formed over warm tropical oceans.",
+        clue: "Moist & Warm (Ocean)"
+      },
+      {
+        term: "Continental Tropical",
+        category: "masses",
+        question: "An air mass that forms over warm land areas and brings dry, warm/hot air is _____.",
+        definition: "Dry, warm air mass formed over warm land.",
+        clue: "Dry & Warm (Land)"
+      },
+      {
+        term: "Maritime Polar",
+        category: "masses",
+        question: "An air mass that forms over cold northern oceans and brings moist, cold air is _____.",
+        definition: "Moist, cold air mass formed over cold oceans.",
+        clue: "Moist & Cold (Ocean)"
+      },
+      {
+        term: "Continental Polar",
+        category: "masses",
+        question: "An air mass that forms over cold northern land and brings dry, cold air is _____.",
+        definition: "Dry, cold air mass formed over cold land.",
+        clue: "Dry & Cold (Land)"
+      },
+      {
+        term: "Front",
+        category: "masses",
+        question: "The boundary where two opposing air masses meet and collide is called a _____.",
+        definition: "The boundary line where two different air masses collide.",
+        clue: "Air Mass Boundary"
+      },
+      {
+        term: "Cold Front",
+        category: "masses",
+        question: "When a fast-moving cold air mass runs into and pushes under a warm air mass, causing heavy rain or storms, it is a _____.",
+        definition: "Cold air pushes under warm air, creating heavy rain and storms.",
+        clue: "Fast cold pushes warm"
+      },
+      {
+        term: "Warm Front",
+        category: "masses",
+        question: "When a fast-moving warm air mass overtakes a slower cold air mass, producing scattered clouds or light rain/snow, it is a _____.",
+        definition: "Warm air overtakes cold air, bringing light rain or scattered clouds.",
+        clue: "Warm overtakes cold"
+      },
+      {
+        term: "Occluded Front",
+        category: "masses",
+        question: "When a warm air mass gets trapped and caught between two cold air masses, cutting off the warm air, it forms a(n) _____.",
+        definition: "Warm air is trapped between two cold air masses.",
+        clue: "Warm trapped between cold"
+      },
+      {
+        term: "Stationary Front",
+        category: "masses",
+        question: "When cold and warm air masses meet but neither has the force to move the other, creating days of rain, fog, or clouds, it is a _____.",
+        definition: "Cold and warm air masses meet but neither can push the other.",
+        clue: "Standoff: Neither moves"
+      },
+      {
+        term: "Cyclone",
+        category: "masses",
+        question: "A swirling center of low air pressure where winds spiral inward and counterclockwise (in NH) bringing clouds and storms is a _____.",
+        definition: "Low-pressure center with inward swirling winds bringing storms.",
+        clue: "Low Pressure / Inward Winds"
+      },
+      {
+        term: "Anticyclone",
+        category: "masses",
+        question: "The opposite of a cyclone, featuring a high-pressure center of dry air with winds spiraling outward and clockwise (in NH) is a(n) _____.",
+        definition: "High-pressure center of dry air with outward spiraling winds.",
+        clue: "High Pressure / Dry Outward"
+      },
+      {
+        term: "Coriolis Effect",
+        category: "masses",
+        question: "In the Northern Hemisphere, Earth's rotation deflects winds to the right, known as the _____.",
+        definition: "The curvature of wind paths caused by Earth's rotation.",
+        clue: "Earth Rotation Wind Curve"
+      }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    // Boss Battle
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "Low Pressure Cyclone", icon: "🌀", maxHp: 100 },
+      { name: "Turbulent Jet Stream", icon: "💨", maxHp: 120 },
+      { name: "Severe Thunder Cold Front", icon: "⛈️", maxHp: 140 },
+      { name: "The Occluded Vortex", icon: "🌪️", maxHp: 160 },
+      { name: "High Pressure Anticyclone", icon: "☀️", maxHp: 200 }
+    ];
+
+    // Speed Match
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    // Memory
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    // Audio
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function speakWord(word) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...SCIENCE_DATA].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...SCIENCE_DATA].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      const qHTML = currentBattleWord.question.replace('_____', `<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/40 mx-1">___ ? ___</span>`);
+      document.getElementById('battleQuestion').innerHTML = qHTML;
+      document.getElementById('battleHint').textContent = `Science Clue: ${currentBattleWord.clue}`;
+
+      const options = [currentBattleWord.term];
+      const others = SCIENCE_DATA.filter(w => w.term !== currentBattleWord.term).sort(() => Math.random() - 0.5);
+      for (let i = 0; i < 3; i++) {
+        options.push(others[i].term);
+      }
+      options.sort(() => Math.random() - 0.5);
+
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-emerald-950 border border-slate-700 hover:border-emerald-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-emerald-400">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selectedTerm, btnEl) {
+      const isCorrect = selectedTerm === currentBattleWord.term;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Direct Hit!</b> "${currentBattleWord.term}" deals ${dmg} damage!`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              showGameOverModal("Weather Mastered!", "You defeated every atmospheric storm and mastered the guided notes!", totalScore, "100%");
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Storm Strikes!</b> The correct term is "<b>${currentBattleWord.term}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            showGameOverModal("Storm Overpowered", "Review your notes and try the weather challenge again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          showGameOverModal("Time's Up!", "Lightning Round complete! Excellent science recall.", speedScoreVal, "Lightning Fast");
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = SCIENCE_DATA[Math.floor(Math.random() * SCIENCE_DATA.length)];
+      document.getElementById('speedDefinition').textContent = `"${speedCurrentWord.definition}"`;
+
+      const options = [speedCurrentWord.term];
+      const others = SCIENCE_DATA.filter(w => w.term !== speedCurrentWord.term).sort(() => Math.random() - 0.5);
+      for (let i = 0; i < 3; i++) {
+        options.push(others[i].term);
+      }
+      options.sort(() => Math.random() - 0.5);
+
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-cyan-950/60 border border-slate-700 hover:border-cyan-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosenTerm, btnEl) {
+      if (chosenTerm === speedCurrentWord.term) {
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const shuffled = [...SCIENCE_DATA].sort(() => Math.random() - 0.5).slice(0, 6);
+      memoryCards = [];
+
+      shuffled.forEach((item, idx) => {
+        memoryCards.push({
+          pairId: idx,
+          text: item.term,
+          sub: "Science Term"
+        });
+        memoryCards.push({
+          pairId: idx,
+          text: item.clue,
+          sub: "Note Fact / Clue"
+        });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-teal-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-teal-400 transition">🌦️</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-teal-400 block">${card.sub}</span>
+            <p class="font-bold text-xs md:text-sm text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-teal-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, "100%");
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-teal-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-teal-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT / STUDY CARDS
+    // ==========================================
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = SCIENCE_DATA;
+      if (filter === 'water') list = SCIENCE_DATA.filter(w => w.category === 'water');
+      if (filter === 'masses') list = SCIENCE_DATA.filter(w => w.category === 'masses');
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-teal-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        const badgeText = w.category === 'water' ? 'Topic 2 • Lesson 2' : 'Topic 2 • Lesson 3';
+        const badgeClass = w.category === 'water' ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30' : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30';
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${badgeClass}">
+                ${badgeText}
+              </span>
+              <button onclick="speakWord('${w.term}')" class="text-xs bg-slate-800 hover:bg-emerald-600 px-2 py-1 rounded-lg text-slate-300 hover:text-white transition flex items-center gap-1">
+                🔊 Listen
+              </button>
+            </div>
+            <h3 class="text-xl font-black text-white">${w.term}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-emerald-300">Definition:</b> ${w.definition}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+              <span class="text-slate-500 font-semibold block mb-0.5">Note Fact / Context:</span>
+              "${w.question.replace('_____', w.term)}"
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 flex items-center justify-between text-[11px] text-slate-400">
+            <span>Quick Clue: <b class="text-slate-200">${w.clue}</b></span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'water', 'masses'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) {
+            btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-emerald-600 text-white";
+          } else {
+            btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+          }
+        }
+      });
+      renderVault(type);
+    }
+
+    // Modal & Confetti
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#10b981', '#14b8a6', '#06b6d4', '#f59e0b', '#3b82f6'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
