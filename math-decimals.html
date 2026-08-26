@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Quest • Decimal Operations</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Header -->
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 flex items-center justify-center shadow-lg shadow-amber-500/30 text-xl font-bold">
+          🔢
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-amber-400 via-orange-300 to-rose-400 bg-clip-text text-transparent">MATH QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Part 1 • Decimal Operations (+, -, ×, ÷)</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main App -->
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+          Part 1: Decimal Mastery
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Decimal <span class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Operations</span> Arena
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master adding and subtracting big multi-digit decimals, multiplying decimals, and dividing decimals by shifting the decimal point!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">
+              ⚔️
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Decimal Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses by correctly calculating big decimal sums, differences, products, and quotients!</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">
+            START BATTLE <span>→</span>
+          </div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-orange-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl">
+              ⚡
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-orange-500/10 text-orange-300 rounded-full border border-orange-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-orange-300 transition">Decimal Speed Blitz</h3>
+          <p class="text-sm text-slate-400 mt-2">Race the 60-second timer to place the decimal point and solve fast decimal problems!</p>
+          <div class="mt-4 flex items-center text-orange-400 text-xs font-bold gap-1">
+            RACE THE CLOCK <span>→</span>
+          </div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-rose-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">
+              🧩
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-rose-500/10 text-rose-300 rounded-full border border-rose-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-rose-300 transition">Decimal Match Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Flip and pair equivalent decimal expressions (e.g., 0.6 × 0.4 = 0.24).</p>
+          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1">
+            START MATCHING <span>→</span>
+          </div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-yellow-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">
+              📖
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">Step-by-Step Rules</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-yellow-300 transition">Decimal Rules & Tricks Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review lining up decimals, counting decimal places for multiplication, and moving the divisor point for division.</p>
+          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">
+            OPEN RULES VAULT <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-amber-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-600/40">
+            🧙‍♂️
+          </div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-amber-300">Math Hero</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-amber-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-rose-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Decimal Monster</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">
+            👾
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span class="text-xs uppercase tracking-wider text-amber-400 font-bold">Decimal Problem</span>
+          <p id="battleQuestion" class="text-2xl md:text-3xl font-black text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-amber-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">
+          Solve Fast!
+        </span>
+        <h3 id="speedDefinition" class="text-2xl md:text-3xl font-black text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-amber-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match the decimal problem with the correct calculated value!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT / RULES -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Decimal Operations Rulebook</h2>
+          <p class="text-xs text-slate-400">Essential rules for adding, subtracting, multiplying, and dividing decimals.</p>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-amber-600 text-white">All Rules</button>
+          <button onclick="filterVault('addsub')" id="tab-addsub" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Add / Subtract</button>
+          <button onclick="filterVault('mult')" id="tab-mult" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Multiply</button>
+          <button onclick="filterVault('div')" id="tab-div" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Divide</button>
+        </div>
+      </div>
+
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center text-4xl">
+          🏆
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Decimal Challenge Cleared!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding arithmetic accuracy!</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">100%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">
+            Menu
+          </button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg transition">
+            Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const DECIMAL_DATA = [
+      // Addition
+      {
+        type: "addsub",
+        question: "348.72 + 59.45 = ?",
+        answer: "408.17",
+        distractors: ["407.17", "398.17", "418.17"],
+        hint: "Line up the decimal points and add each column from right to left.",
+        explanation: "348.72 + 59.45 = 408.17"
+      },
+      {
+        type: "addsub",
+        question: "1,245.8 + 834.65 = ?",
+        answer: "2,080.45",
+        distractors: ["2,079.45", "2,080.15", "1,980.45"],
+        hint: "Pad with a zero (1,245.80) and line up the decimal point.",
+        explanation: "1,245.80 + 834.65 = 2,080.45"
+      },
+      {
+        type: "addsub",
+        question: "62.08 + 14.935 = ?",
+        answer: "77.015",
+        distractors: ["76.915", "77.115", "76.015"],
+        hint: "62.080 + 14.935 = 77.015",
+        explanation: "62.080 + 14.935 = 77.015"
+      },
+
+      // Subtraction
+      {
+        type: "addsub",
+        question: "500.2 - 174.68 = ?",
+        answer: "325.52",
+        distractors: ["326.52", "325.62", "335.52"],
+        hint: "Add placeholder zero: 500.20 - 174.68 (regroup across zeros).",
+        explanation: "500.20 - 174.68 = 325.52"
+      },
+      {
+        type: "addsub",
+        question: "82.4 - 29.75 = ?",
+        answer: "52.65",
+        distractors: ["53.65", "52.35", "53.35"],
+        hint: "82.40 - 29.75",
+        explanation: "82.40 - 29.75 = 52.65"
+      },
+      {
+        type: "addsub",
+        question: "1,000 - 456.78 = ?",
+        answer: "543.22",
+        distractors: ["544.22", "543.32", "643.22"],
+        hint: "Write 1,000.00 and subtract 456.78.",
+        explanation: "1,000.00 - 456.78 = 543.22"
+      },
+
+      // Multiplication
+      {
+        type: "mult",
+        question: "4.5 × 0.6 = ?",
+        answer: "2.7",
+        distractors: ["27", "0.27", "0.027"],
+        hint: "Multiply 45 × 6 = 270, then count 2 total decimal places from right: 2.70 = 2.7",
+        explanation: "45 × 6 = 270. With 2 decimal places: 2.70 = 2.7"
+      },
+      {
+        type: "mult",
+        question: "12.4 × 3.2 = ?",
+        answer: "39.68",
+        distractors: ["396.8", "3.968", "38.68"],
+        hint: "Multiply 124 × 32 = 3968. Place decimal 2 places in from right.",
+        explanation: "124 × 32 = 3,968 -> 39.68 (2 decimal places total)."
+      },
+      {
+        type: "mult",
+        question: "0.25 × 0.4 = ?",
+        answer: "0.1",
+        distractors: ["0.01", "1.0", "0.001"],
+        hint: "25 × 4 = 100. Count 3 decimal places: 0.100 = 0.1",
+        explanation: "25 × 4 = 100 -> 3 decimal places -> 0.100 = 0.1"
+      },
+      {
+        type: "mult",
+        question: "7.08 × 100 = ?",
+        answer: "708",
+        distractors: ["70.8", "7,080", "0.0708"],
+        hint: "Multiplying by 100 shifts the decimal point 2 places to the right.",
+        explanation: "7.08 × 100 = 708"
+      },
+
+      // Division
+      {
+        type: "div",
+        question: "15.6 ÷ 3 = ?",
+        answer: "5.2",
+        distractors: ["52", "0.52", "5.02"],
+        hint: "Bring the decimal straight up into the quotient: 15.6 ÷ 3 = 5.2",
+        explanation: "15.6 ÷ 3 = 5.2"
+      },
+      {
+        type: "div",
+        question: "4.8 ÷ 0.6 = ?",
+        answer: "8",
+        distractors: ["0.8", "80", "0.08"],
+        hint: "Shift decimal 1 place right in both numbers: 48 ÷ 6 = 8.",
+        explanation: "4.8 ÷ 0.6 = 48 ÷ 6 = 8"
+      },
+      {
+        type: "div",
+        question: "7.5 ÷ 0.25 = ?",
+        answer: "30",
+        distractors: ["3", "300", "0.3"],
+        hint: "Shift decimal 2 places right in both: 750 ÷ 25 = 30.",
+        explanation: "7.50 ÷ 0.25 = 750 ÷ 25 = 30"
+      },
+      {
+        type: "div",
+        question: "128.4 ÷ 10 = ?",
+        answer: "12.84",
+        distractors: ["1.284", "1284", "128.04"],
+        hint: "Dividing by 10 shifts the decimal 1 place to the left.",
+        explanation: "128.4 ÷ 10 = 12.84"
+      },
+      {
+        type: "div",
+        question: "0.96 ÷ 1.2 = ?",
+        answer: "0.8",
+        distractors: ["8", "0.08", "0.008"],
+        hint: "Shift 1 decimal place: 9.6 ÷ 12 = 0.8.",
+        explanation: "0.96 ÷ 1.2 = 9.6 ÷ 12 = 0.8"
+      }
+    ];
+
+    const DECIMAL_MEMORY_PAIRS = [
+      { text: "0.6 × 0.4", match: "0.24", sub: "Multiplication" },
+      { text: "4.8 ÷ 0.6", match: "8", sub: "Division" },
+      { text: "1.5 + 2.75", match: "4.25", sub: "Addition" },
+      { text: "10.0 - 3.6", match: "6.4", sub: "Subtraction" },
+      { text: "0.25 × 4", match: "1.0", sub: "Multiplication" },
+      { text: "7.5 ÷ 5", match: "1.5", sub: "Division" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    // Boss Battle
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "Decimal Serpent", icon: "🐍", maxHp: 100 },
+      { name: "Regrouping Golem", icon: "🗿", maxHp: 120 },
+      { name: "Multiplication Hydra", icon: "🐉", maxHp: 140 },
+      { name: "Divisor Behemoth", icon: "🦏", maxHp: 160 },
+      { name: "The Decimal Emperor", icon: "👑", maxHp: 200 }
+    ];
+
+    // Speed Match
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    // Memory
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...DECIMAL_DATA].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...DECIMAL_DATA].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      document.getElementById('battleQuestion').textContent = currentBattleWord.question;
+      document.getElementById('battleHint').textContent = `Hint: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.answer, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-amber-950 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-amber-400">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      const isCorrect = selected === currentBattleWord.answer;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Correct Calculation!</b> Deals ${dmg} damage! (${currentBattleWord.explanation})`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              showGameOverModal("Boss Defeated!", "You conquered all 5 Decimal Bosses!", totalScore, "100%");
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> The correct answer was "<b>${currentBattleWord.answer}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            showGameOverModal("Defeated in Arena", "Review decimal rules and try again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          showGameOverModal("Time's Up!", "Decimal Blitz complete! Excellent mental math speed.", speedScoreVal, "Lightning Fast");
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = DECIMAL_DATA[Math.floor(Math.random() * DECIMAL_DATA.length)];
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.question;
+
+      const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      if (chosen === speedCurrentWord.answer) {
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...DECIMAL_MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Value / Answer" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-amber-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-amber-400 transition">🔢</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-amber-400 block">${card.sub}</span>
+            <p class="font-black text-lg md:text-xl text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-amber-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, "100%");
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-amber-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-amber-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT / RULES
+    // ==========================================
+    const VAULT_RULES = [
+      {
+        category: "addsub",
+        title: "Adding Decimals",
+        rule: "Line up the decimal points vertically. Fill missing spaces with placeholder zeros, then add normally.",
+        example: "348.72 + 59.45 = 408.17",
+        tip: "Keep the decimal point in the exact same place in your answer!"
+      },
+      {
+        category: "addsub",
+        title: "Subtracting Decimals",
+        rule: "Line up the decimal points vertically. Always add placeholder zeros to the top number before regrouping.",
+        example: "500.20 - 174.68 = 325.52",
+        tip: "Regroup across zeros carefully when subtracting."
+      },
+      {
+        category: "mult",
+        title: "Multiplying Decimals",
+        rule: "Multiply as if there are no decimals. Then count the TOTAL number of decimal places in BOTH factors and move the decimal point that many places from the right in your answer.",
+        example: "4.5 (1 place) × 0.6 (1 place) = 2.70 (2 places)",
+        tip: "You do NOT need to line up decimal points when multiplying!"
+      },
+      {
+        category: "div",
+        title: "Dividing by a Whole Number",
+        rule: "Bring the decimal point straight up into the quotient (answer), then divide normally using standard long division.",
+        example: "15.6 ÷ 3 = 5.2",
+        tip: "Add zeros to the dividend if you have a remainder until it divides evenly."
+      },
+      {
+        category: "div",
+        title: "Dividing by a Decimal Divisor",
+        rule: "Shift the decimal point to the right in the divisor to make it a whole number. Shift the decimal point the EXACT same number of places in the dividend.",
+        example: "4.8 ÷ 0.6 -> Shift 1 place -> 48 ÷ 6 = 8",
+        tip: "7.5 ÷ 0.25 -> Shift 2 places -> 750 ÷ 25 = 30"
+      },
+      {
+        category: "mult",
+        title: "Powers of 10 Shortcut",
+        rule: "Multiplying by 10, 100, 1,000 moves the decimal to the RIGHT. Dividing by 10, 100, 1,000 moves the decimal to the LEFT.",
+        example: "7.08 × 100 = 708 | 128.4 ÷ 10 = 12.84",
+        tip: "Count the number of zeros in the power of 10 to know how many places to jump."
+      }
+    ];
+
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = VAULT_RULES;
+      if (filter !== 'all') list = VAULT_RULES.filter(w => w.category === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-amber-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30">
+              ${w.category.toUpperCase()}
+            </span>
+            <h3 class="text-xl font-black text-white">${w.title}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-amber-300">Rule:</b> ${w.rule}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+              <span class="text-slate-500 font-semibold block mb-0.5">Example:</span>
+              <span class="font-mono text-amber-200">${w.example}</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            💡 <span>${w.tip}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'addsub', 'mult', 'div'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-amber-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    // Modal & Confetti
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#f59e0b', '#f97316', '#ef4444', '#10b981', '#6366f1'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
