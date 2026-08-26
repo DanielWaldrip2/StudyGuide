@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study Quest • Learning Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+    }
+    .floating-badge { animation: float 3s ease-in-out infinite; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-4 shadow-lg">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 font-black text-xl">
+          🚀
+        </div>
+        <div>
+          <h1 class="font-black text-lg bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">
+            STUDY QUEST HUB
+          </h1>
+          <p class="text-xs text-slate-400 font-medium">Interactive Learning & Review Arena</p>
+        </div>
+      </div>
+      <div class="bg-slate-800/80 px-3.5 py-1.5 rounded-full border border-slate-700 text-xs font-semibold text-slate-300">
+        Grade Prep 🌟
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Banner -->
+  <main class="max-w-5xl mx-auto w-full px-4 py-8 flex-1 space-y-10">
+    <div class="text-center space-y-3 max-w-2xl mx-auto pt-2">
+      <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+        Choose Your <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">Subject</span>
+      </h2>
+      <p class="text-slate-400 text-sm md:text-base">
+        Select a course below to jump directly into interactive games, battle challenges, and mastery reviews.
+      </p>
+    </div>
+
+    <!-- SECTION 1: ENGLISH VOCABULARY -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">📖</span>
+          <h3 class="text-xl font-bold text-white tracking-wide">English Vocabulary</h3>
+        </div>
+        <span class="text-xs font-semibold px-2.5 py-1 bg-purple-500/10 text-purple-300 rounded-full border border-purple-500/30">Vocabulary Power</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Vocab Module 1 -->
+        <a href="vocab-lessons-1-2.html" class="group relative bg-slate-900 border border-slate-800 hover:border-purple-500/60 p-6 rounded-2xl transition duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2.5 py-1 bg-purple-500/20 text-purple-300 rounded-md border border-purple-500/30">
+                Lessons 1 & 2
+              </span>
+              <span class="text-xs text-slate-400 font-mono">20 Words</span>
+            </div>
+            <h4 class="text-lg font-bold text-white group-hover:text-purple-300 transition">
+              Context Clues & Prefixes (em- / en-)
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Includes Boss Battle RPG, Speed Blitz, Memory Matrix, and Flashcards for words like <em>anticipation</em>, <em>defiance</em>, <em>endeavor</em>, and <em>envelop</em>.
+            </p>
+          </div>
+          <div class="mt-5 flex items-center justify-between text-xs font-bold text-purple-400 pt-3 border-t border-slate-800/80">
+            <span>START VOCAB QUEST</span>
+            <span class="group-hover:translate-x-1 transition">→</span>
+          </div>
+        </a>
+
+        <!-- Upcoming Vocab Placeholder -->
+        <div class="bg-slate-900/40 border border-dashed border-slate-800 p-6 rounded-2xl flex flex-col items-center justify-center text-center space-y-2 text-slate-500">
+          <span class="text-2xl">🔒</span>
+          <span class="text-sm font-semibold text-slate-400">Lesson 3 & 4 Coming Soon</span>
+          <p class="text-xs text-slate-500">More word packs will unlock as new worksheets are added.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: SCIENCE -->
+    <section class="space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🌍</span>
+          <h3 class="text-xl font-bold text-white tracking-wide">Science</h3>
+        </div>
+        <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-full border border-emerald-500/30">Earth & Space</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <!-- Science Module 1 -->
+        <a href="science-atmosphere.html" class="group relative bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl transition duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-md border border-emerald-500/30">
+                Topic 2 • Lesson 2
+              </span>
+              <span class="text-xs text-slate-400 font-mono">Earth Science</span>
+            </div>
+            <h4 class="text-lg font-bold text-white group-hover:text-emerald-300 transition">
+              Earth's Atmosphere & Atmospheric Layers
+            </h4>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Explore the Troposphere, Stratosphere, Mesosphere, Thermosphere, air pressure, composition, and ozone protection.
+            </p>
+          </div>
+          <div class="mt-5 flex items-center justify-between text-xs font-bold text-emerald-400 pt-3 border-t border-slate-800/80">
+            <span>LAUNCH SCIENCE LAB</span>
+            <span class="group-hover:translate-x-1 transition">→</span>
+          </div>
+        </a>
+
+        <!-- Upcoming Science Placeholder -->
+        <div class="bg-slate-900/40 border border-dashed border-slate-800 p-6 rounded-2xl flex flex-col items-center justify-center text-center space-y-2 text-slate-500">
+          <span class="text-2xl">🔒</span>
+          <span class="text-sm font-semibold text-slate-400">Next Science Topic</span>
+          <p class="text-xs text-slate-500">Weather systems and water cycles coming next.</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-6 text-center text-xs text-slate-500">
+    Study Quest Hub • Interactive Student Learning
+  </footer>
+</body>
+</html>
