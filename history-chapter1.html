@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>History Quest • Chapter 1: Early Encounters</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-rose-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <!-- Header -->
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-600 via-amber-600 to-orange-500 flex items-center justify-center shadow-lg shadow-rose-600/30 text-xl font-bold">
+          🏛️
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-rose-400 via-amber-300 to-orange-400 bg-clip-text text-transparent">HISTORY QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Chapter 1 • Early Encounters & Native Cultures</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold uppercase tracking-wider">
+          Early American Civilizations
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Chapter 1: <span class="bg-gradient-to-r from-rose-400 via-amber-400 to-orange-400 bg-clip-text text-transparent">Early Encounters</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master Indigenous cultures of the Far North, Plains, Southwest, Mound Builders of Cahokia, and the Iroquois League!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-rose-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">
+              🏹
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-rose-500/10 text-rose-300 rounded-full border border-rose-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-rose-300 transition">History Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses by answering guided notes questions on ancient cultures, mounds, and native traditions.</p>
+          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1">
+            START BATTLE <span>→</span>
+          </div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">
+              ⚡
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Culture Speed Blitz</h3>
+          <p class="text-sm text-slate-400 mt-2">Identify tribes, regional adaptations, and vocabulary terms before the 60-second timer runs out!</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">
+            RACE THE CLOCK <span>→</span>
+          </div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-orange-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl">
+              🧩
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-orange-500/10 text-orange-300 rounded-full border border-orange-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-orange-300 transition">Artifact Memory Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Match indigenous tribes, regions, and artifacts (potlatches, adobe, teepees, wampum).</p>
+          <div class="mt-4 flex items-center text-orange-400 text-xs font-bold gap-1">
+            START MATCHING <span>→</span>
+          </div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-yellow-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">
+              📖
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-yellow-300 transition">Guided Notes Study Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review all 4 sections of Chapter 1 with audio pronunciation and key summary cards.</p>
+          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">
+            OPEN STUDY VAULT <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-rose-600 flex items-center justify-center text-2xl shadow-lg shadow-rose-600/40">
+            🧭
+          </div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-rose-300">Explorer</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-rose-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-amber-400">Cahokia Serpent Mound</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-amber-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-amber-900/40 border border-amber-500/40 flex items-center justify-center text-2xl">
+            🐍
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-500 via-amber-500 to-orange-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span class="text-xs uppercase tracking-wider text-rose-400 font-bold">Chapter 1 Guided Notes</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-rose-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-rose-500/10 text-rose-400 text-xs font-bold rounded-full uppercase tracking-wider">
+          Identify Fact / Concept
+        </span>
+        <h3 id="speedDefinition" class="text-xl md:text-2xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-rose-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match historical tribes and concepts with their region or description!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT / STUDY CARDS -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Chapter 1 Study Deck</h2>
+          <p class="text-xs text-slate-400">Key facts organized by section.</p>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-rose-600 text-white">All (18)</button>
+          <button onclick="filterVault('west')" id="tab-west" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Sec 1.2 West</button>
+          <button onclick="filterVault('east')" id="tab-east" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Sec 1.3 East</button>
+          <button onclick="filterVault('cahokia')" id="tab-cahokia" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Sec 1.4 Cahokia</button>
+          <button onclick="filterVault('nmai')" id="tab-nmai" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Sec 1.5 NMAI</button>
+        </div>
+      </div>
+
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 mx-auto flex items-center justify-center text-4xl">
+          🏆
+        </div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Chapter 1 Conquered!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding historical knowledge and recall!</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">100%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">
+            Menu
+          </button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white text-sm font-bold rounded-xl shadow-lg transition">
+            Play Again
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const HISTORY_DATA = [
+      // Section 1.2: Western American Cultures
+      {
+        term: "Permafrost & Tundra",
+        category: "west",
+        question: "A vast, treeless biome characterized by extreme cold and low precipitation with a permanently frozen layer of subsoil called _____.",
+        answer: "Permafrost",
+        distractors: ["Clay", "Adobe", "Silt"],
+        hint: "Think of subsoil in the frozen Arctic that stays frozen all year.",
+        explanation: "Permafrost is permanently frozen subsoil found in Arctic tundra biomes."
+      },
+      {
+        term: "Potlatches",
+        category: "west",
+        question: "Feasts held by Pacific Northwest tribes where host families gave gifts to guests to show their social rank and wealth were called _____.",
+        answer: "Potlatches",
+        distractors: ["Green Corn Festivals", "Powwows", "Mounds"],
+        hint: "Ceremonial gift-giving feasts practiced along the Northwest Coast.",
+        explanation: "Potlatches were traditional ceremonies to demonstrate wealth and status through gift-giving."
+      },
+      {
+        term: "Adobe",
+        category: "west",
+        question: "Around 1000 AD, Pueblo tribes in the desert Southwest built multi-story homes made of sun-dried clay and straw bricks called _____.",
+        answer: "Adobe",
+        distractors: ["Teepees", "Longhouses", "Planks"],
+        hint: "Sun-dried mud and straw brick architecture common in the Southwest.",
+        explanation: "Adobe is a sun-dried clay and straw building material used by the Anasazi/Pueblo."
+      },
+      {
+        term: "Anasazi (Ancestral Pueblo)",
+        category: "west",
+        question: "The ancient Southwest culture who built cliff dwellings and irrigation canals, whose name was given to them by the Navajo, were the _____.",
+        answer: "Anasazi",
+        distractors: ["Inuit", "Iroquois", "Hopewell"],
+        hint: "Ancient cliff-dwelling builders of the American Southwest.",
+        explanation: "The Anasazi (Ancestral Pueblo) lived in the Four Corners region."
+      },
+      {
+        term: "Teepees & Bison",
+        category: "west",
+        question: "In the Western grasslands and Great Plains, nomadic tribes like the Blackfoot lived in cone-shaped tents made of animal hides called _____ and hunted herds of _____.",
+        answer: "Teepees & Bison",
+        distractors: ["Adobe & Deer", "Longhouses & Fish", "Igloos & Seals"],
+        hint: "Portable hide tents and large plains animals hunted for food, tools, and clothing.",
+        explanation: "Plains tribes used portable teepees and followed migrating bison herds."
+      },
+      {
+        term: "Far North Inuit & Aleut",
+        category: "west",
+        question: "The Aleut and Inuit lived in the cold Arctic tundra of Alaska and Canada, using light boats called kayaks and hunting _____.",
+        answer: "Sea Mammals & Fish",
+        distractors: ["Bison & Buffalo", "Corn & Squash", "Desert Lizards"],
+        hint: "Marine animals like seals, walruses, and whales hunted from kayaks.",
+        explanation: "Arctic peoples relied heavily on fishing and hunting sea mammals."
+      },
+
+      // Section 1.3: Eastern American Cultures
+      {
+        term: "Matrilineal",
+        category: "east",
+        question: "When societies trace family lines, property, and clan membership through their mothers, it is called a _____ society.",
+        answer: "Matrilineal",
+        distractors: ["Patrilineal", "Monarchical", "Democratic"],
+        hint: "Maternal lineage traced from mother to children.",
+        explanation: "Matrilineal means ancestry and clan ties are traced through female lines."
+      },
+      {
+        term: "Slash-and-Burn Agriculture",
+        category: "east",
+        question: "A farming method used by Eastern Woodland tribes where trees are cut down and burned to clear fields and enrich the soil is _____.",
+        answer: "Slash-and-Burn Agriculture",
+        distractors: ["Canal Irrigation", "Terrace Farming", "Crop Rotation"],
+        hint: "Felling trees and burning brush to prepare agricultural plots.",
+        explanation: "Slash-and-burn farming cleared dense forests and added ash nutrients to soil."
+      },
+      {
+        term: "Iroquois League",
+        category: "east",
+        question: "A powerful confederation of five northeastern nations (Mohawk, Oneida, Onondaga, Cayuga, Seneca) formed to keep peace and mutual defense was the _____.",
+        answer: "Iroquois League",
+        distractors: ["Creek Confederacy", "Pueblo Coalition", "Algonquian Alliance"],
+        hint: "The Five Nations alliance in present-day New York State.",
+        explanation: "The Iroquois League united 5 nations with a shared representative council."
+      },
+      {
+        term: "Three Sisters & Green Corn",
+        category: "east",
+        question: "Eastern Woodland agricultural tribes grew corn, beans, and squash and celebrated the annual harvest with the _____ Festival.",
+        answer: "Green Corn",
+        distractors: ["Potlatch", "Sun Dance", "Winter Solstice"],
+        hint: "Mid-summer renewal ceremony celebrating the ripening of the primary grain crop.",
+        explanation: "The Green Corn Festival celebrated the main agricultural harvest."
+      },
+      {
+        term: "Hopewell & Adena",
+        category: "east",
+        question: "Two ancient cultures in the Ohio River Valley who constructed large earthen mounds for burials and religious ceremonies were the _____ and _____.",
+        answer: "Adena & Hopewell",
+        distractors: ["Inuit & Aleut", "Navajo & Hopi", "Aztec & Maya"],
+        hint: "Early Mound Builders centered around present-day Ohio and Kentucky.",
+        explanation: "Adena and Hopewell cultures built elaborate earthen burial and effigy mounds."
+      },
+      {
+        term: "Serpent Mound",
+        category: "east",
+        question: "A famous ancient effigy mound shaped like an undulating snake located in present-day Ohio is the _____.",
+        answer: "Serpent Mound",
+        distractors: ["Monks Mound", "Cahokia Wall", "Pyramid of the Sun"],
+        hint: "An iconic snake-shaped earthwork in Ohio.",
+        explanation: "Serpent Mound is an internationally known ancient snake effigy earthwork in Ohio."
+      },
+
+      // Section 1.4: Cahokia Mounds
+      {
+        term: "Cahokia",
+        category: "cahokia",
+        question: "A massive ancient Mississippian city with over 100 earthen mounds and large public plazas built near the Mississippi River was _____.",
+        answer: "Cahokia",
+        distractors: ["Tenochtitlan", "Mesa Verde", "Chaco Canyon"],
+        hint: "Major pre-Columbian city located near modern-day St. Louis.",
+        explanation: "Cahokia was the largest pre-Columbian city north of Mexico."
+      },
+      {
+        term: "Cahokia Copper Workshop",
+        category: "cahokia",
+        question: "Underneath Mound 34 at Cahokia, archeologists discovered buildings and an ancient workshop used for crafting artifacts from _____.",
+        answer: "Copper",
+        distractors: ["Iron", "Bronze", "Steel"],
+        hint: "A malleable red-orange metal hammered into plates and decorative ornaments.",
+        explanation: "Excavations at Mound 34 revealed extensive copper-working facilities."
+      },
+      {
+        term: "Three Cosmological Worlds",
+        category: "cahokia",
+        question: "Mississippian mound builders structured their spiritual universe into three layers: the Beneath World, this Earth, and the _____ World.",
+        answer: "Upper World",
+        distractors: ["Nether World", "Outer World", "Ocean World"],
+        hint: "The celestial realm associated with order, light, and sky powers.",
+        explanation: "Mississippian belief recognized the Upper World, Earth (middle), and Beneath World."
+      },
+      {
+        term: "Palisade Wall & Decline",
+        category: "cahokia",
+        question: "Around 1100 AD, Cahokia residents built a protective wooden wall called a _____ around the central city, and by 1300 AD residents had abandoned the site.",
+        answer: "Palisade (Defensive Wall)",
+        distractors: ["Moat", "Stone Castle", "Canal System"],
+        hint: "A defensive barrier made of vertical wooden logs.",
+        explanation: "A massive stockade/palisade wall protected central Cahokia before its abandonment."
+      },
+
+      // Section 1.5: NMAI Curating History
+      {
+        term: "National Museum of the American Indian (NMAI)",
+        category: "nmai",
+        question: "The NMAI, which preserves over 800,000 native items representing over 1,200 indigenous cultures across 12,000 years of history, is located in _____.",
+        answer: "Washington, D.C.",
+        distractors: ["New York City", "Chicago", "San Francisco"],
+        hint: "The Smithsonian museum situated on the National Mall in our nation's capital.",
+        explanation: "The Smithsonian NMAI main museum is located in Washington, D.C."
+      },
+      {
+        term: "Chief of the Undersea Mask",
+        category: "nmai",
+        question: "A ceremonial red cedar mask created by Northwest Coast carvers depicting a powerful mythical ruler believed to live in an undersea copper palace is the _____.",
+        answer: "Chief of the Undersea Mask",
+        distractors: ["Sun God Mask", "Thunderbird Crest", "Green Corn Mask"],
+        hint: "Carved from western red cedar and representing an ocean domain ruler.",
+        explanation: "The Chief of the Undersea Mask represents a prominent Northwest Coast spirit figure."
+      }
+    ];
+
+    const HISTORY_MEMORY_PAIRS = [
+      { text: "Adobe Homes", match: "Pueblo / Southwest", sub: "Architecture" },
+      { text: "Potlatches", match: "Pacific Northwest", sub: "Tradition" },
+      { text: "Teepees & Bison", match: "Great Plains", sub: "Lifestyle" },
+      { text: "Iroquois League", match: "Five Nations (NY)", sub: "Government" },
+      { text: "Cahokia", match: "100+ Mounds / Plazas", sub: "Mississippian City" },
+      { text: "Matrilineal", match: "Tracing Female Lines", sub: "Social Structure" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    // Boss Battle
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "Cahokia Serpent Mound", icon: "🐍", maxHp: 100 },
+      { name: "Arctic Ice Wyrm", icon: "❄️", maxHp: 120 },
+      { name: "Desert Thunderbird", icon: "🦅", maxHp: 140 },
+      { name: "Forest Woodland Guardian", icon: "🌲", maxHp: 160 },
+      { name: "Chief of the Undersea", icon: "🌊", maxHp: 200 }
+    ];
+
+    // Speed Match
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    // Memory
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function speakWord(word) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...HISTORY_DATA].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...HISTORY_DATA].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      const qHTML = currentBattleWord.question.replace('_____', `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold border border-rose-500/40 mx-1">___ ? ___</span>`);
+      document.getElementById('battleQuestion').innerHTML = qHTML;
+      document.getElementById('battleHint').textContent = `Historical Clue: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.answer, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-rose-950 border border-slate-700 hover:border-rose-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-rose-400">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      const isCorrect = selected === currentBattleWord.answer;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Direct Hit!</b> "${currentBattleWord.answer}" deals ${dmg} damage! (${currentBattleWord.explanation})`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              showGameOverModal("Chapter 1 Mastered!", "You defeated every boss and conquered early American history!", totalScore, "100%");
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Counters!</b> The correct answer was "<b>${currentBattleWord.answer}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            showGameOverModal("Defeated in History Quest", "Review your notes and try again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          showGameOverModal("Time's Up!", "Speed Blitz complete! Excellent history knowledge.", speedScoreVal, "Lightning Fast");
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = HISTORY_DATA[Math.floor(Math.random() * HISTORY_DATA.length)];
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.question.replace('_____', '_______');
+
+      const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-rose-950/60 border border-slate-700 hover:border-rose-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      if (chosen === speedCurrentWord.answer) {
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...HISTORY_MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Historical Match" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-rose-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-rose-400 transition">🏺</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-rose-400 block">${card.sub}</span>
+            <p class="font-bold text-xs md:text-sm text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-rose-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, "100%");
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-rose-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-rose-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT / STUDY CARDS
+    // ==========================================
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = HISTORY_DATA;
+      if (filter !== 'all') list = HISTORY_DATA.filter(w => w.category === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-rose-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        let badgeTitle = "Section 1.2 West";
+        if (w.category === 'east') badgeTitle = "Section 1.3 East";
+        if (w.category === 'cahokia') badgeTitle = "Section 1.4 Cahokia";
+        if (w.category === 'nmai') badgeTitle = "Section 1.5 NMAI";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-rose-500/10 text-rose-300 border-rose-500/30">
+                ${badgeTitle}
+              </span>
+              <button onclick="speakWord('${w.term}')" class="text-xs bg-slate-800 hover:bg-rose-600 px-2 py-1 rounded-lg text-slate-300 hover:text-white transition flex items-center gap-1">
+                🔊 Listen
+              </button>
+            </div>
+            <h3 class="text-xl font-black text-white">${w.term}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-rose-300">Fact:</b> ${w.explanation}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+              <span class="text-slate-500 font-semibold block mb-0.5">Note Context:</span>
+              "${w.question.replace('_____', w.answer)}"
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            <span>Key Term / Answer: <b class="text-slate-200">${w.answer}</b></span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'west', 'east', 'cahokia', 'nmai'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-rose-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    // Modal & Confetti
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#f43f5e', '#fb923c', '#f59e0b', '#10b981', '#6366f1'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
