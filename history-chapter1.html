@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +10,7 @@
 
   <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
+  <!-- Navigation Bar -->
   <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
@@ -38,8 +38,10 @@
     </div>
   </header>
 
+  <!-- Main Arena Container -->
   <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
 
+    <!-- ==================== 1. MENU ==================== -->
     <div id="screen-menu" class="space-y-8 py-4">
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold uppercase tracking-wider">
@@ -114,6 +116,7 @@
       </div>
     </div>
 
+    <!-- ==================== 2. BOSS BATTLE ==================== -->
     <div id="screen-battle" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-3 w-full md:w-auto">
@@ -163,6 +166,7 @@
       </div>
     </div>
 
+    <!-- ==================== 3. SPEED MATCH ==================== -->
     <div id="screen-speed" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -193,6 +197,7 @@
       <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
+    <!-- ==================== 4. MEMORY MATRIX ==================== -->
     <div id="screen-memory" class="hidden space-y-6">
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -207,6 +212,7 @@
       <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
+    <!-- ==================== 5. VAULT / STUDY CARDS ==================== -->
     <div id="screen-vault" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <div>
@@ -225,6 +231,7 @@
       <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
+    <!-- ==================== 6. MODAL ==================== -->
     <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
         <div class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 mx-auto flex items-center justify-center text-4xl">
@@ -345,4 +352,803 @@
       {
         section: "sec12",
         sectionTitle: "Section 1.2: Far North & Pacific Coast",
-        question: "Due to the forests, Pacific Northwest tribes had an abundance of _____ to build homes, boats
+        question: "Due to the forests, Pacific Northwest tribes had an abundance of _____ to build homes, boats, and household goods.",
+        answer: "Trees",
+        distractors: ["Clay", "Stones", "Bison hides"],
+        hint: "Forest timber resource."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Far North & Pacific Coast",
+        question: "In California, the Pomo and other tribes didn't need to farm due to streams being full of _____ and wild edible plants, nuts, and berries.",
+        answer: "Fish",
+        distractors: ["Canals", "Ice", "Salt"],
+        hint: "Abundant freshwater food."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "Just like the people of the North and West, Native Americans in the Southwest and Great Plains had to adapt to special _____ and conditions.",
+        answer: "Climates",
+        distractors: ["Languages", "Festivals", "Boats"],
+        hint: "Weather and regional environment."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "The ancient Pueblo and the _____ thrived during the time of the Maya.",
+        answer: "Hohokam",
+        distractors: ["Inuit", "Iroquois", "Choctaw"],
+        hint: "Southwest canal builders."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "The Hohokam grew cotton, squash, beans, and maize. They dug _____ so their fields could get water from nearby streams.",
+        answer: "Canals",
+        distractors: ["Wells", "Mounds", "Tunnels"],
+        hint: "Channels dug to irrigate desert crops."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "Around 1000 AD, Southwest tribes built _____ (sun-dried clay and straw bricks) homes.",
+        answer: "Adobe",
+        distractors: ["Teepee", "Igloo", "Longhouse"],
+        hint: "Clay and straw brick material."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "The ancient Pueblo used to be called the _____, a name given to them by the Navajo.",
+        answer: "Anasazi",
+        distractors: ["Hopewell", "Iroquois", "Aleut"],
+        hint: "Ancient cliff-dwelling culture."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "Grasslands extended around the _____ River to the Rocky Mountains.",
+        answer: "Mississippi",
+        distractors: ["Ohio", "Colorado", "Hudson"],
+        hint: "Major river defining the Great Plains boundary."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "In the eastern grasslands, Great Plains tribes like the Pawnee and Mandan settled as _____ who built villages.",
+        answer: "Farmers",
+        distractors: ["Nomads", "Sailors", "Miners"],
+        hint: "People who grew crops in permanent villages."
+      },
+      {
+        section: "sec12",
+        sectionTitle: "Section 1.2: Deserts & Plains",
+        question: "In the western grasslands, tribes like the _____ migrated from place to place hunting herds of bison.",
+        answer: "Blackfoot",
+        distractors: ["Hohokam", "Inuit", "Haida"],
+        hint: "Nomadic plains tribe."
+      },
+
+      // Section 1.3: Eastern American Cultures (Pages 28-29)
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures (Vocab)",
+        question: "Matrilineal - to trace family lines through their _____.",
+        answer: "Mothers",
+        distractors: ["Fathers", "Chiefs", "Elders"],
+        hint: "Tracing lineage along the maternal line."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures (Vocab)",
+        question: "Slash-and-Burn Agriculture - to cut down and _____ trees to clear land.",
+        answer: "Burn",
+        distractors: ["Water", "Carve", "Stack"],
+        hint: "Burning trees and brush to enrich the soil."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures",
+        question: "Due to the climate, the Chickasaw and Choctaw of present-day Mississippi and Alabama grew corn, beans, and _____.",
+        answer: "Pumpkins",
+        distractors: ["Wheat", "Apples", "Potatoes"],
+        hint: "Gourd crop grown with corn and beans."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures",
+        question: "Women planted, harvested, cooked crops, cared for children, and made _____ and clothes.",
+        answer: "Baskets",
+        distractors: ["Teepees", "Kayaks", "Adobe"],
+        hint: "Woven household goods."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures",
+        question: "Eastern Woodland groups fasted, feasted, danced, played games, and prayed during the _____ Festival.",
+        answer: "Green Corn",
+        distractors: ["Potlatch", "Sun Dance", "Harvest Moon"],
+        hint: "Late-summer agricultural harvest ceremony."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures",
+        question: "The Algonquian lived along the _____ coast.",
+        answer: "Atlantic",
+        distractors: ["Pacific", "Gulf", "Arctic"],
+        hint: "Eastern ocean seaboard."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures",
+        question: "The Iroquois primarily lived in the central part of present-day _____ State, where women and men shared political power.",
+        answer: "New York",
+        distractors: ["Ohio", "Virginia", "Alabama"],
+        hint: "Empire state where the Five Nations lived."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: Eastern Cultures",
+        question: "Five Iroquois nations banded together to form the Iroquois League: Mohawk, Oneida, Onondaga, Seneca, and _____.",
+        answer: "Cayuga",
+        distractors: ["Choctaw", "Pawnee", "Inuit"],
+        hint: "Fifth nation in the Iroquois confederacy."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: The Mound Builders",
+        question: "Serpent Mound is in present-day _____.",
+        answer: "Ohio",
+        distractors: ["New York", "Alabama", "California"],
+        hint: "Midwestern state containing the snake effigy mound."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: The Mound Builders",
+        question: "Mounds came in different shapes and sizes; some were for _____ and others to house the dead (burial).",
+        answer: "Temples",
+        distractors: ["Canoes", "Canals", "Boats"],
+        hint: "Structures built atop mounds for ceremonies or chiefs."
+      },
+      {
+        section: "sec13",
+        sectionTitle: "Section 1.3: The Mound Builders",
+        question: "Two ancient mound-building cultures in Ohio, Kentucky, WV, Michigan, Wisconsin, and PA were the _____ & Hopewell.",
+        answer: "Adena",
+        distractors: ["Inuit", "Hohokam", "Navajo"],
+        hint: "Early Ohio Valley mound builders paired with Hopewell."
+      },
+
+      // Section 1.4: Cahokia: Mounds on the Mississippi (Pages 30-31)
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "John Kelly went to _____ to observe what that ancient area was like.",
+        answer: "Cahokia",
+        distractors: ["New York", "Crown Point", "Vancouver"],
+        hint: "Massive Mississippian mound city."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "The people who lived at Cahokia didn't have a written _____.",
+        answer: "Language",
+        distractors: ["Teepee", "Mound", "Calendar"],
+        hint: "System of writing/alphabet."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "People arrived at Cahokia to build ritual cities with houses, farmland, and _____ for religious celebrations.",
+        answer: "Plazas",
+        distractors: ["Canals", "Pyramids", "Igloos"],
+        hint: "Large open public plazas."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "Over time the people of Cahokia built at least _____ mounds.",
+        answer: "110",
+        distractors: ["20", "50", "500"],
+        hint: "Exact count written in notebook notes."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "Below Mound 34 at Cahokia, archeologists discovered buildings and a _____ workshop.",
+        answer: "Copper",
+        distractors: ["Gold", "Silver", "Iron"],
+        hint: "Reddish metal worked into tools and ornaments."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "Kelly thinks the layers represent the universe: the beneath world, this _____, and the upper world.",
+        answer: "Earth",
+        distractors: ["Ocean", "Desert", "Forest"],
+        hint: "The middle realm of living humans."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "Around the end of the 1100s, a _____ was built around the city to possibly protect it.",
+        answer: "Wall (Palisade)",
+        distractors: ["Moat", "Canal", "Bridge"],
+        hint: "Protective wooden stockade."
+      },
+      {
+        section: "sec14",
+        sectionTitle: "Section 1.4: Cahokia Mounds",
+        question: "By the late _____s, residents had left the city of Cahokia.",
+        answer: "1300",
+        distractors: ["1100", "1500", "1700"],
+        hint: "Century when Cahokia was abandoned."
+      },
+
+      // Section 1.5: Curating History: NMAI (Pages 32-33)
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "The National Museum of the American Indian (NMAI) is located in Washington, _____.",
+        answer: "DC",
+        distractors: ["State", "Canada", "Coast"],
+        hint: "Our nation's capital."
+      },
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "For the Tlingit, canoe paddles are made of yellow _____ and ornately painted with a wolf design.",
+        answer: "Cedar",
+        distractors: ["Pine", "Oak", "Birch"],
+        hint: "Yellow wood type used for the paddle."
+      },
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "Beaded Odawa moccasins were purchased by a trader at _____ Point, a fur trade depot.",
+        answer: "Crown",
+        distractors: ["Vancouver", "Ohio", "Cahokia"],
+        hint: "Crown _____ trade depot."
+      },
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "The moccasins feature folded-down _____ decorated with small beads and silk teardrops.",
+        answer: "Cuffs",
+        distractors: ["Soles", "Laces", "Straps"],
+        hint: "Folded-down tops of the footwear."
+      },
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "The Chief of the Undersea Mask is carved from western red _____.",
+        answer: "Cedar",
+        distractors: ["Pine", "Maple", "Mahogany"],
+        hint: "Pacific Northwest red wood."
+      },
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "The Chief of the Undersea lives in a copper home under the ocean guarded by sea _____.",
+        answer: "Monsters",
+        distractors: ["Fish", "Bears", "Eagles"],
+        hint: "Mythical creatures of the deep."
+      },
+      {
+        section: "sec15",
+        sectionTitle: "Section 1.5: Curating History (NMAI)",
+        question: "The U-shaped designs surrounding the face represent the scales of a _____ or a sea creature.",
+        answer: "Fish",
+        distractors: ["Snake", "Bird", "Bison"],
+        hint: "Common ocean scaled creature."
+      }
+    ];
+
+    const HISTORY_MEMORY_PAIRS = [
+      { text: "Kayaks", match: "Light Boats", sub: "Sec 1.2" },
+      { text: "Potlatches", match: "Feasts giving gifts for rank", sub: "Sec 1.2" },
+      { text: "Adobe", match: "Clay & straw bricks", sub: "Sec 1.2" },
+      { text: "Matrilineal", match: "Family lines through mothers", sub: "Sec 1.3" },
+      { text: "Mound 34 at Cahokia", match: "Copper workshop", sub: "Sec 1.4" },
+      { text: "Chief of Undersea Mask", match: "Western red cedar", sub: "Sec 1.5" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "Cahokia Mound Boss", icon: "🐍", maxHp: 100 },
+      { name: "Arctic Ice Wyrm", icon: "❄️", maxHp: 120 },
+      { name: "Desert Thunderbird", icon: "🦅", maxHp: 140 },
+      { name: "Eastern Woodland Guardian", icon: "🌲", maxHp: 160 },
+      { name: "Chief of the Undersea", icon: "🌊", maxHp: 200 }
+    ];
+
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...HISTORY_DATA].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...HISTORY_DATA].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      document.getElementById('battleCategoryBadge').textContent = currentBattleWord.sectionTitle;
+      const qHTML = currentBattleWord.question.replace('_____', `<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-300 font-bold border border-rose-500/40 mx-1">___ ? ___</span>`);
+      document.getElementById('battleQuestion').innerHTML = qHTML;
+      document.getElementById('battleHint').textContent = `Note Clue: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.answer, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-rose-950 border border-slate-700 hover:border-rose-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-rose-400">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      const isCorrect = selected === currentBattleWord.answer;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Direct Hit!</b> "${currentBattleWord.answer}" deals ${dmg} damage!`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              showGameOverModal("Chapter 1 Mastered!", "You defeated every boss and completed the guided notes review!", totalScore, "100%");
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Counters!</b> The correct note is "<b>${currentBattleWord.answer}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            showGameOverModal("Defeated in Arena", "Review your notebook pages and try again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          showGameOverModal("Time's Up!", "Notes Blitz complete! Excellent job reviewing the worksheet.", speedScoreVal, "Lightning Fast");
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = HISTORY_DATA[Math.floor(Math.random() * HISTORY_DATA.length)];
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.question.replace('_____', '_______');
+
+      const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-rose-950/60 border border-slate-700 hover:border-rose-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      if (chosen === speedCurrentWord.answer) {
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...HISTORY_MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Note Fact" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-rose-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-rose-400 transition">🏺</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-rose-400 block">${card.sub}</span>
+            <p class="font-bold text-xs md:text-sm text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-rose-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, "100%");
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-rose-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-rose-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT / STUDY CARDS
+    // ==========================================
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = HISTORY_DATA;
+      if (filter !== 'all') list = HISTORY_DATA.filter(w => w.section === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-rose-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        const completeSentence = w.question.replace('_____', `<b class="text-rose-300 underline">${w.answer}</b>`);
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-rose-500/10 text-rose-300 border-rose-500/30">
+              ${w.sectionTitle}
+            </span>
+            <p class="text-xs text-slate-300 leading-relaxed">${completeSentence}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            Worksheet Blank Answer: <b class="text-slate-100">${w.answer}</b>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'sec12', 'sec13', 'sec14', 'sec15'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-rose-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    // Modal & Confetti
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#f43f5e', '#fb923c', '#f59e0b', '#10b981', '#6366f1'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
