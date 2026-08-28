@@ -3,44 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vocab Quest: 20-Word Arcade</title>
+  <title>Vocab Quest • Lessons 1 & 2</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50% { transform: translateY(-8px); }
-    }
-    @keyframes pulseGlow {
-      0%, 100% { box-shadow: 0 0 15px rgba(99, 102, 241, 0.4); }
-      50% { box-shadow: 0 0 30px rgba(168, 85, 247, 0.7); }
-    }
-    .floating { animation: float 3s ease-in-out infinite; }
-    .glow-box { animation: pulseGlow 2.5s infinite; }
-    .perspective-1000 { perspective: 1000px; }
-    .transform-style-3d { transform-style: preserve-3d; }
-    .backface-hidden { backface-visibility: hidden; }
-    .rotate-y-180 { transform: rotateY(180deg); }
-    
-    /* Custom scrollbar */
-    ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-track { background: #0f172a; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-  </style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-12">
 
-  <!-- Audio Context Synthesizer & Particle Canvas -->
   <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
-  <!-- Top Navigation Bar -->
   <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-          </svg>
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 font-black text-lg">
+          📖
         </div>
         <div>
           <h1 class="font-bold text-lg bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">VOCAB QUEST</h1>
@@ -48,112 +25,82 @@
         </div>
       </div>
 
-      <!-- Quick Stats & Sound Toggle -->
       <div class="flex items-center space-x-3">
         <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
           <span class="text-amber-400 font-bold">★</span>
           <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
         </div>
-        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition" title="Toggle Sound">
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
           🔊
         </button>
       </div>
     </div>
   </header>
 
-  <!-- Main Container -->
   <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
 
-    <!-- ==================== 1. MAIN MENU SCREEN ==================== -->
+    <!-- 1. MENU -->
     <div id="screen-menu" class="space-y-8 py-4">
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-wider">
-          Interactive Vocabulary Master
+          Vocabulary Power
         </div>
         <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
           Level Up Your <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">Word Power</span>
         </h2>
         <p class="text-slate-400 text-sm md:text-base">
-          Master 20 key words from your context clues and <span class="text-indigo-300 font-mono">em-/en-</span> prefix lessons through four action-packed game modes!
+          Master 20 key vocabulary words with accurate score and percentage tracking!
         </p>
       </div>
 
-      <!-- Mode Cards Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-        
-        <!-- Mode 1: Boss Battle RPG -->
-        <div onclick="startGame('battle')" class="group relative bg-slate-900 border border-slate-800 hover:border-purple-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1">
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-purple-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
-              ⚔️
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl">⚔️</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-purple-500/10 text-purple-300 rounded-full border border-purple-500/30">Boss Quest</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-purple-300 transition">Context Clues Boss Battle</h3>
-          <p class="text-sm text-slate-400 mt-2">Defeat monsters by choosing the right vocabulary words to fill in tricky context sentences!</p>
-          <div class="mt-4 flex items-center text-purple-400 text-xs font-bold gap-1">
-            PLAY BATTLE <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses by choosing the right words to complete sentences.</p>
+          <div class="mt-4 flex items-center text-purple-400 text-xs font-bold gap-1">PLAY BATTLE <span>→</span></div>
         </div>
 
-        <!-- Mode 2: Speed Match -->
-        <div onclick="startGame('speed')" class="group relative bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
-              ⚡
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">⚡</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">60s Blitz</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Speed Match Rush</h3>
-          <p class="text-sm text-slate-400 mt-2">Race the countdown! Match dictionary definitions with the correct word to rack up high combos.</p>
-          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">
-            RACE THE CLOCK <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Match definitions to terms quickly before time expires.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
         </div>
 
-        <!-- Mode 3: Memory Pairs -->
-        <div onclick="startGame('memory')" class="group relative bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1">
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
-              🃏
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">🃏</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-full border border-emerald-500/30">Puzzle</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-emerald-300 transition">Memory Match Matrix</h3>
-          <p class="text-sm text-slate-400 mt-2">Test your visual memory. Flip and pair vocabulary words with their exact definitions or synonyms.</p>
-          <div class="mt-4 flex items-center text-emerald-400 text-xs font-bold gap-1">
-            START MATCHING <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Pair vocabulary words with their concise definitions.</p>
+          <div class="mt-4 flex items-center text-emerald-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
         </div>
 
-        <!-- Mode 4: Word Vault & Audio -->
-        <div onclick="showScreen('vault')" class="group relative bg-slate-900 border border-slate-800 hover:border-blue-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1">
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-blue-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl group-hover:scale-110 transition">
-              📚
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl">📚</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-blue-500/10 text-blue-300 rounded-full border border-blue-500/30">Study Deck</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-blue-300 transition">Word Vault & Flashcards</h3>
-          <p class="text-sm text-slate-400 mt-2">Flip 3D cards, listen to audio pronunciations, and explore definitions with prefix analysis.</p>
-          <div class="mt-4 flex items-center text-blue-400 text-xs font-bold gap-1">
-            OPEN VAULT <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Review all 20 definitions with audio pronunciation.</p>
+          <div class="mt-4 flex items-center text-blue-400 text-xs font-bold gap-1">OPEN VAULT <span>→</span></div>
         </div>
-
       </div>
     </div>
 
-    <!-- ==================== 2. BOSS BATTLE MODE SCREEN ==================== -->
+    <!-- 2. BOSS BATTLE -->
     <div id="screen-battle" class="hidden space-y-6">
-      <!-- Arena Header -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        
-        <!-- Player Stats -->
         <div class="flex items-center gap-3 w-full md:w-auto">
-          <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-2xl shadow-lg shadow-indigo-600/40">
-            🧙‍♂️
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-2xl shadow-lg shadow-indigo-600/40">🧙‍♂️</div>
           <div class="flex-1">
             <div class="flex justify-between text-xs font-bold mb-1">
               <span class="text-indigo-300">Player Hero</span>
@@ -169,7 +116,6 @@
           Stage <span id="battleStage" class="text-purple-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
         </div>
 
-        <!-- Boss Stats -->
         <div class="flex items-center gap-3 w-full md:w-auto justify-end">
           <div class="flex-1 md:text-right">
             <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
@@ -180,37 +126,24 @@
               <div id="bossHpBar" class="bg-pink-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
-          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-pink-900/40 border border-pink-500/40 flex items-center justify-center text-2xl floating">
-            🌫️
-          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-pink-900/40 border border-pink-500/40 flex items-center justify-center text-2xl">🌫️</div>
         </div>
       </div>
 
-      <!-- Battle Question Card -->
       <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-
         <div class="space-y-2 text-center max-w-2xl mx-auto">
           <span class="text-xs uppercase tracking-wider text-purple-400 font-bold">Fill in the Blank</span>
-          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center">
-            "Sally began to <span class="text-purple-400 underline decoration-wavy underline-offset-4 mx-2 font-bold">[ ... ]</span> the strict restrictions of her hospital stay."
-          </p>
-          <p id="battleHint" class="text-xs text-slate-400 italic">Hint: To feel or express annoyance or bitter hurt.</p>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
         </div>
-
-        <!-- 4 Option Buttons -->
-        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto">
-          <!-- Dynamically populated buttons -->
-        </div>
-
-        <!-- Feedback Alert Box -->
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
         <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
       </div>
     </div>
 
-    <!-- ==================== 3. SPEED MATCH MODE SCREEN ==================== -->
+    <!-- 3. SPEED MATCH -->
     <div id="screen-speed" class="hidden space-y-6">
-      <!-- Top Info -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
         <div class="flex items-center gap-6">
@@ -230,23 +163,15 @@
         <div class="w-16"></div>
       </div>
 
-      <!-- Definition Display -->
       <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
-        <span class="inline-block px-3 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full uppercase tracking-wider">
-          Target Definition
-        </span>
-        <h3 id="speedDefinition" class="text-xl md:text-2xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center">
-          "To enclose or enfold completely with a covering; to surround entirely."
-        </h3>
+        <span class="inline-block px-3 py-1 bg-amber-500/10 text-amber-400 text-xs font-bold rounded-full uppercase tracking-wider">Target Definition</span>
+        <h3 id="speedDefinition" class="text-xl md:text-2xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
       </div>
 
-      <!-- 4 Target Choice Buttons -->
-      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto">
-        <!-- Injected dynamically -->
-      </div>
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
-    <!-- ==================== 4. MEMORY MATRIX SCREEN ==================== -->
+    <!-- 4. MEMORY MATRIX -->
     <div id="screen-memory" class="hidden space-y-6">
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -258,262 +183,84 @@
       </div>
 
       <p class="text-center text-xs text-slate-400">Tap pairs to match vocabulary words with their concise definitions!</p>
-
-      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto perspective-1000">
-        <!-- Cards generated via JS -->
-      </div>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
-    <!-- ==================== 5. WORD VAULT & FLASHCARDS ==================== -->
+    <!-- 5. VAULT -->
     <div id="screen-vault" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <div>
           <h2 class="text-lg font-bold text-white">Vocabulary Vault & Audio</h2>
           <p class="text-xs text-slate-400">Explore all 20 words with audio pronunciation and interactive flashcards.</p>
         </div>
-        <!-- Filter Tabs -->
         <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
           <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white">All (20)</button>
           <button onclick="filterVault('lesson1')" id="tab-lesson1" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Lesson 1</button>
           <button onclick="filterVault('lesson2')" id="tab-lesson2" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Lesson 2 (em/en-)</button>
         </div>
       </div>
-
-      <!-- Flashcard Interactive Carousel / Grid -->
-      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Dynamic Cards -->
-      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
-    <!-- ==================== 6. GAME OVER / VICTORY MODAL ==================== -->
+    <!-- 6. GAME OVER MODAL -->
     <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
-        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-400 mx-auto flex items-center justify-center text-4xl">
-          🏆
-        </div>
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
         <div>
           <h3 id="modalTitle" class="text-2xl font-black text-white">Victory Achieved!</h3>
-          <p id="modalDesc" class="text-slate-400 text-sm mt-1">You conquered the challenge and earned bonus vocabulary XP.</p>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">You conquered the challenge.</p>
         </div>
-
         <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
           <div>
             <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
-            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">1,250</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
           </div>
           <div class="border-r border-slate-800"></div>
           <div>
             <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
-            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">100%</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
           </div>
         </div>
-
         <div class="flex gap-3">
-          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">
-            Menu
-          </button>
-          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold rounded-xl shadow-lg shadow-indigo-600/30 transition">
-            Play Again
-          </button>
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
         </div>
       </div>
     </div>
 
   </main>
 
-  <!-- ==================== JAVASCRIPT LOGIC ==================== -->
   <script>
-    // --- 20 VOCABULARY WORDS COMPLETE DATABASE ---
     const VOCAB_DATA = [
-      // Lesson 1: Context Clues
-      {
-        word: "alarm",
-        lesson: 1,
-        partOfSpeech: "noun / verb",
-        definition: "A warning of danger; a device that gives a warning signal; a feeling of sudden fear caused by danger.",
-        synonym: "warning / panic",
-        sentence: "The fire _____ went off because I burned the bacon in the frying pan.",
-        distractors: ["resent", "pang", "bewilderment"]
-      },
-      {
-        word: "anticipation",
-        lesson: 1,
-        partOfSpeech: "noun",
-        definition: "The act of looking forward to something; pleasurable expectation.",
-        synonym: "expectation",
-        sentence: "I looked on in _____, eagerly hoping to see the surprise birthday gift.",
-        distractors: ["defiance", "mortified", "hostile"]
-      },
-      {
-        word: "bewilderment",
-        lesson: 1,
-        partOfSpeech: "noun",
-        definition: "The state of being confused, puzzled, or deeply perplexed.",
-        synonym: "confusion / perplexity",
-        sentence: "We looked on in _____ as the salesman yelled at the car he was trying to sell.",
-        distractors: ["anticipation", "unique", "cope"]
-      },
-      {
-        word: "cope",
-        lesson: 1,
-        partOfSpeech: "verb",
-        definition: "To deal with and attempt to overcome problems and difficulties successfully.",
-        synonym: "manage / handle",
-        sentence: "How can the teacher _____ with noisy students who won't sit still in class?",
-        distractors: ["endorse", "embroider", "envelop"]
-      },
-      {
-        word: "defiance",
-        lesson: 1,
-        partOfSpeech: "noun",
-        definition: "Open, bold disobedience or resistance to an opposing force or authority.",
-        synonym: "rebellion / resistance",
-        sentence: "I respect the bold _____ of the colonists during the American Revolutionary War.",
-        distractors: ["resent", "engaging", "alarm"]
-      },
-      {
-        word: "hostile",
-        lesson: 1,
-        partOfSpeech: "adjective",
-        definition: "Marked by malevolence; having or showing unfriendly feelings or active opposition.",
-        synonym: "unfriendly / antagonistic",
-        sentence: "Trisha didn't like the cold, _____ looks Lucy was giving her across the lunchroom.",
-        distractors: ["emphatic", "unique", "engaging"]
-      },
-      {
-        word: "mortified",
-        lesson: 1,
-        partOfSpeech: "verb / adjective",
-        definition: "Feeling or showing strong shame, embarrassment, or humiliation; to subdue bodily desires.",
-        synonym: "humiliated / ashamed",
-        sentence: "The monk _____ himself through strict fasting and quiet penance.",
-        distractors: ["endorsed", "enabled", "employed"]
-      },
-      {
-        word: "pang",
-        lesson: 1,
-        partOfSpeech: "noun",
-        definition: "A sudden sharp spasm of pain or a brief surge of emotional guilt or distress.",
-        synonym: "twinge / ache",
-        sentence: "He felt a sharp _____ of guilt for not taking his little sister to the amusement park.",
-        distractors: ["alarm", "endeavor", "anticipation"]
-      },
-      {
-        word: "resent",
-        lesson: 1,
-        partOfSpeech: "verb",
-        definition: "To feel or express annoyance, ill will, or bitter hurt at someone or something.",
-        synonym: "begrudge / dislike",
-        sentence: "Sally began to _____ the strict confinement and restrictions of her hospital stay.",
-        distractors: ["enable", "endorse", "embroider"]
-      },
-      {
-        word: "unique",
-        lesson: 1,
-        partOfSpeech: "adjective",
-        definition: "Being the only one; without equal; highly unusual or distinctive.",
-        synonym: "one-of-a-kind / distinct",
-        sentence: "The purple mouse with orange polka dots is definitely a(n) _____ toy.",
-        distractors: ["hostile", "emphatic", "engaging"]
-      },
-
-      // Lesson 2: Prefixes em- and en- (meaning "in" or "into")
-      {
-        word: "embroider",
-        lesson: 2,
-        partOfSpeech: "verb",
-        definition: "To ornament or decorate cloth with elaborate needlework designs.",
-        synonym: "sew / stitch / decorate",
-        sentence: "Grandma loved to _____ colorful floral patterns onto linen pillowcases.",
-        distractors: ["envelop", "employ", "emphasize"]
-      },
-      {
-        word: "emphasize",
-        lesson: 2,
-        partOfSpeech: "verb",
-        definition: "To place special importance or focus on; to stress.",
-        synonym: "stress / highlight",
-        sentence: "The coach wanted to _____ teamwork and defense during practice.",
-        distractors: ["encounter", "endorse", "mortify"]
-      },
-      {
-        word: "emphatic",
-        lesson: 2,
-        partOfSpeech: "adjective",
-        definition: "Uttered with or marked by emphasis; forceful, clear, and striking.",
-        synonym: "forceful / assertive",
-        sentence: "She gave an _____ 'No!' when asked if she wanted to go into the haunted house.",
-        distractors: ["hostile", "unique", "engaging"]
-      },
-      {
-        word: "employ",
-        lesson: 2,
-        partOfSpeech: "verb",
-        definition: "To make use of; to hire and provide someone with a paid job.",
-        synonym: "hire / utilize",
-        sentence: "The technology company plans to _____ fifty new software programmers this spring.",
-        distractors: ["enable", "envelop", "endeavor"]
-      },
-      {
-        word: "enable",
-        lesson: 2,
-        partOfSpeech: "verb",
-        definition: "To make able; to provide with the means, power, or opportunity to do something.",
-        synonym: "allow / empower",
-        sentence: "The scholarship will _____ Maria to attend the university of her dreams.",
-        distractors: ["resent", "cope", "encounter"]
-      },
-      {
-        word: "encounter",
-        lesson: 2,
-        partOfSpeech: "verb / noun",
-        definition: "To come upon or meet face-to-face, especially unexpectedly or as an adversary.",
-        synonym: "meet / confront",
-        sentence: "Hikers might _____ wild deer and rare birds along the mountain trail.",
-        distractors: ["embroider", "endorse", "emphasize"]
-      },
-      {
-        word: "endeavor",
-        lesson: 2,
-        partOfSpeech: "verb / noun",
-        definition: "To strive earnestly to achieve or reach; to make an effort or attempt.",
-        synonym: "try / strive / attempt",
-        sentence: "The young scientists will _____ to build a fully working solar-powered vehicle.",
-        distractors: ["cope", "envelop", "bewilder"]
-      },
-      {
-        word: "endorse",
-        lesson: 2,
-        partOfSpeech: "verb",
-        definition: "To approve openly or support publicly; to sign one's signature on the back of a check.",
-        synonym: "support / recommend",
-        sentence: "The athlete agreed to publicly _____ the brand of running shoes on television.",
-        distractors: ["resent", "mortify", "embroider"]
-      },
-      {
-        word: "engaging",
-        lesson: 2,
-        partOfSpeech: "adjective",
-        definition: "Tending to draw favorable attention; attractive, pleasing, or charming.",
-        synonym: "charming / captivating",
-        sentence: "His _____ smile and witty stories kept the entire dinner party entertained.",
-        distractors: ["hostile", "emphatic", "unique"]
-      },
-      {
-        word: "envelop",
-        lesson: 2,
-        partOfSpeech: "verb",
-        definition: "To enclose or enfold completely with or as if with a covering; surround entirely.",
-        synonym: "wrap / cover / surround",
-        sentence: "A thick layer of morning mist began to _____ the quiet coastal village.",
-        distractors: ["employ", "enable", "embroider"]
-      }
+      { word: "alarm", lesson: 1, partOfSpeech: "noun / verb", definition: "A warning of danger; a device that gives a warning signal; a feeling of sudden fear caused by danger.", synonym: "warning / panic", sentence: "The fire _____ went off because I burned the bacon in the frying pan.", distractors: ["resent", "pang", "bewilderment"] },
+      { word: "anticipation", lesson: 1, partOfSpeech: "noun", definition: "The act of looking forward to something; pleasurable expectation.", synonym: "expectation", sentence: "I looked on in _____, eagerly hoping to see the surprise birthday gift.", distractors: ["defiance", "mortified", "hostile"] },
+      { word: "bewilderment", lesson: 1, partOfSpeech: "noun", definition: "The state of being confused, puzzled, or deeply perplexed.", synonym: "confusion / perplexity", sentence: "We looked on in _____ as the salesman yelled at the car he was trying to sell.", distractors: ["anticipation", "unique", "cope"] },
+      { word: "cope", lesson: 1, partOfSpeech: "verb", definition: "To deal with and attempt to overcome problems and difficulties successfully.", synonym: "manage / handle", sentence: "How can the teacher _____ with noisy students who won't sit still in class?", distractors: ["endorse", "embroider", "envelop"] },
+      { word: "defiance", lesson: 1, partOfSpeech: "noun", definition: "Open, bold disobedience or resistance to an opposing force or authority.", synonym: "rebellion / resistance", sentence: "I respect the bold _____ of the colonists during the American Revolutionary War.", distractors: ["resent", "engaging", "alarm"] },
+      { word: "hostile", lesson: 1, partOfSpeech: "adjective", definition: "Marked by malevolence; having or showing unfriendly feelings or active opposition.", synonym: "unfriendly / antagonistic", sentence: "Trisha didn't like the cold, _____ looks Lucy was giving her across the lunchroom.", distractors: ["emphatic", "unique", "engaging"] },
+      { word: "mortified", lesson: 1, partOfSpeech: "verb / adjective", definition: "Feeling or showing strong shame, embarrassment, or humiliation.", synonym: "humiliated / ashamed", sentence: "The monk _____ himself through strict fasting and quiet penance.", distractors: ["endorsed", "enabled", "employed"] },
+      { word: "pang", lesson: 1, partOfSpeech: "noun", definition: "A sudden sharp spasm of pain or a brief surge of emotional guilt or distress.", synonym: "twinge / ache", sentence: "He felt a sharp _____ of guilt for not taking his little sister to the amusement park.", distractors: ["alarm", "endeavor", "anticipation"] },
+      { word: "resent", lesson: 1, partOfSpeech: "verb", definition: "To feel or express annoyance, ill will, or bitter hurt at someone or something.", synonym: "begrudge / dislike", sentence: "Sally began to _____ the strict confinement and restrictions of her hospital stay.", distractors: ["enable", "endorse", "embroider"] },
+      { word: "unique", lesson: 1, partOfSpeech: "adjective", definition: "Being the only one; without equal; highly unusual or distinctive.", synonym: "one-of-a-kind / distinct", sentence: "The purple mouse with orange polka dots is definitely a(n) _____ toy.", distractors: ["hostile", "emphatic", "engaging"] },
+      { word: "embroider", lesson: 2, partOfSpeech: "verb", definition: "To ornament or decorate cloth with elaborate needlework designs.", synonym: "sew / stitch / decorate", sentence: "Grandma loved to _____ colorful floral patterns onto linen pillowcases.", distractors: ["envelop", "employ", "emphasize"] },
+      { word: "emphasize", lesson: 2, partOfSpeech: "verb", definition: "To place special importance or focus on; to stress.", synonym: "stress / highlight", sentence: "The coach wanted to _____ teamwork and defense during practice.", distractors: ["encounter", "endorse", "mortify"] },
+      { word: "emphatic", lesson: 2, partOfSpeech: "adjective", definition: "Uttered with or marked by emphasis; forceful, clear, and striking.", synonym: "forceful / assertive", sentence: "She gave an _____ 'No!' when asked if she wanted to go into the haunted house.", distractors: ["hostile", "unique", "engaging"] },
+      { word: "employ", lesson: 2, partOfSpeech: "verb", definition: "To make use of; to hire and provide someone with a paid job.", synonym: "hire / utilize", sentence: "The technology company plans to _____ fifty new software programmers this spring.", distractors: ["enable", "envelop", "endeavor"] },
+      { word: "enable", lesson: 2, partOfSpeech: "verb", definition: "To make able; to provide with the means, power, or opportunity to do something.", synonym: "allow / empower", sentence: "The scholarship will _____ Maria to attend the university of her dreams.", distractors: ["resent", "cope", "encounter"] },
+      { word: "encounter", lesson: 2, partOfSpeech: "verb / noun", definition: "To come upon or meet face-to-face, especially unexpectedly.", synonym: "meet / confront", sentence: "Hikers might _____ wild deer and rare birds along the mountain trail.", distractors: ["embroider", "endorse", "emphasize"] },
+      { word: "endeavor", lesson: 2, partOfSpeech: "verb / noun", definition: "To strive earnestly to achieve or reach; to make an effort or attempt.", synonym: "try / strive / attempt", sentence: "The young scientists will _____ to build a fully working solar-powered vehicle.", distractors: ["cope", "envelop", "bewilder"] },
+      { word: "endorse", lesson: 2, partOfSpeech: "verb", definition: "To approve openly or support publicly; to sign on the back of a check.", synonym: "support / recommend", sentence: "The athlete agreed to publicly _____ the brand of running shoes on television.", distractors: ["resent", "mortify", "embroider"] },
+      { word: "engaging", lesson: 2, partOfSpeech: "adjective", definition: "Tending to draw favorable attention; attractive, pleasing, or charming.", synonym: "charming / captivating", sentence: "His _____ smile and witty stories kept the entire dinner party entertained.", distractors: ["hostile", "emphatic", "unique"] },
+      { word: "envelop", lesson: 2, partOfSpeech: "verb", definition: "To enclose or enfold completely with a covering; surround entirely.", synonym: "wrap / cover / surround", sentence: "A thick layer of morning mist began to _____ the quiet coastal village.", distractors: ["employ", "enable", "embroider"] }
     ];
 
-    // --- GAME STATE ---
     let totalScore = 0;
     let soundEnabled = true;
     let currentGameMode = null;
+
+    // Track real accuracy
+    let totalAttempts = 0;
+    let correctAttempts = 0;
 
     // Boss Battle State
     let battleStage = 1;
@@ -545,9 +292,7 @@
     let memoryMatchesFound = 0;
     let memoryMovesCount = 0;
 
-    // --- WEB AUDIO API SYNTHESIZER SOUNDS ---
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
     function playSound(type) {
       if (!soundEnabled) return;
       try {
@@ -559,9 +304,9 @@
 
         if (type === 'correct') {
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(523.25, now); // C5
-          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
-          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
           gain.gain.setValueAtTime(0.2, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
           osc.start(now);
@@ -576,15 +321,15 @@
           osc.stop(now + 0.35);
         } else if (type === 'hit') {
           osc.type = 'square';
-          osc.frequency.setValueAtTime(300, now);
-          osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
           gain.gain.setValueAtTime(0.25, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
           osc.start(now);
           osc.stop(now + 0.25);
         } else if (type === 'flip') {
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(480, now);
           gain.gain.setValueAtTime(0.1, now);
           gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
           osc.start(now);
@@ -604,16 +349,13 @@
             noteOsc.stop(now + i * 0.1 + 0.3);
           });
         }
-      } catch (e) {
-        // Audio fallback
-      }
+      } catch (e) {}
     }
 
     function toggleSound() {
       soundEnabled = !soundEnabled;
       const btn = document.getElementById('soundBtn');
       btn.textContent = soundEnabled ? '🔊' : '🔇';
-      btn.className = soundEnabled ? 'p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm' : 'p-2 bg-rose-900/50 text-rose-300 border border-rose-700 rounded-lg text-sm';
     }
 
     function speakWord(word) {
@@ -621,34 +363,31 @@
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(word);
         utterance.rate = 0.9;
-        utterance.pitch = 1.0;
         window.speechSynthesis.speak(utterance);
       }
     }
 
-    // --- NAVIGATION & SCREENS ---
     function showScreen(screenId) {
       clearInterval(speedTimerInterval);
-      const screens = ['menu', 'battle', 'speed', 'memory', 'vault'];
-      screens.forEach(s => {
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
         const el = document.getElementById(`screen-${s}`);
         if (el) el.classList.add('hidden');
       });
       const active = document.getElementById(`screen-${screenId}`);
       if (active) active.classList.remove('hidden');
 
-      if (screenId === 'vault') {
-        renderVault('all');
-      }
+      if (screenId === 'vault') renderVault('all');
     }
 
-    function updateNavScore(addXP = 0) {
-      totalScore += addXP;
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
       document.getElementById('navScore').textContent = `${totalScore} XP`;
     }
 
     function startGame(mode) {
       currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
       showScreen(mode);
       if (mode === 'battle') initBattle();
       if (mode === 'speed') initSpeedMatch();
@@ -666,7 +405,7 @@
     }
 
     // ==========================================
-    // 1. BOSS BATTLE ENGINE
+    // 1. BOSS BATTLE
     // ==========================================
     function initBattle() {
       battleStage = 1;
@@ -689,11 +428,8 @@
 
     function updateHpBars() {
       const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
-      const pPercent = Math.max(0, (playerHp / 100) * 100);
-      const bPercent = Math.max(0, (bossHp / boss.maxHp) * 100);
-
-      document.getElementById('playerHpBar').style.width = `${pPercent}%`;
-      document.getElementById('bossHpBar').style.width = `${bPercent}%`;
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
       document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
       document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
     }
@@ -704,17 +440,13 @@
       }
       currentBattleWord = battlePool.pop();
 
-      // Display question sentence with stylized blank
-      const sentenceHTML = currentBattleWord.sentence.replace('_____', `<span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40 mx-1">___ ? ___</span>`);
-      document.getElementById('battleQuestion').innerHTML = `"${sentenceHTML}"`;
+      const qHTML = currentBattleWord.sentence.replace('_____', `<span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 font-bold border border-purple-500/40 mx-1">___ ? ___</span>`);
+      document.getElementById('battleQuestion').innerHTML = `"${qHTML}"`;
       document.getElementById('battleHint').textContent = `Definition hint: ${currentBattleWord.definition}`;
 
-      // Pick 4 options (1 correct + 3 random distractors)
       const options = [currentBattleWord.word];
       const others = VOCAB_DATA.filter(w => w.word !== currentBattleWord.word).sort(() => Math.random() - 0.5);
-      for (let i = 0; i < 3; i++) {
-        options.push(others[i].word);
-      }
+      for (let i = 0; i < 3; i++) options.push(others[i].word);
       options.sort(() => Math.random() - 0.5);
 
       const optsContainer = document.getElementById('battleOptions');
@@ -722,31 +454,29 @@
 
       options.forEach(opt => {
         const btn = document.createElement('button');
-        btn.className = "p-4 bg-slate-800 hover:bg-indigo-950 border border-slate-700 hover:border-indigo-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
-        btn.innerHTML = `
-          <span>${opt}</span>
-          <span class="text-xs text-slate-500 group-hover:text-indigo-400">Select ↵</span>
-        `;
+        btn.className = "p-4 bg-slate-800 hover:bg-purple-950 border border-slate-700 hover:border-purple-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-purple-400">Select ↵</span>`;
         btn.onclick = () => handleBattleAnswer(opt, btn);
         optsContainer.appendChild(btn);
       });
 
-      const feedback = document.getElementById('battleFeedback');
-      feedback.className = "hidden";
+      document.getElementById('battleFeedback').className = "hidden";
     }
 
     function handleBattleAnswer(selectedWord, btnEl) {
+      totalAttempts++;
       const isCorrect = selectedWord.toLowerCase() === currentBattleWord.word.toLowerCase();
       const feedback = document.getElementById('battleFeedback');
       feedback.classList.remove('hidden');
 
       if (isCorrect) {
+        correctAttempts++;
         playSound('hit');
         battleStreak++;
         const dmg = 45 + (battleStreak * 5);
         bossHp = Math.max(0, bossHp - dmg);
         updateNavScore(50 * battleStreak);
-        
+
         btnEl.classList.remove('bg-slate-800', 'border-slate-700');
         btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
 
@@ -763,7 +493,8 @@
               battleStage++;
               setupBattleStage();
             } else {
-              showGameOverModal("Quest Conquered!", "You defeated all 5 vocabulary bosses and mastered context clues!", totalScore, "100%");
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Quest Conquered!", "You defeated all 5 vocabulary bosses!", totalScore, `${acc}%`);
             }
           }, 800);
         } else {
@@ -774,7 +505,7 @@
         playSound('wrong');
         battleStreak = 0;
         playerHp = Math.max(0, playerHp - 25);
-        
+
         btnEl.classList.remove('bg-slate-800', 'border-slate-700');
         btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
 
@@ -785,7 +516,8 @@
 
         if (playerHp <= 0) {
           setTimeout(() => {
-            showGameOverModal("Defeated in Battle", "Keep practicing your context clues and try the quest again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Battle", "Keep practicing your context clues and try again!", totalScore, `${acc}%`);
           }, 800);
         } else {
           setTimeout(nextBattleQuestion, 1200);
@@ -794,7 +526,7 @@
     }
 
     // ==========================================
-    // 2. SPEED MATCH ENGINE (60s Blitz)
+    // 2. SPEED MATCH
     // ==========================================
     function initSpeedMatch() {
       speedTimerVal = 60;
@@ -809,16 +541,12 @@
       speedTimerInterval = setInterval(() => {
         speedTimerVal--;
         document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
-        if (speedTimerVal <= 10) {
-          document.getElementById('speedTimer').classList.add('text-rose-500', 'animate-pulse');
-        } else {
-          document.getElementById('speedTimer').classList.remove('text-rose-500', 'animate-pulse');
-        }
         if (speedTimerVal <= 0) {
           clearInterval(speedTimerInterval);
           playSound('win');
           triggerConfetti();
-          showGameOverModal("Time's Up!", "Lightning Match complete! Look at that high score.", speedScoreVal, "Lightning Fast");
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Speed match complete!", speedScoreVal, `${acc}%`);
         }
       }, 1000);
 
@@ -831,9 +559,7 @@
 
       const options = [speedCurrentWord.word];
       const others = VOCAB_DATA.filter(w => w.word !== speedCurrentWord.word).sort(() => Math.random() - 0.5);
-      for (let i = 0; i < 3; i++) {
-        options.push(others[i].word);
-      }
+      for (let i = 0; i < 3; i++) options.push(others[i].word);
       options.sort(() => Math.random() - 0.5);
 
       const container = document.getElementById('speedChoices');
@@ -848,12 +574,12 @@
     }
 
     function handleSpeedChoice(chosenWord, btnEl) {
+      totalAttempts++;
       if (chosenWord === speedCurrentWord.word) {
+        correctAttempts++;
         playSound('correct');
         speedStreak++;
-        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) {
-          speedMultiplierVal++;
-        }
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
         const pts = 100 * speedMultiplierVal;
         speedScoreVal += pts;
         updateNavScore(pts);
@@ -874,7 +600,7 @@
     }
 
     // ==========================================
-    // 3. MEMORY MATCH ENGINE
+    // 3. MEMORY MATCH
     // ==========================================
     function initMemoryGame() {
       memoryFlipped = [];
@@ -883,25 +609,12 @@
       document.getElementById('memoryMoves').textContent = memoryMovesCount;
       document.getElementById('memoryMatches').textContent = `0 / 6`;
 
-      // Select 6 random distinct vocabulary words
       const shuffled = [...VOCAB_DATA].sort(() => Math.random() - 0.5).slice(0, 6);
       memoryCards = [];
 
       shuffled.forEach((item, idx) => {
-        // Card A: The Word
-        memoryCards.push({
-          pairId: idx,
-          type: 'word',
-          text: item.word,
-          sub: item.partOfSpeech
-        });
-        // Card B: Concise Synonym / Definition Clue
-        memoryCards.push({
-          pairId: idx,
-          type: 'def',
-          text: item.synonym || item.definition.slice(0, 45) + "...",
-          sub: "Definition / Synonym"
-        });
+        memoryCards.push({ pairId: idx, text: item.word, sub: item.partOfSpeech });
+        memoryCards.push({ pairId: idx, text: item.synonym || item.definition.slice(0, 45) + "...", sub: "Definition" });
       });
 
       memoryCards.sort(() => Math.random() - 0.5);
@@ -912,7 +625,6 @@
       memoryCards.forEach((card, index) => {
         const cardEl = document.createElement('div');
         cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-emerald-500/50 shadow-md select-none group";
-        cardEl.dataset.index = index;
 
         cardEl.innerHTML = `
           <div class="card-back text-2xl text-slate-500 group-hover:text-emerald-400 transition">❓</div>
@@ -928,9 +640,7 @@
     }
 
     function flipMemoryCard(cardEl, index) {
-      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) {
-        return;
-      }
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
 
       playSound('flip');
       cardEl.classList.add('flipped', 'bg-slate-800', 'border-indigo-500');
@@ -945,7 +655,6 @@
 
         const [c1, c2] = memoryFlipped;
         if (c1.data.pairId === c2.data.pairId) {
-          // MATCH FOUND!
           playSound('correct');
           c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
           c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
@@ -958,11 +667,11 @@
             setTimeout(() => {
               playSound('win');
               triggerConfetti();
-              showGameOverModal("Matrix Cleared!", `You solved the puzzle in ${memoryMovesCount} moves!`, totalScore, `${Math.max(60, 100 - (memoryMovesCount - 6) * 5)}%`);
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Cleared!", `Solved in ${memoryMovesCount} moves!`, totalScore, `${memAcc}%`);
             }, 500);
           }
         } else {
-          // NO MATCH
           setTimeout(() => {
             playSound('wrong');
             c1.element.classList.remove('flipped', 'bg-slate-800', 'border-indigo-500');
@@ -978,7 +687,7 @@
     }
 
     // ==========================================
-    // 4. WORD VAULT & FLASHCARDS
+    // 4. VAULT
     // ==========================================
     function renderVault(filter = 'all') {
       const container = document.getElementById('vaultCardsGrid');
@@ -998,7 +707,7 @@
           <div class="space-y-2">
             <div class="flex items-center justify-between">
               <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${badgeColor}">
-                Lesson ${w.lesson} ${w.lesson === 2 ? '(Prefix em/en)' : '(Context)'}
+                Lesson ${w.lesson}
               </span>
               <button onclick="speakWord('${w.word}')" class="text-xs bg-slate-800 hover:bg-indigo-600 px-2 py-1 rounded-lg text-slate-300 hover:text-white transition flex items-center gap-1">
                 🔊 Listen
@@ -1010,7 +719,7 @@
             </h3>
             <p class="text-xs text-slate-300 leading-relaxed"><b class="text-indigo-300">Definition:</b> ${w.definition}</p>
             <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
-              <span class="text-slate-500 font-semibold block mb-0.5">Context Sentence:</span>
+              <span class="text-slate-500 font-semibold block mb-0.5">Sentence:</span>
               "${w.sentence}"
             </div>
           </div>
@@ -1026,19 +735,14 @@
       ['all', 'lesson1', 'lesson2'].forEach(t => {
         const btn = document.getElementById(`tab-${t}`);
         if (btn) {
-          if (t === type) {
-            btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white";
-          } else {
-            btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
-          }
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
         }
       });
       renderVault(type);
     }
 
-    // ==========================================
-    // 5. MODAL & CONFETTI SYSTEM
-    // ==========================================
+    // Modal & Confetti
     function showGameOverModal(title, desc, score, accuracy) {
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = desc;
@@ -1052,7 +756,6 @@
       const ctx = canvas.getContext('2d');
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-
       const particles = [];
       const colors = ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981'];
 
@@ -1071,13 +774,11 @@
       function animate() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         let active = false;
-
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
-          p.vy += 0.2; // gravity
+          p.vy += 0.2;
           p.alpha -= 0.015;
-
           if (p.alpha > 0) {
             active = true;
             ctx.globalAlpha = p.alpha;
@@ -1085,14 +786,12 @@
             ctx.fillRect(p.x, p.y, p.size, p.size);
           }
         });
-
         if (active) requestAnimationFrame(animate);
         else ctx.clearRect(0, 0, canvas.width, canvas.height);
       }
       animate();
     }
 
-    // Initialize on ready
     window.addEventListener('DOMContentLoaded', () => {
       showScreen('menu');
     });
