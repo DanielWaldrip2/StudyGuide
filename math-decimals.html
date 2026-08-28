@@ -10,7 +10,6 @@
 
   <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
-  <!-- Header -->
   <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
@@ -22,7 +21,7 @@
         </div>
         <div>
           <h1 class="font-bold text-lg bg-gradient-to-r from-amber-400 via-orange-300 to-rose-400 bg-clip-text text-transparent">MATH QUEST</h1>
-          <p class="text-xs text-slate-400 font-medium">Unit 1 • Decimal Operations (+, -, ×, ÷)</p>
+          <p class="text-xs text-slate-400 font-medium">Unit 1 • Dynamic Decimal Operations</p>
         </div>
       </div>
 
@@ -38,91 +37,68 @@
     </div>
   </header>
 
-  <!-- Main App -->
   <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
 
-    <!-- 1. MENU -->
     <div id="screen-menu" class="space-y-8 py-4">
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-          Unit 1: Decimal Mastery
+          Unlimited Problem Generator
         </div>
         <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
           Decimal <span class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Operations</span> Arena
         </h2>
         <p class="text-slate-400 text-sm md:text-base">
-          Master adding and subtracting big multi-digit decimals, multiplying decimals, and dividing decimals by shifting the decimal point!
+          Endless dynamically generated decimal calculations with accurate real-time accuracy scoring!
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-        
         <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">
-              ⚔️
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">⚔️</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Boss Quest</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Decimal Boss Battle</h3>
-          <p class="text-sm text-slate-400 mt-2">Defeat bosses by correctly calculating big decimal sums, differences, products, and quotients!</p>
-          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">
-            START BATTLE <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses with dynamically generated decimal sums, differences, products, and quotients.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">START BATTLE <span>→</span></div>
         </div>
 
         <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-orange-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl">
-              ⚡
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl">⚡</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-orange-500/10 text-orange-300 rounded-full border border-orange-500/30">60s Blitz</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-orange-300 transition">Decimal Speed Blitz</h3>
-          <p class="text-sm text-slate-400 mt-2">Race the 60-second timer to place the decimal point and solve fast decimal problems!</p>
-          <div class="mt-4 flex items-center text-orange-400 text-xs font-bold gap-1">
-            RACE THE CLOCK <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Solve as many randomized decimal problems as possible before time runs out!</p>
+          <div class="mt-4 flex items-center text-orange-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
         </div>
 
         <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-rose-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">
-              🧩
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">🧩</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-rose-500/10 text-rose-300 rounded-full border border-rose-500/30">Puzzle</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-rose-300 transition">Decimal Match Matrix</h3>
-          <p class="text-sm text-slate-400 mt-2">Flip and pair equivalent decimal expressions (e.g., 0.6 × 0.4 = 0.24).</p>
-          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1">
-            START MATCHING <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Flip and pair equivalent decimal equations and values.</p>
+          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
         </div>
 
         <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-yellow-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">
-              📖
-            </div>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">Step-by-Step Rules</span>
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">Rules</span>
           </div>
-          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-yellow-300 transition">Decimal Rules & Tricks Vault</h3>
-          <p class="text-sm text-slate-400 mt-2">Review lining up decimals, counting decimal places for multiplication, and moving the divisor point for division.</p>
-          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">
-            OPEN RULES VAULT <span>→</span>
-          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-yellow-300 transition">Decimal Rulebook Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review aligning decimals, multiplying decimal counts, and divisor shifting.</p>
+          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">OPEN RULES VAULT <span>→</span></div>
         </div>
-
       </div>
     </div>
 
-    <!-- 2. BOSS BATTLE -->
     <div id="screen-battle" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-3 w-full md:w-auto">
-          <div class="w-12 h-12 rounded-xl bg-amber-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-600/40">
-            🧙‍♂️
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-600/40">🧙‍♂️</div>
           <div class="flex-1">
             <div class="flex justify-between text-xs font-bold mb-1">
               <span class="text-amber-300">Math Hero</span>
@@ -148,9 +124,7 @@
               <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
-          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">
-            👾
-          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">👾</div>
         </div>
       </div>
 
@@ -158,7 +132,7 @@
         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500"></div>
         <div class="space-y-2 text-center max-w-2xl mx-auto">
           <span class="text-xs uppercase tracking-wider text-amber-400 font-bold">Decimal Problem</span>
-          <p id="battleQuestion" class="text-2xl md:text-3xl font-black text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleQuestion" class="text-2xl md:text-3xl font-black text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center font-mono"></p>
           <p id="battleHint" class="text-xs text-slate-400 italic"></p>
         </div>
         <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
@@ -166,7 +140,6 @@
       </div>
     </div>
 
-    <!-- 3. SPEED MATCH -->
     <div id="screen-speed" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -188,16 +161,13 @@
       </div>
 
       <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
-        <span class="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">
-          Solve Fast!
-        </span>
-        <h3 id="speedDefinition" class="text-2xl md:text-3xl font-black text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+        <span class="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">Solve Fast!</span>
+        <h3 id="speedDefinition" class="text-2xl md:text-3xl font-black text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center font-mono"></h3>
       </div>
 
       <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
-    <!-- 4. MEMORY MATRIX -->
     <div id="screen-memory" class="hidden space-y-6">
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -212,7 +182,6 @@
       <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
-    <!-- 5. VAULT / RULES -->
     <div id="screen-vault" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <div>
@@ -226,16 +195,12 @@
           <button onclick="filterVault('div')" id="tab-div" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Divide</button>
         </div>
       </div>
-
       <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
-    <!-- 6. MODAL -->
     <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
-        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center text-4xl">
-          🏆
-        </div>
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
         <div>
           <h3 id="modalTitle" class="text-2xl font-black text-white">Decimal Challenge Cleared!</h3>
           <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding arithmetic accuracy!</p>
@@ -248,16 +213,12 @@
           <div class="border-r border-slate-800"></div>
           <div>
             <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
-            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">100%</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
           </div>
         </div>
         <div class="flex gap-3">
-          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">
-            Menu
-          </button>
-          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg transition">
-            Play Again
-          </button>
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
         </div>
       </div>
     </div>
@@ -265,156 +226,82 @@
   </main>
 
   <script>
-    const DECIMAL_DATA = [
-      // Addition
-      {
-        type: "addsub",
-        question: "348.72 + 59.45 = ?",
-        answer: "408.17",
-        distractors: ["407.17", "398.17", "418.17"],
-        hint: "Line up the decimal points vertically and add column by column from right to left.",
-        explanation: "348.72 + 59.45 = 408.17"
-      },
-      {
-        type: "addsub",
-        question: "1,245.8 + 834.65 = ?",
-        answer: "2,080.45",
-        distractors: ["2,079.45", "2,080.15", "1,980.45"],
-        hint: "Pad 1,245.8 with a placeholder zero (1,245.80) to keep hundredths aligned.",
-        explanation: "1,245.80 + 834.65 = 2,080.45"
-      },
-      {
-        type: "addsub",
-        question: "62.08 + 14.935 = ?",
-        answer: "77.015",
-        distractors: ["76.915", "77.115", "76.015"],
-        hint: "Add a trailing zero to 62.08 so both numbers have three decimal places.",
-        explanation: "62.080 + 14.935 = 77.015"
-      },
+    // DYNAMIC RANDOM DECIMAL GENERATOR
+    function generateRandomDecimalProblem() {
+      const ops = ['add', 'sub', 'mult', 'div'];
+      const chosenOp = ops[Math.floor(Math.random() * ops.length)];
+      let q = "", ans = 0, distractors = [], hint = "";
 
-      // Subtraction
-      {
-        type: "addsub",
-        question: "500.2 - 174.68 = ?",
-        answer: "325.52",
-        distractors: ["326.52", "325.62", "335.52"],
-        hint: "Write 500.2 as 500.20 and regroup across the zeros carefully.",
-        explanation: "500.20 - 174.68 = 325.52"
-      },
-      {
-        type: "addsub",
-        question: "82.4 - 29.75 = ?",
-        answer: "52.65",
-        distractors: ["53.65", "52.35", "53.35"],
-        hint: "Pad the top number with a zero (82.40) before borrowing.",
-        explanation: "82.40 - 29.75 = 52.65"
-      },
-      {
-        type: "addsub",
-        question: "1,000 - 456.78 = ?",
-        answer: "543.22",
-        distractors: ["544.22", "543.32", "643.22"],
-        hint: "Rewrite 1,000 as 1,000.00 to align decimal places before subtracting.",
-        explanation: "1,000.00 - 456.78 = 543.22"
-      },
-
-      // Multiplication
-      {
-        type: "mult",
-        question: "4.5 × 0.6 = ?",
-        answer: "2.7",
-        distractors: ["27", "0.27", "0.027"],
-        hint: "Multiply 45 × 6, then count total decimal places across both factors (1 + 1 = 2 places).",
-        explanation: "45 × 6 = 270 -> place decimal 2 spots in: 2.70 = 2.7"
-      },
-      {
-        type: "mult",
-        question: "12.4 × 3.2 = ?",
-        answer: "39.68",
-        distractors: ["396.8", "3.968", "38.68"],
-        hint: "Multiply as whole numbers (124 × 32), then move the decimal point two places to the left.",
-        explanation: "124 × 32 = 3,968 -> 39.68 (2 decimal places total)."
-      },
-      {
-        type: "mult",
-        question: "0.25 × 0.4 = ?",
-        answer: "0.1",
-        distractors: ["0.01", "1.0", "0.001"],
-        hint: "Multiply 25 × 4, then move the decimal point three total places to the left.",
-        explanation: "25 × 4 = 100 -> 3 decimal places -> 0.100 = 0.1"
-      },
-      {
-        type: "mult",
-        question: "7.08 × 100 = ?",
-        answer: "708",
-        distractors: ["70.8", "7,080", "0.0708"],
-        hint: "Multiplying by 100 shifts the decimal point two places to the right.",
-        explanation: "7.08 × 100 = 708"
-      },
-
-      // Division
-      {
-        type: "div",
-        question: "15.6 ÷ 3 = ?",
-        answer: "5.2",
-        distractors: ["52", "0.52", "5.02"],
-        hint: "Since the divisor is a whole number, place the decimal point directly above in the quotient and divide.",
-        explanation: "15.6 ÷ 3 = 5.2"
-      },
-      {
-        type: "div",
-        question: "4.8 ÷ 0.6 = ?",
-        answer: "8",
-        distractors: ["0.8", "80", "0.08"],
-        hint: "Shift the decimal point 1 place right in both numbers so the divisor becomes a whole number (6).",
-        explanation: "4.8 ÷ 0.6 = 48 ÷ 6 = 8"
-      },
-      {
-        type: "div",
-        question: "7.5 ÷ 0.25 = ?",
-        answer: "30",
-        distractors: ["3", "300", "0.3"],
-        hint: "Shift the decimal point 2 places right in both numbers so the divisor becomes 25.",
-        explanation: "7.50 ÷ 0.25 = 750 ÷ 25 = 30"
-      },
-      {
-        type: "div",
-        question: "128.4 ÷ 10 = ?",
-        answer: "12.84",
-        distractors: ["1.284", "1284", "128.04"],
-        hint: "Dividing by 10 shifts the decimal point one place to the left.",
-        explanation: "128.4 ÷ 10 = 12.84"
-      },
-      {
-        type: "div",
-        question: "0.96 ÷ 1.2 = ?",
-        answer: "0.8",
-        distractors: ["8", "0.08", "0.008"],
-        hint: "Shift the decimal point 1 place right in both numbers before dividing by 12.",
-        explanation: "0.96 ÷ 1.2 = 9.6 ÷ 12 = 0.8"
+      if (chosenOp === 'add') {
+        const a = (Math.floor(Math.random() * 8000) + 100) / 100;
+        const b = (Math.floor(Math.random() * 8000) + 100) / 100;
+        ans = parseFloat((a + b).toFixed(2));
+        q = `${a} + ${b} = ?`;
+        hint = "Line up the decimal points and add column by column.";
+        distractors = [
+          (ans + 1.0).toFixed(2),
+          (ans - 0.1).toFixed(2),
+          (ans + 0.11).toFixed(2)
+        ];
+      } else if (chosenOp === 'sub') {
+        let a = (Math.floor(Math.random() * 8000) + 1000) / 100;
+        let b = (Math.floor(Math.random() * 6000) + 100) / 100;
+        if (a < b) [a, b] = [b, a];
+        ans = parseFloat((a - b).toFixed(2));
+        q = `${a} - ${b} = ?`;
+        hint = "Line up decimals vertically. Add trailing placeholder zeros before regrouping.";
+        distractors = [
+          (ans + 1.0).toFixed(2),
+          (ans - 0.1).toFixed(2),
+          (ans + 0.2).toFixed(2)
+        ];
+      } else if (chosenOp === 'mult') {
+        const a = (Math.floor(Math.random() * 90) + 10) / 10; // e.g. 3.4
+        const b = (Math.floor(Math.random() * 90) + 10) / 10; // e.g. 1.2
+        ans = parseFloat((a * b).toFixed(2));
+        q = `${a} × ${b} = ?`;
+        hint = "Multiply as whole numbers, then count the total decimal places in both factors.";
+        distractors = [
+          (ans * 10).toFixed(2),
+          (ans / 10).toFixed(3),
+          (ans + 0.3).toFixed(2)
+        ];
+      } else {
+        // div
+        const divisor = (Math.floor(Math.random() * 8) + 2) / 10; // 0.2 to 0.9
+        const factor = Math.floor(Math.random() * 40) + 5;
+        const dividend = parseFloat((divisor * factor).toFixed(2));
+        ans = factor;
+        q = `${dividend} ÷ ${divisor} = ?`;
+        hint = "Shift the decimal point to the right in both numbers until the divisor is a whole number.";
+        distractors = [
+          (ans / 10).toString(),
+          (ans * 10).toString(),
+          (ans + 2).toString()
+        ];
       }
-    ];
 
-    const DECIMAL_MEMORY_PAIRS = [
-      { text: "0.6 × 0.4", match: "0.24", sub: "Multiplication" },
-      { text: "4.8 ÷ 0.6", match: "8", sub: "Division" },
-      { text: "1.5 + 2.75", match: "4.25", sub: "Addition" },
-      { text: "10.0 - 3.6", match: "6.4", sub: "Subtraction" },
-      { text: "0.25 × 4", match: "1.0", sub: "Multiplication" },
-      { text: "7.5 ÷ 5", match: "1.5", sub: "Division" }
-    ];
+      return {
+        question: q,
+        answer: ans.toString(),
+        distractors: distractors.map(d => d.toString()),
+        hint: hint,
+        explanation: `${q.replace(' = ?', '')} = ${ans}`
+      };
+    }
 
     let totalScore = 0;
     let soundEnabled = true;
     let currentGameMode = null;
 
-    // Boss Battle
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
     let battleStage = 1;
     let battleStreak = 0;
     let playerHp = 100;
     let bossHp = 100;
     let currentBattleWord = null;
-    let battlePool = [];
 
     const BOSS_DATA = [
       { name: "Decimal Serpent", icon: "🐍", maxHp: 100 },
@@ -424,7 +311,6 @@
       { name: "The Decimal Emperor", icon: "👑", maxHp: 200 }
     ];
 
-    // Speed Match
     let speedTimerVal = 60;
     let speedTimerInterval = null;
     let speedScoreVal = 0;
@@ -432,7 +318,6 @@
     let speedCurrentWord = null;
     let speedStreak = 0;
 
-    // Memory
     let memoryCards = [];
     let memoryFlipped = [];
     let memoryMatchesFound = 0;
@@ -523,6 +408,8 @@
 
     function startGame(mode) {
       currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
       showScreen(mode);
       if (mode === 'battle') initBattle();
       if (mode === 'speed') initSpeedMatch();
@@ -546,7 +433,6 @@
       battleStage = 1;
       battleStreak = 0;
       playerHp = 100;
-      battlePool = [...DECIMAL_DATA].sort(() => Math.random() - 0.5);
       setupBattleStage();
     }
 
@@ -570,11 +456,7 @@
     }
 
     function nextBattleQuestion() {
-      if (battlePool.length === 0) {
-        battlePool = [...DECIMAL_DATA].sort(() => Math.random() - 0.5);
-      }
-      currentBattleWord = battlePool.pop();
-
+      currentBattleWord = generateRandomDecimalProblem();
       document.getElementById('battleQuestion').textContent = currentBattleWord.question;
       document.getElementById('battleHint').textContent = `Hint: ${currentBattleWord.hint}`;
 
@@ -584,8 +466,8 @@
 
       options.forEach(opt => {
         const btn = document.createElement('button');
-        btn.className = "p-4 bg-slate-800 hover:bg-amber-950 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
-        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-amber-400">Select ↵</span>`;
+        btn.className = "p-4 bg-slate-800 hover:bg-amber-950 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95 font-mono";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-amber-400 font-sans">Select ↵</span>`;
         btn.onclick = () => handleBattleAnswer(opt, btn);
         optsContainer.appendChild(btn);
       });
@@ -594,11 +476,13 @@
     }
 
     function handleBattleAnswer(selected, btnEl) {
+      totalAttempts++;
       const isCorrect = selected === currentBattleWord.answer;
       const feedback = document.getElementById('battleFeedback');
       feedback.classList.remove('hidden');
 
       if (isCorrect) {
+        correctAttempts++;
         playSound('hit');
         battleStreak++;
         const dmg = 45 + (battleStreak * 5);
@@ -609,7 +493,7 @@
         btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
 
         feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
-        feedback.innerHTML = `✨ <b>Correct Calculation!</b> Deals ${dmg} damage! (${currentBattleWord.explanation})`;
+        feedback.innerHTML = `✨ <b>Correct!</b> Deals ${dmg} damage! (${currentBattleWord.explanation})`;
 
         updateHpBars();
 
@@ -621,7 +505,8 @@
               battleStage++;
               setupBattleStage();
             } else {
-              showGameOverModal("Boss Defeated!", "You conquered all 5 Decimal Bosses!", totalScore, "100%");
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Boss Defeated!", "You conquered all 5 Decimal Bosses!", totalScore, `${acc}%`);
             }
           }, 800);
         } else {
@@ -643,7 +528,8 @@
 
         if (playerHp <= 0) {
           setTimeout(() => {
-            showGameOverModal("Defeated in Arena", "Review decimal rules and try again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review decimal rules and try again!", totalScore, `${acc}%`);
           }, 800);
         } else {
           setTimeout(nextBattleQuestion, 1200);
@@ -671,7 +557,8 @@
           clearInterval(speedTimerInterval);
           playSound('win');
           triggerConfetti();
-          showGameOverModal("Time's Up!", "Decimal Blitz complete! Excellent mental math speed.", speedScoreVal, "Lightning Fast");
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Decimal Blitz complete!", speedScoreVal, `${acc}%`);
         }
       }, 1000);
 
@@ -679,7 +566,7 @@
     }
 
     function nextSpeedCard() {
-      speedCurrentWord = DECIMAL_DATA[Math.floor(Math.random() * DECIMAL_DATA.length)];
+      speedCurrentWord = generateRandomDecimalProblem();
       document.getElementById('speedDefinition').textContent = speedCurrentWord.question;
 
       const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
@@ -688,7 +575,7 @@
 
       options.forEach(opt => {
         const btn = document.createElement('button');
-        btn.className = "py-4 px-3 bg-slate-800 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md font-mono";
         btn.textContent = opt;
         btn.onclick = () => handleSpeedChoice(opt, btn);
         container.appendChild(btn);
@@ -696,7 +583,9 @@
     }
 
     function handleSpeedChoice(chosen, btnEl) {
+      totalAttempts++;
       if (chosen === speedCurrentWord.answer) {
+        correctAttempts++;
         playSound('correct');
         speedStreak++;
         if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
@@ -729,12 +618,16 @@
       document.getElementById('memoryMoves').textContent = memoryMovesCount;
       document.getElementById('memoryMatches').textContent = `0 / 6`;
 
-      const pairs = [...DECIMAL_MEMORY_PAIRS].sort(() => Math.random() - 0.5);
-      memoryCards = [];
+      const generatedPairs = [];
+      for (let i = 0; i < 6; i++) {
+        const p = generateRandomDecimalProblem();
+        generatedPairs.push({ text: p.question.replace(' = ?', ''), match: p.answer, sub: "Operation" });
+      }
 
-      pairs.forEach((item, idx) => {
+      memoryCards = [];
+      generatedPairs.forEach((item, idx) => {
         memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
-        memoryCards.push({ pairId: idx, text: item.match, sub: "Value / Answer" });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Calculated Value" });
       });
 
       memoryCards.sort(() => Math.random() - 0.5);
@@ -750,7 +643,7 @@
           <div class="card-back text-2xl text-slate-500 group-hover:text-amber-400 transition">🔢</div>
           <div class="card-front hidden space-y-1">
             <span class="text-xs uppercase font-bold text-amber-400 block">${card.sub}</span>
-            <p class="font-black text-lg md:text-xl text-slate-100">${card.text}</p>
+            <p class="font-black text-lg md:text-xl text-slate-100 font-mono">${card.text}</p>
           </div>
         `;
 
@@ -787,7 +680,8 @@
             setTimeout(() => {
               playSound('win');
               triggerConfetti();
-              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, "100%");
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, `${memAcc}%`);
             }, 500);
           }
         } else {
@@ -806,51 +700,14 @@
     }
 
     // ==========================================
-    // 4. VAULT / RULES
+    // 4. VAULT
     // ==========================================
     const VAULT_RULES = [
-      {
-        category: "addsub",
-        title: "Adding Decimals",
-        rule: "Line up the decimal points vertically. Fill missing spaces with placeholder zeros, then add normally.",
-        example: "348.72 + 59.45 = 408.17",
-        tip: "Keep the decimal point in the exact same place in your answer!"
-      },
-      {
-        category: "addsub",
-        title: "Subtracting Decimals",
-        rule: "Line up the decimal points vertically. Always add placeholder zeros to the top number before regrouping.",
-        example: "500.20 - 174.68 = 325.52",
-        tip: "Regroup across zeros carefully when subtracting."
-      },
-      {
-        category: "mult",
-        title: "Multiplying Decimals",
-        rule: "Multiply as if there are no decimals. Then count the TOTAL number of decimal places in BOTH factors and move the decimal point that many places from the right in your answer.",
-        example: "4.5 (1 place) × 0.6 (1 place) = 2.70 (2 places)",
-        tip: "You do NOT need to line up decimal points when multiplying!"
-      },
-      {
-        category: "div",
-        title: "Dividing by a Whole Number",
-        rule: "Bring the decimal point straight up into the quotient (answer), then divide normally using standard long division.",
-        example: "15.6 ÷ 3 = 5.2",
-        tip: "Add zeros to the dividend if you have a remainder until it divides evenly."
-      },
-      {
-        category: "div",
-        title: "Dividing by a Decimal Divisor",
-        rule: "Shift the decimal point to the right in the divisor to make it a whole number. Shift the decimal point the EXACT same number of places in the dividend.",
-        example: "4.8 ÷ 0.6 -> Shift 1 place -> 48 ÷ 6 = 8",
-        tip: "7.5 ÷ 0.25 -> Shift 2 places -> 750 ÷ 25 = 30"
-      },
-      {
-        category: "mult",
-        title: "Powers of 10 Shortcut",
-        rule: "Multiplying by 10, 100, 1,000 moves the decimal to the RIGHT. Dividing by 10, 100, 1,000 moves the decimal to the LEFT.",
-        example: "7.08 × 100 = 708 | 128.4 ÷ 10 = 12.84",
-        tip: "Count the number of zeros in the power of 10 to know how many places to jump."
-      }
+      { category: "addsub", title: "Adding Decimals", rule: "Line up the decimal points vertically. Fill missing spaces with placeholder zeros, then add normally.", example: "348.72 + 59.45 = 408.17", tip: "Keep the decimal point in the exact same place in your answer!" },
+      { category: "addsub", title: "Subtracting Decimals", rule: "Line up the decimal points vertically. Always add placeholder zeros to the top number before regrouping.", example: "500.20 - 174.68 = 325.52", tip: "Regroup across zeros carefully when subtracting." },
+      { category: "mult", title: "Multiplying Decimals", rule: "Multiply as whole numbers. Then count total decimal places across both factors and move the decimal that many places from the right.", example: "4.5 (1 place) × 0.6 (1 place) = 2.70 (2 places)", tip: "You do NOT need to line up decimal points when multiplying!" },
+      { category: "div", title: "Dividing by a Whole Number", rule: "Bring the decimal point straight up into the quotient, then divide normally.", example: "15.6 ÷ 3 = 5.2", tip: "Add zeros to dividend if you have a remainder until it divides evenly." },
+      { category: "div", title: "Dividing by a Decimal Divisor", rule: "Shift decimal point right in divisor to make it whole. Shift decimal point the same number of places in the dividend.", example: "4.8 ÷ 0.6 -> 48 ÷ 6 = 8", tip: "7.5 ÷ 0.25 -> 750 ÷ 25 = 30" }
     ];
 
     function renderVault(filter = 'all') {
@@ -895,7 +752,6 @@
       renderVault(type);
     }
 
-    // Modal & Confetti
     function showGameOverModal(title, desc, score, accuracy) {
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = desc;
