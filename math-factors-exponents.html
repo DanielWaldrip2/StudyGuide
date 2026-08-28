@@ -10,7 +10,6 @@
 
   <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
 
-  <!-- Header -->
   <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
     <div class="max-w-5xl mx-auto flex items-center justify-between">
       <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
@@ -22,7 +21,7 @@
         </div>
         <div>
           <h1 class="font-bold text-lg bg-gradient-to-r from-amber-400 via-orange-300 to-rose-400 bg-clip-text text-transparent">MATH QUEST</h1>
-          <p class="text-xs text-slate-400 font-medium">Exponents • GCF • LCM • Primes</p>
+          <p class="text-xs text-slate-400 font-medium">Unit 2 • Dynamic Number Theory</p>
         </div>
       </div>
 
@@ -38,91 +37,68 @@
     </div>
   </header>
 
-  <!-- Main App -->
   <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
 
-    <!-- 1. MENU -->
     <div id="screen-menu" class="space-y-8 py-4">
       <div class="text-center space-y-3 max-w-2xl mx-auto">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
-          Number Theory Arena
+          Infinite Generator
         </div>
         <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
           Number Power <span class="bg-gradient-to-r from-amber-400 via-orange-400 to-rose-400 bg-clip-text text-transparent">Challenge</span>
         </h2>
         <p class="text-slate-400 text-sm md:text-base">
-          Conquer exponents, calculate GCF and LCM in seconds, identify prime vs composite numbers, and solve factor trees!
+          Practice randomized calculations for exponents, GCF, LCM, and prime numbers with exact real-time accuracy scoring!
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
-        
         <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">
-              ⚔️
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">⚔️</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Boss Quest</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Math Boss Battle</h3>
-          <p class="text-sm text-slate-400 mt-2">Defeat bosses like the Exponent Behemoth and the Prime Titan with quick mathematical calculations.</p>
-          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">
-            START BATTLE <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses like the Exponent Behemoth and Prime Titan with random number calculations.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">START BATTLE <span>→</span></div>
         </div>
 
         <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-orange-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-orange-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl">
-              ⚡
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-2xl">⚡</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-orange-500/10 text-orange-300 rounded-full border border-orange-500/30">60s Blitz</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-orange-300 transition">Factor Speed Blitz</h3>
-          <p class="text-sm text-slate-400 mt-2">Test your calculation speed on exponents, prime numbers, GCF, and LCM under a 60-second timer!</p>
-          <div class="mt-4 flex items-center text-orange-400 text-xs font-bold gap-1">
-            RACE THE CLOCK <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Solve randomly generated exponents, prime questions, and factors in 60 seconds.</p>
+          <div class="mt-4 flex items-center text-orange-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
         </div>
 
         <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-rose-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">
-              🧩
-            </div>
+            <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">🧩</div>
             <span class="text-xs font-semibold px-2.5 py-1 bg-rose-500/10 text-rose-300 rounded-full border border-rose-500/30">Puzzle</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-rose-300 transition">Math Memory Matrix</h3>
-          <p class="text-sm text-slate-400 mt-2">Flip and match equivalent exponential values (e.g. 2⁴ = 16) and prime factorizations.</p>
-          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1">
-            START MATCHING <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Flip and match equivalent exponential values and prime factorizations.</p>
+          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
         </div>
 
         <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-yellow-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">
-              📖
-            </div>
-            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">Rules & Formulas</span>
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">Formulas</span>
           </div>
           <h3 class="text-xl font-bold mt-4 text-white group-hover:text-yellow-300 transition">Formulas & Rules Vault</h3>
-          <p class="text-sm text-slate-400 mt-2">Review prime numbers (up to 50), rules of exponents, prime factorization tricks, GCF and LCM methods.</p>
-          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">
-            OPEN FORMULA VAULT <span>→</span>
-          </div>
+          <p class="text-sm text-slate-400 mt-2">Review prime list under 50, rules of exponents, GCF and LCM methods.</p>
+          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">OPEN FORMULA VAULT <span>→</span></div>
         </div>
-
       </div>
     </div>
 
-    <!-- 2. BOSS BATTLE -->
     <div id="screen-battle" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
         <div class="flex items-center gap-3 w-full md:w-auto">
-          <div class="w-12 h-12 rounded-xl bg-amber-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-600/40">
-            🧙‍♂️
-          </div>
+          <div class="w-12 h-12 rounded-xl bg-amber-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-600/40">🧙‍♂️</div>
           <div class="flex-1">
             <div class="flex justify-between text-xs font-bold mb-1">
               <span class="text-amber-300">Math Hero</span>
@@ -148,9 +124,7 @@
               <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
             </div>
           </div>
-          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">
-            🗿
-          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">🗿</div>
         </div>
       </div>
 
@@ -166,7 +140,6 @@
       </div>
     </div>
 
-    <!-- 3. SPEED MATCH -->
     <div id="screen-speed" class="hidden space-y-6">
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -188,16 +161,13 @@
       </div>
 
       <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
-        <span class="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">
-          Solve Fast!
-        </span>
+        <span class="inline-block px-3 py-1 bg-orange-500/10 text-orange-400 text-xs font-bold rounded-full uppercase tracking-wider">Solve Fast!</span>
         <h3 id="speedDefinition" class="text-2xl md:text-3xl font-black text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
       </div>
 
       <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
-    <!-- 4. MEMORY MATRIX -->
     <div id="screen-memory" class="hidden space-y-6">
       <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
@@ -208,11 +178,10 @@
         <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
       </div>
 
-      <p class="text-center text-xs text-slate-400">Match the math expressions with their equivalent calculated values!</p>
+      <p class="text-center text-xs text-slate-400">Match math expressions with their equivalent calculated values!</p>
       <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
     </div>
 
-    <!-- 5. VAULT / RULES -->
     <div id="screen-vault" class="hidden space-y-6">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
         <div>
@@ -226,16 +195,12 @@
           <button onclick="filterVault('primes')" id="tab-primes" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Primes</button>
         </div>
       </div>
-
       <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
     </div>
 
-    <!-- 6. MODAL -->
     <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
       <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
-        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center text-4xl">
-          🏆
-        </div>
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
         <div>
           <h3 id="modalTitle" class="text-2xl font-black text-white">Math Arena Conquered!</h3>
           <p id="modalDesc" class="text-slate-400 text-sm mt-1">You demonstrated outstanding number mastery.</p>
@@ -247,17 +212,13 @@
           </div>
           <div class="border-r border-slate-800"></div>
           <div>
-            <span class="text-[10px] text-slate-400 block uppercase">Mastery</span>
-            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">100%</span>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
           </div>
         </div>
         <div class="flex gap-3">
-          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">
-            Menu
-          </button>
-          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg transition">
-            Play Again
-          </button>
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
         </div>
       </div>
     </div>
@@ -265,164 +226,102 @@
   </main>
 
   <script>
-    const MATH_DATA = [
-      // Exponents
-      {
-        type: "exponents",
-        question: "What is the value of 2⁴ (2 to the 4th power)?",
-        answer: "16",
-        distractors: ["8", "12", "32"],
-        hint: "Multiply 2 by itself 4 times: 2 × 2 × 2 × 2",
-        explanation: "2 × 2 × 2 × 2 = 16"
-      },
-      {
-        type: "exponents",
-        question: "What is the value of 5³ (5 cubed)?",
-        answer: "125",
-        distractors: ["15", "25", "75"],
-        hint: "Multiply 5 × 5 × 5",
-        explanation: "5 × 5 × 5 = 125"
-      },
-      {
-        type: "exponents",
-        question: "What is the value of any non-zero number raised to the power of 0 (e.g., 7⁰)?",
-        answer: "1",
-        distractors: ["0", "7", "Undefined"],
-        hint: "The zero exponent rule states that a⁰ = 1.",
-        explanation: "Any non-zero number raised to power 0 equals 1."
-      },
-      {
-        type: "exponents",
-        question: "What is the value of 3⁴ (3 to the 4th power)?",
-        answer: "81",
-        distractors: ["12", "27", "64"],
-        hint: "3 × 3 × 3 × 3",
-        explanation: "3 × 3 × 3 × 3 = 81"
-      },
-      {
-        type: "exponents",
-        question: "In the expression 4³, the number 4 is the _____ and 3 is the _____.",
-        answer: "Base, Exponent",
-        distractors: ["Exponent, Base", "Factor, Product", "Multiple, Divisor"],
-        hint: "The bottom number is the base; the small top number is the exponent.",
-        explanation: "4 is the Base; 3 is the Exponent (or power)."
-      },
+    function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+    function lcm(a, b) { return (a * b) / gcd(a, b); }
 
-      // Greatest Common Factor (GCF)
-      {
-        type: "factors",
-        question: "What is the Greatest Common Factor (GCF) of 12 and 18?",
-        answer: "6",
-        distractors: ["2", "3", "36"],
-        hint: "Factors of 12: 1, 2, 3, 4, 6, 12. Factors of 18: 1, 2, 3, 6, 9, 18.",
-        explanation: "The largest factor shared by 12 and 18 is 6."
-      },
-      {
-        type: "factors",
-        question: "What is the Greatest Common Factor (GCF) of 24 and 36?",
-        answer: "12",
-        distractors: ["4", "6", "72"],
-        hint: "Largest number that divides evenly into both 24 and 36.",
-        explanation: "24 = 12 × 2 and 36 = 12 × 3. GCF is 12."
-      },
-      {
-        type: "factors",
-        question: "What is the Greatest Common Factor (GCF) of 15 and 25?",
-        answer: "5",
-        distractors: ["1", "3", "75"],
-        hint: "Both numbers end in 5.",
-        explanation: "Factors of 15 (1,3,5,15) and 25 (1,5,25). GCF = 5."
-      },
+    const PRIMES_UNDER_50 = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47];
+    const COMPOSITES_UNDER_50 = [4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21, 22, 24, 25, 26, 27, 28, 30, 32, 33, 34, 35, 36, 38, 39, 40, 42, 44, 45, 46, 48, 49];
 
-      // Least Common Multiple (LCM)
-      {
-        type: "factors",
-        question: "What is the Least Common Multiple (LCM) of 4 and 6?",
-        answer: "12",
-        distractors: ["2", "24", "18"],
-        hint: "Multiples of 4: 4, 8, 12, 16. Multiples of 6: 6, 12, 18.",
-        explanation: "The smallest positive multiple shared by both is 12."
-      },
-      {
-        type: "factors",
-        question: "What is the Least Common Multiple (LCM) of 6 and 8?",
-        answer: "24",
-        distractors: ["14", "48", "16"],
-        hint: "Multiples of 6: 6, 12, 18, 24. Multiples of 8: 8, 16, 24.",
-        explanation: "The smallest common multiple is 24."
-      },
-      {
-        type: "factors",
-        question: "What is the Least Common Multiple (LCM) of 3 and 5?",
-        answer: "15",
-        distractors: ["1", "8", "30"],
-        hint: "Since both are prime numbers, multiply them together.",
-        explanation: "3 × 5 = 15."
-      },
+    function generateRandomMathProblem() {
+      const types = ['exponent', 'gcf', 'lcm', 'prime_id', 'zero_exp'];
+      const chosen = types[Math.floor(Math.random() * types.length)];
+      let q = "", ans = "", distractors = [], hint = "", exp = "";
 
-      // Prime Numbers & Factorization
-      {
-        type: "primes",
-        question: "Which of the following is a Prime Number?",
-        answer: "29",
-        distractors: ["21", "27", "35"],
-        hint: "A prime number has only two factors: 1 and itself.",
-        explanation: "29 cannot be divided evenly by anything other than 1 and 29."
-      },
-      {
-        type: "primes",
-        question: "What is the ONLY even prime number?",
-        answer: "2",
-        distractors: ["0", "4", "There are none"],
-        hint: "All other even numbers can be divided by 2.",
-        explanation: "2 is the only even prime number."
-      },
-      {
-        type: "primes",
-        question: "What is the prime factorization of 36?",
-        answer: "2² × 3² (2 × 2 × 3 × 3)",
-        distractors: ["4 × 9", "2 × 3 × 6", "2³ × 3"],
-        hint: "Break down into prime numbers: 36 = 4 × 9 = (2 × 2) × (3 × 3).",
-        explanation: "36 = 2 × 2 × 3 × 3 = 2² × 3²."
-      },
-      {
-        type: "primes",
-        question: "Is the number 51 Prime or Composite?",
-        answer: "Composite (51 = 3 × 17)",
-        distractors: ["Prime", "Neither Prime nor Composite", "An Exponent"],
-        hint: "Use the divisibility rule: 5 + 1 = 6, which is divisible by 3!",
-        explanation: "51 is divisible by 3 and 17, so it is Composite."
-      },
-      {
-        type: "primes",
-        question: "What is the prime factorization of 20?",
-        answer: "2² × 5 (2 × 2 × 5)",
-        distractors: ["4 × 5", "2 × 10", "2 × 5²"],
-        hint: "20 = 4 × 5 = 2 × 2 × 5.",
-        explanation: "20 = 2² × 5."
+      if (chosen === 'exponent') {
+        const bases = [2, 3, 4, 5, 6, 10];
+        const base = bases[Math.floor(Math.random() * bases.length)];
+        let power = 2;
+        if (base === 2) power = Math.floor(Math.random() * 4) + 2; // 2^2 to 2^5
+        else if (base === 3) power = Math.floor(Math.random() * 3) + 2; // 3^2 to 3^4
+        else if (base === 4) power = Math.floor(Math.random() * 2) + 2; // 4^2 to 4^3
+        else if (base === 5) power = Math.floor(Math.random() * 2) + 2; // 5^2 to 5^3
+        else power = 2;
+
+        const val = Math.pow(base, power);
+        q = `What is the value of ${base}${power === 2 ? '²' : power === 3 ? '³' : '⁴'} (${base} to the power of ${power})?`;
+        ans = val.toString();
+        hint = `Multiply the base (${base}) repeatedly ${power} times.`;
+        exp = `${base}^${power} = ${val}`;
+        distractors = [
+          (base * power).toString(),
+          (val + base).toString(),
+          (val - (base === 2 ? 1 : 2)).toString()
+        ];
+      } else if (chosen === 'zero_exp') {
+        const n = Math.floor(Math.random() * 80) + 7;
+        q = `What is the value of ${n}⁰ (${n} to the power of 0)?`;
+        ans = "1";
+        hint = "Recall the zero exponent rule for all non-zero numbers.";
+        exp = `${n}⁰ = 1`;
+        distractors = ["0", n.toString(), "Undefined"];
+      } else if (chosen === 'gcf') {
+        const pairs = [
+          [12, 18], [24, 36], [15, 25], [16, 24], [18, 27], [20, 30], [14, 21], [8, 12]
+        ];
+        const pair = pairs[Math.floor(Math.random() * pairs.length)];
+        const g = gcd(pair[0], pair[1]);
+        q = `What is the Greatest Common Factor (GCF) of ${pair[0]} and ${pair[1]}?`;
+        ans = g.toString();
+        hint = `Find the largest factor that divides evenly into both ${pair[0]} and ${pair[1]}.`;
+        exp = `GCF(${pair[0]}, ${pair[1]}) = ${g}`;
+        distractors = [
+          (g > 2 ? g - 1 : g + 2).toString(),
+          (g * 2).toString(),
+          lcm(pair[0], pair[1]).toString()
+        ];
+      } else if (chosen === 'lcm') {
+        const pairs = [
+          [4, 6], [6, 8], [3, 5], [4, 5], [6, 9], [4, 10], [3, 7], [2, 9]
+        ];
+        const pair = pairs[Math.floor(Math.random() * pairs.length)];
+        const l = lcm(pair[0], pair[1]);
+        q = `What is the Least Common Multiple (LCM) of ${pair[0]} and ${pair[1]}?`;
+        ans = l.toString();
+        hint = `Count multiples of ${pair[0]} and ${pair[1]} to find the smallest positive match.`;
+        exp = `LCM(${pair[0]}, ${pair[1]}) = ${l}`;
+        distractors = [
+          (l / 2 > 1 ? l / 2 : l * 2).toString(),
+          (pair[0] * pair[1]).toString(),
+          (gcd(pair[0], pair[1])).toString()
+        ];
+      } else {
+        // prime_id
+        const p = PRIMES_UNDER_50[Math.floor(Math.random() * PRIMES_UNDER_50.length)];
+        const c1 = COMPOSITES_UNDER_50[Math.floor(Math.random() * COMPOSITES_UNDER_50.length)];
+        const c2 = COMPOSITES_UNDER_50[Math.floor(Math.random() * COMPOSITES_UNDER_50.length)];
+        const c3 = COMPOSITES_UNDER_50[Math.floor(Math.random() * COMPOSITES_UNDER_50.length)];
+        q = `Which of the following numbers is a PRIME number?`;
+        ans = p.toString();
+        hint = "A prime number has exactly two factors: 1 and itself.";
+        exp = `${p} is prime because its only factors are 1 and ${p}.`;
+        distractors = [c1.toString(), c2.toString(), c3.toString()];
       }
-    ];
 
-    const MEMORY_PAIRS = [
-      { text: "2³", match: "8", sub: "Exponent" },
-      { text: "3³", match: "27", sub: "Exponent" },
-      { text: "4²", match: "16", sub: "Exponent" },
-      { text: "GCF(12, 18)", match: "6", sub: "Greatest Common Factor" },
-      { text: "LCM(4, 6)", match: "12", sub: "Least Common Multiple" },
-      { text: "Prime Factor of 12", match: "2² × 3", sub: "Prime Tree" }
-    ];
+      return { question: q, answer: ans, distractors: distractors, hint: hint, explanation: exp };
+    }
 
     let totalScore = 0;
     let soundEnabled = true;
     let currentGameMode = null;
 
-    // Boss Battle
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
     let battleStage = 1;
     let battleStreak = 0;
     let playerHp = 100;
     let bossHp = 100;
     let currentBattleWord = null;
-    let battlePool = [];
 
     const BOSS_DATA = [
       { name: "Exponent Behemoth", icon: "👾", maxHp: 100 },
@@ -432,7 +331,6 @@
       { name: "Algebra Overlord", icon: "🧙‍♂️", maxHp: 200 }
     ];
 
-    // Speed Match
     let speedTimerVal = 60;
     let speedTimerInterval = null;
     let speedScoreVal = 0;
@@ -440,13 +338,11 @@
     let speedCurrentWord = null;
     let speedStreak = 0;
 
-    // Memory
     let memoryCards = [];
     let memoryFlipped = [];
     let memoryMatchesFound = 0;
     let memoryMovesCount = 0;
 
-    // Audio Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
       if (!soundEnabled) return;
@@ -532,6 +428,8 @@
 
     function startGame(mode) {
       currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
       showScreen(mode);
       if (mode === 'battle') initBattle();
       if (mode === 'speed') initSpeedMatch();
@@ -555,7 +453,6 @@
       battleStage = 1;
       battleStreak = 0;
       playerHp = 100;
-      battlePool = [...MATH_DATA].sort(() => Math.random() - 0.5);
       setupBattleStage();
     }
 
@@ -579,11 +476,7 @@
     }
 
     function nextBattleQuestion() {
-      if (battlePool.length === 0) {
-        battlePool = [...MATH_DATA].sort(() => Math.random() - 0.5);
-      }
-      currentBattleWord = battlePool.pop();
-
+      currentBattleWord = generateRandomMathProblem();
       document.getElementById('battleQuestion').textContent = currentBattleWord.question;
       document.getElementById('battleHint').textContent = `Hint: ${currentBattleWord.hint}`;
 
@@ -603,11 +496,13 @@
     }
 
     function handleBattleAnswer(selected, btnEl) {
+      totalAttempts++;
       const isCorrect = selected === currentBattleWord.answer;
       const feedback = document.getElementById('battleFeedback');
       feedback.classList.remove('hidden');
 
       if (isCorrect) {
+        correctAttempts++;
         playSound('hit');
         battleStreak++;
         const dmg = 45 + (battleStreak * 5);
@@ -630,7 +525,8 @@
               battleStage++;
               setupBattleStage();
             } else {
-              showGameOverModal("Boss Defeated!", "You crushed every Math Boss and conquered number theory!", totalScore, "100%");
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Boss Defeated!", "You crushed every Math Boss!", totalScore, `${acc}%`);
             }
           }, 800);
         } else {
@@ -646,13 +542,14 @@
         btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
 
         feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
-        feedback.innerHTML = `⚠️ <b>Boss Hits Back!</b> The correct answer was "<b>${currentBattleWord.answer}</b>".`;
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> The correct answer was "<b>${currentBattleWord.answer}</b>".`;
 
         updateHpBars();
 
         if (playerHp <= 0) {
           setTimeout(() => {
-            showGameOverModal("Defeated in Arena", "Review your exponent and factor rules and try again!", totalScore, `${Math.max(10, battleStreak * 15)}%`);
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review your rules and try again!", totalScore, `${acc}%`);
           }, 800);
         } else {
           setTimeout(nextBattleQuestion, 1200);
@@ -680,7 +577,8 @@
           clearInterval(speedTimerInterval);
           playSound('win');
           triggerConfetti();
-          showGameOverModal("Time's Up!", "Factor Blitz complete! Excellent mental math speed.", speedScoreVal, "Lightning Fast");
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Factor Blitz complete!", speedScoreVal, `${acc}%`);
         }
       }, 1000);
 
@@ -688,7 +586,7 @@
     }
 
     function nextSpeedCard() {
-      speedCurrentWord = MATH_DATA[Math.floor(Math.random() * MATH_DATA.length)];
+      speedCurrentWord = generateRandomMathProblem();
       document.getElementById('speedDefinition').textContent = speedCurrentWord.question;
 
       const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
@@ -705,7 +603,9 @@
     }
 
     function handleSpeedChoice(chosen, btnEl) {
+      totalAttempts++;
       if (chosen === speedCurrentWord.answer) {
+        correctAttempts++;
         playSound('correct');
         speedStreak++;
         if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
@@ -738,12 +638,19 @@
       document.getElementById('memoryMoves').textContent = memoryMovesCount;
       document.getElementById('memoryMatches').textContent = `0 / 6`;
 
-      const pairs = [...MEMORY_PAIRS].sort(() => Math.random() - 0.5);
-      memoryCards = [];
+      const generatedPairs = [
+        { text: "2³", match: "8", sub: "Exponent" },
+        { text: "3³", match: "27", sub: "Exponent" },
+        { text: "4²", match: "16", sub: "Exponent" },
+        { text: "GCF(12, 18)", match: "6", sub: "GCF" },
+        { text: "LCM(4, 6)", match: "12", sub: "LCM" },
+        { text: "Prime Factor of 12", match: "2² × 3", sub: "Prime Tree" }
+      ];
 
-      pairs.forEach((item, idx) => {
+      memoryCards = [];
+      generatedPairs.forEach((item, idx) => {
         memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
-        memoryCards.push({ pairId: idx, text: item.match, sub: "Value / Answer" });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Calculated Value" });
       });
 
       memoryCards.sort(() => Math.random() - 0.5);
@@ -796,7 +703,8 @@
             setTimeout(() => {
               playSound('win');
               triggerConfetti();
-              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, "100%");
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, `${memAcc}%`);
             }, 500);
           }
         } else {
@@ -815,51 +723,15 @@
     }
 
     // ==========================================
-    // 4. VAULT / FORMULAS
+    // 4. VAULT
     // ==========================================
     const VAULT_RULES = [
-      {
-        category: "exponents",
-        title: "Rule of Exponents",
-        rule: "Baseᵃ = Base multiplied by itself 'a' times.",
-        example: "3⁴ = 3 × 3 × 3 × 3 = 81",
-        tip: "Any non-zero number to the power of 0 equals 1 (e.g. 5⁰ = 1)."
-      },
-      {
-        category: "factors",
-        title: "Greatest Common Factor (GCF)",
-        rule: "The largest factor that divides evenly into two or more numbers.",
-        example: "GCF of 12 and 18 is 6.",
-        tip: "Method: List all factors of each number and pick the largest match."
-      },
-      {
-        category: "factors",
-        title: "Least Common Multiple (LCM)",
-        rule: "The smallest positive multiple shared by two or more numbers.",
-        example: "LCM of 4 and 6 is 12 (Multiples: 4, 8, 12... & 6, 12, 18...).",
-        tip: "Method: Count by multiples until you find the first matching number."
-      },
-      {
-        category: "primes",
-        title: "Prime Numbers (Under 50)",
-        rule: "A number greater than 1 that only has two factors: 1 and itself.",
-        example: "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.",
-        tip: "2 is the ONLY even prime number! 1 is NEITHER prime nor composite."
-      },
-      {
-        category: "primes",
-        title: "Prime Factorization (Factor Trees)",
-        rule: "Breaking a composite number down until only prime factors remain.",
-        example: "24 = 4 × 6 = (2 × 2) × (2 × 3) = 2³ × 3",
-        tip: "Write your final answer in exponential form (e.g., 2³ × 3)."
-      },
-      {
-        category: "primes",
-        title: "Composite Numbers",
-        rule: "A positive integer that has more than two factors.",
-        example: "4, 6, 8, 9, 10, 12, 14, 15, 16, 18, 20, 21...",
-        tip: "If a number can be divided evenly by 2, 3, 5, etc., it is composite."
-      }
+      { category: "exponents", title: "Rule of Exponents", rule: "Baseᵃ = Base multiplied by itself 'a' times.", example: "3⁴ = 3 × 3 × 3 × 3 = 81", tip: "Any non-zero number to power 0 equals 1 (e.g. 5⁰ = 1)." },
+      { category: "factors", title: "Greatest Common Factor (GCF)", rule: "The largest factor that divides evenly into two or more numbers.", example: "GCF of 12 and 18 is 6.", tip: "Method: List all factors of each number and pick the largest match." },
+      { category: "factors", title: "Least Common Multiple (LCM)", rule: "The smallest positive multiple shared by two or more numbers.", example: "LCM of 4 and 6 is 12.", tip: "Method: Count by multiples until you find the first matching number." },
+      { category: "primes", title: "Prime Numbers (Under 50)", rule: "A number greater than 1 that only has two factors: 1 and itself.", example: "2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.", tip: "2 is the ONLY even prime number! 1 is NEITHER prime nor composite." },
+      { category: "primes", title: "Prime Factorization", rule: "Breaking a composite number down until only prime factors remain.", example: "24 = 2³ × 3", tip: "Write your final answer in exponential form." },
+      { category: "primes", title: "Composite Numbers", rule: "A positive integer that has more than two factors.", example: "4, 6, 8, 9, 10, 12, 14, 15, 16, 18...", tip: "If it can be divided evenly by 2, 3, 5, etc., it is composite." }
     ];
 
     function renderVault(filter = 'all') {
@@ -904,7 +776,6 @@
       renderVault(type);
     }
 
-    // Modal & Confetti
     function showGameOverModal(title, desc, score, accuracy) {
       document.getElementById('modalTitle').textContent = title;
       document.getElementById('modalDesc').textContent = desc;
