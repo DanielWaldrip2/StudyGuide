@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocab Quest • Lesson 4 (Sight & Sound Roots)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-violet-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 via-fuchsia-600 to-pink-500 flex items-center justify-center shadow-lg shadow-violet-500/30 font-black text-lg">
+          👁️
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-violet-400 via-fuchsia-300 to-pink-400 bg-clip-text text-transparent">VOCAB QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Lesson 4 • Roots: vis/vid, aud, phon</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/30 text-violet-400 text-xs font-semibold uppercase tracking-wider">
+          Sight & Sound Roots
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Lesson 4: <span class="bg-gradient-to-r from-violet-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">Vision & Sound</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master 10 root words based on <b>vis/vid</b> (see/look - Latin), <b>aud</b> (hear - Latin), and <b>phon</b> (sound - Greek)!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-violet-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-violet-500/20 text-violet-400 flex items-center justify-center text-2xl">⚔️</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-violet-500/10 text-violet-300 rounded-full border border-violet-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-violet-300 transition">Sonic & Vision Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses like the Cacophony Chimera by completing sentences with the correct root words.</p>
+          <div class="mt-4 flex items-center text-violet-400 text-xs font-bold gap-1">PLAY BATTLE <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-fuchsia-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-fuchsia-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-fuchsia-500/20 text-fuchsia-400 flex items-center justify-center text-2xl">⚡</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-fuchsia-500/10 text-fuchsia-300 rounded-full border border-fuchsia-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-fuchsia-300 transition">Root Speed Blitz</h3>
+          <p class="text-sm text-slate-400 mt-2">Match definitions to words like visionary, audible, and cacophony under 60 seconds.</p>
+          <div class="mt-4 flex items-center text-fuchsia-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-pink-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-2xl">🧩</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-pink-500/10 text-pink-300 rounded-full border border-pink-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-pink-300 transition">Sensory Memory Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Flip and pair Lesson 4 root words with their definitions and root meanings.</p>
+          <div class="mt-4 flex items-center text-pink-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-indigo-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-500/10 text-indigo-300 rounded-full border border-indigo-500/30">Root Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-indigo-300 transition">Root Word Vault & Audio</h3>
+          <p class="text-sm text-slate-400 mt-2">Review all 10 words, Greek & Latin roots, parts of speech, and worksheet example sentences.</p>
+          <div class="mt-4 flex items-center text-indigo-400 text-xs font-bold gap-1">OPEN VAULT <span>→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-violet-600 flex items-center justify-center text-2xl shadow-lg shadow-violet-600/40">👁️</div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-violet-300">Word Seeker</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-violet-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">The Silent Shadow</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">👤</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-500 via-fuchsia-500 to-pink-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="battleRootBadge" class="text-xs uppercase tracking-wider text-violet-400 font-bold">Lesson 4 Sentence Context</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-violet-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-violet-500/10 text-violet-400 text-xs font-bold rounded-full uppercase tracking-wider">Target Definition</span>
+        <h3 id="speedDefinition" class="text-xl md:text-2xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-violet-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match Lesson 4 vocabulary words with their exact definitions!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Lesson 4 Root Vault</h2>
+          <p class="text-xs text-slate-400">Explore words by root: <b>vis/vid</b> (Latin: see/look), <b>aud</b> (Latin: hear), and <b>phon</b> (Greek: sound).</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-violet-600 text-white">All (10)</button>
+          <button onclick="filterVault('vis')" id="tab-vis" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">vis/vid (see/look)</button>
+          <button onclick="filterVault('aud')" id="tab-aud" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">aud (hear)</button>
+          <button onclick="filterVault('phon')" id="tab-phon" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">phon (sound)</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-violet-500/20 text-violet-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Lesson 4 Conquered!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding sight and sound root word mastery.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // EXACT DATA FROM LESSON 4 WORKSHEET
+    const LESSON4_DATA = [
+      {
+        word: "visualize",
+        root: "vis",
+        rootMeaning: "see, look (Latin)",
+        partOfSpeech: "v.",
+        definition: "form a mental image of something; imagine",
+        sentence: "Even though I had never been there, I could _____ the crystal blue beaches of Hawaii in my mind.",
+        distractors: ["vista", "audible", "phonograph"]
+      },
+      {
+        word: "vista",
+        root: "vis",
+        rootMeaning: "see, look (Latin)",
+        partOfSpeech: "n.",
+        definition: "a pleasing view, especially one seen through a long, narrow opening",
+        sentence: "We enjoyed the beautiful _____ of the mountains through the front window of the cottage.",
+        distractors: ["visionary", "auditorium", "audience"]
+      },
+      {
+        word: "visionary",
+        root: "vis",
+        rootMeaning: "see, look (Latin)",
+        partOfSpeech: "n.",
+        definition: "a person with original ideas about what the future will or could be like",
+        sentence: "Steve Jobs's futuristic thinking and creativity made him the most well known _____ of our time.",
+        distractors: ["visualize", "audition", "xylophone"]
+      },
+      {
+        word: "audible",
+        root: "aud",
+        rootMeaning: "hear (Latin)",
+        partOfSpeech: "adj.",
+        definition: "able to be heard",
+        sentence: "I turned the volume of my phone up so that it would be _____ over the loud music of the party.",
+        distractors: ["cacophony", "vista", "audition"]
+      },
+      {
+        word: "audition",
+        root: "aud",
+        rootMeaning: "hear (Latin)",
+        partOfSpeech: "n.",
+        definition: "an interview for a particular role or job as a singer, actor, dancer, or musician, consisting of a performance",
+        sentence: "Even though Megan rehearsed for the lead role in the school play, she was still very nervous before the _____.",
+        distractors: ["auditorium", "audience", "visualize"]
+      },
+      {
+        word: "audience",
+        root: "aud",
+        rootMeaning: "hear (Latin)",
+        partOfSpeech: "n.",
+        definition: "a group of people who have gathered to watch a performance or public event",
+        sentence: "The _____ gave a standing ovation to the orchestra.",
+        distractors: ["auditorium", "visionary", "cacophony"]
+      },
+      {
+        word: "auditorium",
+        root: "aud",
+        rootMeaning: "hear (Latin)",
+        partOfSpeech: "n.",
+        definition: "the part of a theater, concert hall, or other public building in which the audience sits",
+        sentence: "The _____ was packed with people an hour before the play began.",
+        distractors: ["audience", "phonograph", "vista"]
+      },
+      {
+        word: "cacophony",
+        root: "phon",
+        rootMeaning: "sound (Greek)",
+        partOfSpeech: "n.",
+        definition: "a mixture of various unpleasant sounds; harsh sounds",
+        sentence: "The barking dogs, car alarms, and sirens made up the _____ of the city.",
+        distractors: ["xylophone", "audible", "audition"]
+      },
+      {
+        word: "xylophone",
+        root: "phon",
+        rootMeaning: "sound (Greek)",
+        partOfSpeech: "n.",
+        definition: "a musical instrument played by striking a row of metal bars of different lengths with one or more small wooden or plastic mallets",
+        sentence: "She could hear her baby sister banging away on her _____.",
+        distractors: ["phonograph", "auditorium", "visualize"]
+      },
+      {
+        word: "phonograph",
+        root: "phon",
+        rootMeaning: "sound (Greek)",
+        partOfSpeech: "n.",
+        definition: "a machine that reproduces sound (music) by placing a needle in contact with a grooved rotating disk; a record player",
+        sentence: "We listened to some old records on the _____.",
+        distractors: ["xylophone", "cacophony", "audible"]
+      }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "The Silent Shadow", icon: "👤", maxHp: 100 },
+      { name: "The Blinding Mirage", icon: "🪞", maxHp: 120 },
+      { name: "Echoing Gorgon", icon: "🗿", maxHp: 140 },
+      { name: "Cacophony Chimera", icon: "🦁", maxHp: 160 },
+      { name: "Oracle of Sound & Vision", icon: "👑", maxHp: 200 }
+    ];
+
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function speakWord(word) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...LESSON4_DATA].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...LESSON4_DATA].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      document.getElementById('battleRootBadge').textContent = `Root: ${currentBattleWord.root} (${currentBattleWord.rootMeaning})`;
+      const qHTML = currentBattleWord.sentence.replace('_____', `<span class="px-2 py-0.5 rounded bg-violet-500/20 text-violet-300 font-bold border border-violet-500/40 mx-1">___ ? ___</span>`);
+      document.getElementById('battleQuestion').innerHTML = `"${qHTML}"`;
+      document.getElementById('battleHint').textContent = `Definition clue: ${currentBattleWord.definition}`;
+
+      const options = [currentBattleWord.word, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-violet-950 border border-slate-700 hover:border-violet-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-violet-400">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selectedWord, btnEl) {
+      totalAttempts++;
+      const isCorrect = selectedWord.toLowerCase() === currentBattleWord.word.toLowerCase();
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Direct Hit!</b> "${currentBattleWord.word}" deals ${dmg} damage!`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Sensory Realm Cleared!", "You defeated all 5 sound and vision bosses!", totalScore, `${acc}%`);
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> The correct word was "<b>${currentBattleWord.word}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review your sight and sound roots and try again!", totalScore, `${acc}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Speed match complete!", speedScoreVal, `${acc}%`);
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = LESSON4_DATA[Math.floor(Math.random() * LESSON4_DATA.length)];
+      document.getElementById('speedDefinition').textContent = `"${speedCurrentWord.definition}"`;
+
+      const options = [speedCurrentWord.word, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-violet-950/60 border border-slate-700 hover:border-violet-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosenWord, btnEl) {
+      totalAttempts++;
+      if (chosenWord === speedCurrentWord.word) {
+        correctAttempts++;
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const shuffled = [...LESSON4_DATA].sort(() => Math.random() - 0.5).slice(0, 6);
+      memoryCards = [];
+
+      shuffled.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.word, sub: `${item.root} (${item.partOfSpeech})` });
+        memoryCards.push({ pairId: idx, text: item.definition.slice(0, 50) + "...", sub: "Definition" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-violet-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-violet-400 transition">🔮</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-violet-400 block">${card.sub}</span>
+            <p class="font-bold text-sm text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-violet-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Cleared!", `Solved in ${memoryMovesCount} moves!`, totalScore, `${memAcc}%`);
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-violet-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-violet-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT
+    // ==========================================
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = LESSON4_DATA;
+      if (filter !== 'all') list = LESSON4_DATA.filter(w => w.root === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-violet-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        let badgeClass = "bg-violet-500/10 text-violet-300 border-violet-500/30";
+        if (w.root === 'aud') badgeClass = "bg-fuchsia-500/10 text-fuchsia-300 border-fuchsia-500/30";
+        if (w.root === 'phon') badgeClass = "bg-pink-500/10 text-pink-300 border-pink-500/30";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border ${badgeClass}">
+                Root: ${w.root} (${w.rootMeaning})
+              </span>
+              <button onclick="speakWord('${w.word}')" class="text-xs bg-slate-800 hover:bg-violet-600 px-2 py-1 rounded-lg text-slate-300 hover:text-white transition flex items-center gap-1">
+                🔊 Listen
+              </button>
+            </div>
+            <h3 class="text-xl font-black text-white capitalize flex items-center gap-2">
+              ${w.word}
+              <span class="text-xs font-normal text-slate-400 italic">(${w.partOfSpeech})</span>
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-violet-300">Definition:</b> ${w.definition}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+              <span class="text-slate-500 font-semibold block mb-0.5">Example Sentence:</span>
+              "${w.sentence.replace('_____', w.word)}"
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'vis', 'aud', 'phon'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-violet-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#8b5cf6', '#d946ef', '#ec4899', '#f59e0b', '#10b981'];
+
+      for (let i = 0; i < 80; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
