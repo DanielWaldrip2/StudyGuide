@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grammar Quest • Pronouns Mastery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-indigo-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 via-purple-600 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-xl font-bold">
+          ✍️
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-400 bg-clip-text text-transparent">GRAMMAR QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Pronouns & Antecedents Unit</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold uppercase tracking-wider">
+          Grammar & Sentence Mechanics
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Pronouns <span class="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-500 bg-clip-text text-transparent">& Antecedents</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master antecedents, indefinite, relative, reflexive, intensive, demonstrative, and interrogative pronouns!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-indigo-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl">⚔️</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-500/10 text-indigo-300 rounded-full border border-indigo-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-indigo-300 transition">Pronoun Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses by identifying correct pronouns, antecedents, and sentence practice rules.</p>
+          <div class="mt-4 flex items-center text-indigo-400 text-xs font-bold gap-1">START BATTLE <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-purple-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl">⚡</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-purple-500/10 text-purple-300 rounded-full border border-purple-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-purple-300 transition">Pronoun Speed Blitz</h3>
+          <p class="text-sm text-slate-400 mt-2">Fill in the blank sentences before the 60-second timer runs out!</p>
+          <div class="mt-4 flex items-center text-purple-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-pink-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-pink-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-pink-500/20 text-pink-400 flex items-center justify-center text-2xl">🧩</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-pink-500/10 text-pink-300 rounded-full border border-pink-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-pink-300 transition">Grammar Match Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Pair pronoun categories with their exact examples and rules.</p>
+          <div class="mt-4 flex items-center text-pink-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Pronoun Rules Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Read complete definitions, tables, and sentence examples from all 7 workbook pages.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">OPEN RULES VAULT <span>→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-2xl shadow-lg shadow-indigo-600/40">🧙‍♂️</div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-indigo-300">Grammar Wizard</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-indigo-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Ambiguous Antecedent</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">❓</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="battleCategoryBadge" class="text-xs uppercase tracking-wider text-indigo-400 font-bold">Pronoun Worksheet Practice</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-indigo-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-purple-500/10 text-purple-400 text-xs font-bold rounded-full uppercase tracking-wider">Choose the Correct Pronoun</span>
+        <h3 id="speedDefinition" class="text-lg md:text-xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-indigo-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match pronoun categories with their rules and examples!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Pronoun Rulebook Vault</h2>
+          <p class="text-xs text-slate-400">All rules, charts, and practice sentences from your 7 workbook pages.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white">All (30+)</button>
+          <button onclick="filterVault('intro')" id="tab-intro" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Intro & Antecedents</button>
+          <button onclick="filterVault('indef')" id="tab-indef" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Indefinite</button>
+          <button onclick="filterVault('rel')" id="tab-rel" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Relative</button>
+          <button onclick="filterVault('refl_int')" id="tab-refl_int" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Reflexive vs Intensive</button>
+          <button onclick="filterVault('dem_inter')" id="tab-dem_inter" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Demonstrative & Interrogative</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Pronouns Mastered!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding grammar and sentence mechanics recall.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // EXACT SENTENCES & CONCEPTS FROM THE 7 WORKBOOK SHEETS
+    const PRONOUN_DATA = [
+      // Introduction: Pronoun & Antecedent
+      {
+        section: "intro",
+        sectionTitle: "Introduction to Pronouns",
+        question: "A pronoun is a part of speech that _____ a noun in a sentence.",
+        answer: "Replaces",
+        distractors: ["Describes", "Connects", "Punctuates"],
+        hint: "Takes the place of a noun."
+      },
+      {
+        section: "intro",
+        sectionTitle: "Introduction to Pronouns",
+        question: "An _____ is the noun in which a pronoun replaces.",
+        answer: "Antecedent",
+        distractors: ["Adjective", "Adverb", "Preposition"],
+        hint: "The original noun that came before the pronoun."
+      },
+      {
+        section: "intro",
+        sectionTitle: "Antecedent Practice",
+        question: "In the sentence: 'Sara stubbed her toe on the dresser.' What is the antecedent of 'her'?",
+        answer: "Sara",
+        distractors: ["toe", "dresser", "stubbed"],
+        hint: "Who does 'her' refer back to?"
+      },
+      {
+        section: "intro",
+        sectionTitle: "Antecedent Practice",
+        question: "In the sentence: 'The team won its game against Valley.' What is the antecedent of 'its'?",
+        answer: "The team",
+        distractors: ["game", "Valley", "won"],
+        hint: "Which noun owns the victory?"
+      },
+
+      // Indefinite Pronouns
+      {
+        section: "indef",
+        sectionTitle: "Indefinite Pronouns",
+        question: "An indefinite pronoun refers to things or people in _____ (does not refer to a specific person or thing).",
+        answer: "General",
+        distractors: ["Specific", "Past tense", "Singular only"],
+        hint: "Non-specific group or quantity."
+      },
+      {
+        section: "indef",
+        sectionTitle: "Indefinite vs Definite",
+        question: "'Everyone had a great time at the game tonight.' Is 'Everyone' an indefinite pronoun or a definite noun?",
+        answer: "Indefinite pronoun",
+        distractors: ["Definite noun", "Relative pronoun", "Demonstrative pronoun"],
+        hint: "It does not name a specific person."
+      },
+      {
+        section: "indef",
+        sectionTitle: "Indefinite Pronouns",
+        question: "Which of the following is an INDEFINITE pronoun?",
+        answer: "Someone",
+        distractors: ["Jacob", "Luis", "Lisa"],
+        hint: "Refers to an unknown/general person."
+      },
+
+      // Relative Pronouns
+      {
+        section: "rel",
+        sectionTitle: "Relative Pronouns",
+        question: "A relative pronoun connects a phrase or clause to a noun or pronoun. Which relative pronoun refers to an ANIMATE noun (people)?",
+        answer: "Who",
+        distractors: ["Which", "Whose", "Where"],
+        hint: "Used for people/living beings."
+      },
+      {
+        section: "rel",
+        sectionTitle: "Relative Pronouns",
+        question: "Which relative pronoun refers to an INANIMATE noun (things/objects)?",
+        answer: "Which",
+        distractors: ["Who", "Whom", "Whose"],
+        hint: "Used for non-living objects."
+      },
+      {
+        section: "rel",
+        sectionTitle: "Relative Pronouns",
+        question: "Which relative pronoun is used to show POSSESSION?",
+        answer: "Whose",
+        distractors: ["Who", "That", "Which"],
+        hint: "Shows ownership (e.g. whose car ran out of gas)."
+      },
+      {
+        section: "rel",
+        sectionTitle: "Relative Practice",
+        question: "The girl _____ scored the goal won the game.",
+        answer: "Who",
+        distractors: ["Which", "Whose", "What"],
+        hint: "Girl is an animate noun (person)."
+      },
+      {
+        section: "rel",
+        sectionTitle: "Relative Practice",
+        question: "My red pencil, _____ is my favorite one, is gone.",
+        answer: "Which",
+        distractors: ["Who", "Whose", "Whom"],
+        hint: "Pencil is an inanimate object."
+      },
+      {
+        section: "rel",
+        sectionTitle: "Relative Practice",
+        question: "This is the book _____ I remember.",
+        answer: "That",
+        distractors: ["Who", "Whose", "Where"],
+        hint: "Refers to the inanimate book."
+      },
+      {
+        section: "rel",
+        sectionTitle: "Relative Practice",
+        question: "The family _____ car ran out of gas had to walk to the nearest gas station.",
+        answer: "Whose",
+        distractors: ["Who", "Which", "That"],
+        hint: "Possessive form for the family's car."
+      },
+
+      // Reflexive Pronouns
+      {
+        section: "refl_int",
+        sectionTitle: "Reflexive Pronouns",
+        question: "A reflexive pronoun refers back to the _____ of the clause or sentence and ends in 'self' or 'selves'.",
+        answer: "Subject",
+        distractors: ["Verb", "Predicate", "Preposition"],
+        hint: "Bounces back to the person doing the action."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Reflexive Practice",
+        question: "My sister built the fort _____.",
+        answer: "Herself",
+        distractors: ["Himself", "Themselves", "Itself"],
+        hint: "Sister is 3rd person singular feminine."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Reflexive Practice",
+        question: "The car parks _____ in auto pilot mode.",
+        answer: "Itself",
+        distractors: ["Himself", "Herself", "Themselves"],
+        hint: "Car is 3rd person inanimate."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Reflexive Practice",
+        question: "The toddlers watched _____ in the mirror.",
+        answer: "Themselves",
+        distractors: ["Itself", "Himself", "Themself"],
+        hint: "Toddlers is plural."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Reflexive Practice",
+        question: "We took _____ to the movies yesterday.",
+        answer: "Ourselves",
+        distractors: ["Ourself", "Themselves", "Myself"],
+        hint: "We is 1st person plural."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Reflexive Practice",
+        question: "Did you pay for the watch _____?",
+        answer: "Yourself",
+        distractors: ["Yourselves", "Myself", "Himself"],
+        hint: "You (singular)."
+      },
+
+      // Intensive Pronouns
+      {
+        section: "refl_int",
+        sectionTitle: "Intensive Pronouns",
+        question: "An intensive pronoun places an _____ on a noun or pronoun (and can be removed without changing sentence meaning).",
+        answer: "Emphasis",
+        distractors: ["Question", "Obstacle", "Action"],
+        hint: "Adds stress/emphasis to the noun."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Intensive vs Reflexive",
+        question: "'The bird sang to itself in the morning.' Is 'itself' intensive or reflexive?",
+        answer: "Reflexive (necessary to the sentence)",
+        distractors: ["Intensive (only adds emphasis)", "Relative", "Demonstrative"],
+        hint: "Sang to whom? The sentence requires it."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Intensive vs Reflexive",
+        question: "'I myself won the gaming tournament.' Is 'myself' intensive or reflexive?",
+        answer: "Intensive (adds emphasis to 'I')",
+        distractors: ["Reflexive", "Interrogative", "Demonstrative"],
+        hint: "Can be removed: 'I won the gaming tournament.'"
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Intensive Practice",
+        question: "The students _____ solved the equation.",
+        answer: "Themselves",
+        distractors: ["Themself", "Himself", "Ourselves"],
+        hint: "Students is plural."
+      },
+      {
+        section: "refl_int",
+        sectionTitle: "Intensive Practice",
+        question: "My brother, Frank, _____ paid for the car.",
+        answer: "Himself",
+        distractors: ["Themselves", "Herself", "Myself"],
+        hint: "Frank is singular masculine."
+      },
+
+      // Demonstrative Pronouns
+      {
+        section: "dem_inter",
+        sectionTitle: "Demonstrative Pronouns",
+        question: "Demonstrative pronouns focus attention on nouns. There are ONLY four: this, that, these, and _____.",
+        answer: "Those",
+        distractors: ["Them", "They", "What"],
+        hint: "Plural distant pointer."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Demonstrative Pronouns",
+        question: "Which demonstrative pronoun is SINGULAR and NEAR?",
+        answer: "This",
+        distractors: ["That", "These", "Those"],
+        hint: "Singular near item right here."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Demonstrative Pronouns",
+        question: "Which demonstrative pronoun is PLURAL and DISTANT?",
+        answer: "Those",
+        distractors: ["These", "That", "This"],
+        hint: "Multiple items far away over there."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Demonstrative Practice",
+        question: "_____ is what I've waited for all summer!",
+        answer: "This",
+        distractors: ["These", "Those", "Whose"],
+        hint: "Singular near demonstrative."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Demonstrative Practice",
+        question: "Look! Do you see _____ pink pineapples over there?",
+        answer: "Those",
+        distractors: ["This", "That", "What"],
+        hint: "Plural distant items."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Demonstrative Practice",
+        question: "Will you get me _____ pencil over there, please?",
+        answer: "That",
+        distractors: ["This", "These", "Those"],
+        hint: "Singular distant object."
+      },
+
+      // Interrogative Pronouns
+      {
+        section: "dem_inter",
+        sectionTitle: "Interrogative Pronouns",
+        question: "Interrogative pronouns are used when you are asking a _____ (think: interrogation!).",
+        answer: "Question",
+        distractors: ["Statement", "Command", "Exclamation"],
+        hint: "Who, whom, which, what, whatever asking things."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Pronoun vs Adjective",
+        question: "An interrogative PRONOUN can stand alone and replaces a noun, while an interrogative ADJECTIVE modifies a _____.",
+        answer: "Noun",
+        distractors: ["Verb", "Pronoun", "Adverb"],
+        hint: "Adjectives describe or modify nouns."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Interrogative Practice",
+        question: "To _____ was the letter addressed?",
+        answer: "Whom",
+        distractors: ["Who", "What", "Which"],
+        hint: "Used after the preposition 'to'."
+      },
+      {
+        section: "dem_inter",
+        sectionTitle: "Interrogative Practice",
+        question: "_____ is your brother's name?",
+        answer: "What",
+        distractors: ["Whom", "Which", "Whose"],
+        hint: "Asking for specific identity/name."
+      }
+    ];
+
+    const PRONOUN_MEMORY_PAIRS = [
+      { text: "Antecedent", match: "Noun replaced by pronoun", sub: "Core Concept" },
+      { text: "Relative: Who", match: "Refers to animate noun (people)", sub: "Relative" },
+      { text: "Demonstrative: Those", match: "Plural + Distant", sub: "Demonstrative" },
+      { text: "Intensive Pronoun", match: "Adds emphasis (can be removed)", sub: "Intensive" },
+      { text: "Reflexive Pronoun", match: "Refers back to subject (-self)", sub: "Reflexive" },
+      { text: "Interrogative", match: "Used to ask a question", sub: "Interrogative" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "Ambiguous Antecedent", icon: "❓", maxHp: 100 },
+      { name: "Vague Demonstrative", icon: "👉", maxHp: 120 },
+      { name: "Reflexive Rogue", icon: "🪞", maxHp: 140 },
+      { name: "Relative Chimera", icon: "🦁", maxHp: 160 },
+      { name: "Interrogation Titan", icon: "👑", maxHp: 200 }
+    ];
+
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function speakWord(word) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(word);
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...PRONOUN_DATA].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...PRONOUN_DATA].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      document.getElementById('battleCategoryBadge').textContent = currentBattleWord.sectionTitle;
+      const qHTML = currentBattleWord.question.replace('_____', `<span class="px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/40 mx-1">___ ? ___</span>`);
+      document.getElementById('battleQuestion').innerHTML = qHTML;
+      document.getElementById('battleHint').textContent = `Grammar Clue: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.answer, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-indigo-950 border border-slate-700 hover:border-indigo-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-indigo-400">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      totalAttempts++;
+      const isCorrect = selected === currentBattleWord.answer;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Correct!</b> "${currentBattleWord.answer}" deals ${dmg} damage!`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Pronoun Master!", "You defeated every grammar boss!", totalScore, `${acc}%`);
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> The correct answer was "<b>${currentBattleWord.answer}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review your pronoun charts and try again!", totalScore, `${acc}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Pronoun Blitz complete!", speedScoreVal, `${acc}%`);
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = PRONOUN_DATA[Math.floor(Math.random() * PRONOUN_DATA.length)];
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.question.replace('_____', '_______');
+
+      const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-indigo-950/60 border border-slate-700 hover:border-indigo-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      totalAttempts++;
+      if (chosen === speedCurrentWord.answer) {
+        correctAttempts++;
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...PRONOUN_MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Grammar Rule" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-indigo-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-indigo-400 transition">✍️</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-indigo-400 block">${card.sub}</span>
+            <p class="font-bold text-xs md:text-sm text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-indigo-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, `${memAcc}%`);
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-indigo-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-indigo-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT
+    // ==========================================
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = PRONOUN_DATA;
+      if (filter !== 'all') list = PRONOUN_DATA.filter(w => w.section === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-indigo-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        const completeSentence = w.question.replace('_____', `<b class="text-indigo-300 underline">${w.answer}</b>`);
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-indigo-500/10 text-indigo-300 border-indigo-500/30">
+                ${w.sectionTitle}
+              </span>
+              <button onclick="speakWord('${w.answer}')" class="text-xs bg-slate-800 hover:bg-indigo-600 px-2 py-1 rounded-lg text-slate-300 hover:text-white transition flex items-center gap-1">
+                🔊 Listen
+              </button>
+            </div>
+            <p class="text-xs text-slate-300 leading-relaxed">${completeSentence}</p>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            Worksheet Key: <b class="text-slate-100">${w.answer}</b>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'intro', 'indef', 'rel', 'refl_int', 'dem_inter'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    // Modal & Confetti
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#6366f1', '#a855f7', '#ec4899', '#f59e0b', '#10b981'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
