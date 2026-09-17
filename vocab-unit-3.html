@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocab Quest • Unit 3 (mem, ology, sci)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-emerald-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 via-teal-600 to-cyan-500 flex items-center justify-center shadow-lg shadow-emerald-500/30 font-black text-lg">
+          🧠
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">VOCAB QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Unit 3 • Roots: mem, ology, sci</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold uppercase tracking-wider">
+          Unit 3: I Just Gotta Know!
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Memory & <span class="bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">Knowledge Roots</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master 10 essential root words based on <b>mem</b> (mindful, recall - Latin), <b>ology</b> (study - Greek), and <b>sci</b> (to know - Latin)!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">⚔️</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-full border border-emerald-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-emerald-300 transition">Memory Titan Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat 5 memory bosses by selecting the right root words to complete real sentence clues.</p>
+          <div class="mt-4 flex items-center text-emerald-400 text-xs font-bold gap-1">PLAY BATTLE <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-teal-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center text-2xl">⚡</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-teal-500/10 text-teal-300 rounded-full border border-teal-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-teal-300 transition">Knowledge Speed Blitz</h3>
+          <p class="text-sm text-slate-400 mt-2">Match definitions to words like memoir, etymology, and conscientious under 60 seconds.</p>
+          <div class="mt-4 flex items-center text-teal-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl">🧩</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-cyan-300 transition">Root Memory Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Flip and pair Unit 3 vocabulary words with their concise definitions and root origins.</p>
+          <div class="mt-4 flex items-center text-cyan-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Unit 3 Root Word Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review all 10 words with audio pronunciation, roots, meanings, and worksheet sentences.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">OPEN VAULT <span>→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-emerald-600 flex items-center justify-center text-2xl shadow-lg shadow-emerald-600/40">🧠</div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-emerald-300">Scholar Hero</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-emerald-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Amnesia Spectre</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">👻</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="battleRootBadge" class="text-xs uppercase tracking-wider text-emerald-400 font-bold">Unit 3 Sentence Context</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-emerald-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-teal-500/10 text-teal-400 text-xs font-bold rounded-full uppercase tracking-wider">Target Definition</span>
+        <h3 id="speedDefinition" class="text-xl md:text-2xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-emerald-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match Unit 3 vocabulary words with their exact definitions!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Unit 3 Root Vault</h2>
+          <p class="text-xs text-slate-400">Explore words by root: <b>mem</b> (Latin: mindful, recall), <b>ology</b> (Greek: study), and <b>sci</b> (Latin: to know).</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-emerald-600 text-white">All (10)</button>
+          <button onclick="filterVault('mem')" id="tab-mem" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">mem (mindful, recall)</button>
+          <button onclick="filterVault('ology')" id="tab-ology" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">ology (study)</button>
+          <button onclick="filterVault('sci')" id="tab-sci" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">sci (to know)</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-emerald-500/20 text-emerald-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Unit 3 Mastered!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding knowledge & memory root mastery.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // EXACT DATA FROM UNIT 3: I JUST GOTTA KNOW! WORKSHEET
+    const UNIT3_DATA = [
+      {
+        word: "memoir",
+        root: "mem",
+        rootMeaning: "mindful, recall (Latin)",
+        partOfSpeech: "n.",
+        definition: "a written account in which someone describes past experiences",
+        sentence: "The explorer's _____ contained fascinating information about his discoveries, as well as his personal daily activities.",
+        distractors: ["memento", "geology", "conscience"]
+      },
+      {
+        word: "memorialize",
+        root: "mem",
+        rootMeaning: "mindful, recall (Latin)",
+        partOfSpeech: "v.",
+        definition: "to do or create something that causes people to remember an important person, thing, or event",
+        sentence: "Mount Rushmore _____ four of the greatest US presidents.",
+        distractors: ["visualize", "memorial", "conscientious"]
+      },
+      {
+        word: "memorable",
+        root: "mem",
+        rootMeaning: "mindful, recall (Latin)",
+        partOfSpeech: "adj.",
+        definition: "very good or interesting and worth remembering",
+        sentence: "My first time visiting New York City was my most _____ trip of my life.",
+        distractors: ["audible", "memento", "conscientious"]
+      },
+      {
+        word: "memento",
+        root: "mem",
+        rootMeaning: "mindful, recall (Latin)",
+        partOfSpeech: "n.",
+        definition: "an object that is a reminder of a person, place, or event; a souvenir",
+        sentence: "I kept the ticket stub to the first baseball game I ever went to as a _____ to always remind me of the fun time I had.",
+        distractors: ["memoir", "vista", "aquarium"]
+      },
+      {
+        word: "geology",
+        root: "ology",
+        rootMeaning: "study (Greek)",
+        partOfSpeech: "n.",
+        definition: "the scientific study of the history of Earth, especially as recorded by rocks",
+        sentence: "_____ has determined that the approximate age of Earth is 4.54 billion years old.",
+        distractors: ["anthropology", "etymology", "science"]
+      },
+      {
+        word: "anthropology",
+        root: "ology",
+        rootMeaning: "study (Greek)",
+        partOfSpeech: "n.",
+        definition: "the study of human races, origins, societies, and cultures",
+        sentence: "Because I am very interested in learning about humans and different cultures, I will major in _____ when I go to college.",
+        distractors: ["geology", "etymology", "biology"]
+      },
+      {
+        word: "etymology",
+        root: "ology",
+        rootMeaning: "study (Greek)",
+        partOfSpeech: "n.",
+        definition: "the study of the origin of words and the way in which their meanings have changed throughout history",
+        sentence: "One example of _____ is the study of Greek and Latin roots.",
+        distractors: ["anthropology", "geology", "cacophony"]
+      },
+      {
+        word: "science",
+        root: "sci",
+        rootMeaning: "to know (Latin)",
+        partOfSpeech: "n.",
+        definition: "the study of the natural world based on facts learned through experiments and observations",
+        sentence: "My favorite subject in school is _____ because I love learning about the world around us.",
+        distractors: ["conscience", "geology", "etymology"]
+      },
+      {
+        word: "conscience",
+        root: "sci",
+        rootMeaning: "to know (Latin)",
+        partOfSpeech: "n.",
+        definition: "the part of the mind that tells you certain actions are right or wrong",
+        sentence: "Even though I didn't want to fail the test, my _____ just wouldn't allow me to cheat.",
+        distractors: ["conscientious", "science", "memoir"]
+      },
+      {
+        word: "conscientious",
+        root: "sci",
+        rootMeaning: "to know (Latin)",
+        partOfSpeech: "adj.",
+        definition: "very careful about doing what you are supposed to do; concerned with doing something correctly",
+        sent
