@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Quest • Fractions, Decimals & Absolute Value</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-yellow-500 to-emerald-500 flex items-center justify-center shadow-lg shadow-amber-500/30 text-xl font-bold">
+          ⚖️
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 bg-clip-text text-transparent">MATH QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Unit 3 • Fractions, Decimals & Absolute Value</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-semibold uppercase tracking-wider">
+          Fractions • Decimals • Absolute Value
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Rational Numbers <span class="bg-gradient-to-r from-amber-400 via-yellow-300 to-emerald-400 bg-clip-text text-transparent">& Absolute Arena</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Practice converting fractions to decimals, simplifying decimals to fractions, comparing values, and mastering absolute value distance!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">⚔️</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Rational Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses by converting, comparing, and computing absolute values of numbers and fractions.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">START BATTLE <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-yellow-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-yellow-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-yellow-500/20 text-yellow-400 flex items-center justify-center text-2xl">⚡</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-yellow-500/10 text-yellow-300 rounded-full border border-yellow-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-yellow-300 transition">Speed Conversion Rush</h3>
+          <p class="text-sm text-slate-400 mt-2">Race the clock to solve absolute values and convert common fractions & decimals.</p>
+          <div class="mt-4 flex items-center text-yellow-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">🧩</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-full border border-emerald-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-emerald-300 transition">Equivalence Memory Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Flip and match equivalent fractions, decimals, and absolute values.</p>
+          <div class="mt-4 flex items-center text-emerald-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Rules & Conversions Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review simplifying rules, place value charts, division methods, and benchmark conversions.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">OPEN RULES VAULT <span>→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-amber-600 flex items-center justify-center text-2xl shadow-lg shadow-amber-600/40">🧙‍♂️</div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-amber-300">Math Hero</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-amber-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-rose-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Absolute Golem</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">🗿</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-yellow-500 to-emerald-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="battleCategoryBadge" class="text-xs uppercase tracking-wider text-amber-400 font-bold">Fractions & Absolute Value</span>
+          <p id="battleQuestion" class="text-xl md:text-2xl font-bold text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center font-mono"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-amber-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-yellow-500/10 text-yellow-400 text-xs font-bold rounded-full uppercase tracking-wider">Fast Solve!</span>
+        <h3 id="speedDefinition" class="text-2xl md:text-3xl font-black text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center font-mono"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-amber-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match fractions, decimals, and absolute values with their equivalent values!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Conversion & Absolute Value Vault</h2>
+          <p class="text-xs text-slate-400">Step-by-step rules and benchmarks straight from your class worksheets.</p>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-amber-600 text-white">All (6)</button>
+          <button onclick="filterVault('dec2frac')" id="tab-dec2frac" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Dec → Frac</button>
+          <button onclick="filterVault('frac2dec')" id="tab-frac2dec" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Frac → Dec</button>
+          <button onclick="filterVault('abs')" id="tab-abs" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Absolute Value</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div class="w-16 h-16 rounded-2xl bg-amber-500/20 text-amber-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Challenge Completed!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding rational number accuracy.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // DYNAMIC PROBLEM GENERATOR BASED DIRECTLY ON THE WORKSHEETS
+    const BENCHMARK_FRACTIONS = [
+      { n: 1, d: 2, dec: 0.5, strFrac: "1/2" },
+      { n: 1, d: 4, dec: 0.25, strFrac: "1/4" },
+      { n: 3, d: 4, dec: 0.75, strFrac: "3/4" },
+      { n: 1, d: 5, dec: 0.2, strFrac: "1/5" },
+      { n: 2, d: 5, dec: 0.4, strFrac: "2/5" },
+      { n: 3, d: 5, dec: 0.6, strFrac: "3/5" },
+      { n: 4, d: 5, dec: 0.8, strFrac: "4/5" },
+      { n: 1, d: 8, dec: 0.125, strFrac: "1/8" },
+      { n: 3, d: 8, dec: 0.375, strFrac: "3/8" },
+      { n: 5, d: 8, dec: 0.625, strFrac: "5/8" },
+      { n: 7, d: 8, dec: 0.875, strFrac: "7/8" },
+      { n: 7, d: 20, dec: 0.35, strFrac: "7/20" },
+      { n: 9, d: 20, dec: 0.45, strFrac: "9/20" },
+      { n: 11, d: 20, dec: 0.55, strFrac: "11/20" },
+      { n: 13, d: 20, dec: 0.65, strFrac: "13/20" },
+      { n: 6, d: 25, dec: 0.24, strFrac: "6/25" }
+    ];
+
+    function gcd(a, b) { return b === 0 ? a : gcd(b, a % b); }
+
+    function generateRandomProblem() {
+      const types = ['dec_to_frac', 'frac_to_dec', 'compare', 'abs_basic', 'abs_compare', 'horseshoe_word'];
+      const chosen = types[Math.floor(Math.random() * types.length)];
+      let q = "", ans = "", distractors = [], hint = "", exp = "";
+
+      if (chosen === 'dec_to_frac') {
+        const item = BENCHMARK_FRACTIONS[Math.floor(Math.random() * BENCHMARK_FRACTIONS.length)];
+        q = `Convert ${item.dec} to a simplified fraction.`;
+        ans = item.strFrac;
+        hint = "Use place value over 10, 100, or 1000 and divide out the greatest common factor.";
+        exp = `${item.dec} = ${item.strFrac}`;
+        distractors = [
+          `${item.n}/${item.d * 2}`,
+          `${item.n + 1}/${item.d}`,
+          `${Math.round(item.dec * 10)}/10`
+        ];
+      } else if (chosen === 'frac_to_dec') {
+        const item = BENCHMARK_FRACTIONS[Math.floor(Math.random() * BENCHMARK_FRACTIONS.length)];
+        q = `Convert the fraction ${item.strFrac} to a decimal.`;
+        ans = item.dec.toString();
+        hint = "A fraction is division: divide the numerator by the denominator (top ÷ bottom).";
+        exp = `${item.strFrac} = ${item.dec}`;
+        distractors = [
+          (item.dec + 0.1).toFixed(item.dec.toString().split('.')[1]?.length || 1),
+          (item.dec - 0.05).toFixed(2),
+          `0.${item.n}${item.d}`
+        ];
+      } else if (chosen === 'compare') {
+        const item = BENCHMARK_FRACTIONS[Math.floor(Math.random() * BENCHMARK_FRACTIONS.length)];
+        const offset = (Math.random() < 0.5 ? -0.05 : 0.05);
+        const decVal = parseFloat((item.dec + offset).toFixed(3));
+        const isGreater = item.dec > decVal;
+        const isEqual = item.dec === decVal;
+        const symbol = isEqual ? "=" : (isGreater ? ">" : "<");
+
+        q = `Compare: ${item.strFrac} ____ ${decVal} (Convert to same form)`;
+        ans = symbol;
+        hint = `Convert ${item.strFrac} into a decimal first: it equals ${item.dec}.`;
+        exp = `${item.strFrac} (${item.dec}) ${symbol} ${decVal}`;
+        distractors = ["=", ">", "<"].filter(s => s !== symbol);
+        distractors.push("≈");
+      } else if (chosen === 'abs_basic') {
+        const sub = Math.random();
+        if (sub < 0.35) {
+          // integer
+          const num = Math.floor(Math.random() * 90) + 5;
+          const isNeg = Math.random() < 0.6;
+          const str = isNeg ? `-${num}` : `${num}`;
+          q = `Find the absolute value: |${str}| = ?`;
+          ans = num.toString();
+          hint = "Absolute value represents the distance from 0 on a number line (always positive or 0).";
+          exp = `|${str}| = ${num}`;
+          distractors = [`-${num}`, `0`, `${num + 10}`];
+        } else if (sub < 0.7) {
+          // decimal
+          const val = (Math.floor(Math.random() * 800) + 10) / 10;
+          const isNeg = Math.random() < 0.6;
+          const str = isNeg ? `-${val}` : `${val}`;
+          q = `Find the absolute value: |${str}| = ?`;
+          ans = val.toString();
+          hint = "Absolute value is distance from zero; remove the negative sign.";
+          exp = `|${str}| = ${val}`;
+          distractors = [`-${val}`, `0.${val}`, `${val + 1}`];
+        } else {
+          // mixed fraction
+          const whole = Math.floor(Math.random() * 8) + 1;
+          const n = Math.random() < 0.5 ? 1 : 3;
+          q = `Find the absolute value: |- ${whole} ${n}/4| = ?`;
+          ans = `${whole} ${n}/4`;
+          hint = "Absolute value distance is always non-negative.";
+          exp = `|- ${whole} ${n}/4| = ${whole} ${n}/4`;
+          distractors = [`-${whole} ${n}/4`, `${whole + 1} ${n}/4`, `${whole}`];
+        }
+      } else if (chosen === 'abs_compare') {
+        const a = Math.floor(Math.random() * 20) + 1;
+        const b = Math.floor(Math.random() * 20) + 1;
+        q = `Which has a greater absolute value: |- ${a}| or |${b}|?`;
+        ans = a > b ? `|- ${a}|` : (b > a ? `|${b}|` : "They are equal");
+        hint = "Calculate both absolute values first, then compare their distances from zero.";
+        exp = `|- ${a}| = ${a} and |${b}| = ${b}`;
+        distractors = [a > b ? `|${b}|` : `|- ${a}|`, "Neither", "0"];
+      } else {
+        // Horseshoe / Real world word problem from worksheet
+        const distA = Math.floor(Math.random() * 4) + 2; // e.g. 3 ft in front (-3)
+        const distR = Math.floor(Math.random() * 3) + 1; // e.g. 2 ft past (+2)
+        q = `Alberto's horseshoe is ${distA} ft in front of the stake (-${distA}). Rebecca's is ${distR} ft past (+${distR}). Who is closer to the stake?`;
+        const closer = distA < distR ? "Alberto" : (distR < distA ? "Rebecca" : "Tie");
+        ans = closer;
+        hint = `Compare the distances from the stake (0): |- ${distA}| = ${distA} ft vs |+ ${distR}| = ${distR} ft.`;
+        exp = `Rebecca is ${distR} ft away, Alberto is ${distA} ft away. Smaller distance is closer!`;
+        distractors = [closer === "Alberto" ? "Rebecca" : "Alberto", "Neither", "Both equal"];
+      }
+
+      return { question: q, answer: ans, distractors: distractors.slice(0, 3), hint: hint, explanation: exp };
+    }
+
+    const MEMORY_PAIRS = [
+      { text: "3/4", match: "0.75", sub: "Conversion" },
+      { text: "1/8", match: "0.125", sub: "Conversion" },
+      { text: "5/8", match: "0.625", sub: "Conversion" },
+      { text: "|- 54.5|", match: "54.5", sub: "Absolute Value" },
+      { text: "|- 4 3/4|", match: "4 3/4", sub: "Absolute Value" },
+      { text: "0.65", match: "13/20", sub: "Simplified Fraction" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+
+    const BOSS_DATA = [
+      { name: "Absolute Golem", icon: "🗿", maxHp: 100 },
+      { name: "Decimal Hydra", icon: "🐉", maxHp: 120 },
+      { name: "Fraction Behemoth", icon: "🦏", maxHp: 140 },
+      { name: "Negative Number Wyrm", icon: "🐍", maxHp: 160 },
+      { name: "The Rational Overlord", icon: "👑", maxHp: 200 }
+    ];
+
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      currentBattleWord = generateRandomProblem();
+      document.getElementById('battleQuestion').textContent = currentBattleWord.question;
+      document.getElementById('battleHint').textContent = `Hint: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.answer, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-amber-950 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95 font-mono";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-amber-400 font-sans">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      totalAttempts++;
+      const isCorrect = selected === currentBattleWord.answer;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Correct!</b> Deals ${dmg} damage! (${currentBattleWord.explanation})`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Boss Defeated!", "You conquered the Rational Number Arena!", totalScore, `${acc}%`);
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> The correct answer was "<b>${currentBattleWord.answer}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review conversion rules and try again!", totalScore, `${acc}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Conversion Rush complete!", speedScoreVal, `${acc}%`);
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = generateRandomProblem();
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.question;
+
+      const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-amber-950/60 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md font-mono";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      totalAttempts++;
+      if (chosen === speedCurrentWord.answer) {
+        correctAttempts++;
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Equivalent" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-amber-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-amber-400 transition">⚖️</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-amber-400 block">${card.sub}</span>
+            <p class="font-black text-lg md:text-xl text-slate-100 font-mono">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-amber-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, `${memAcc}%`);
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-amber-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-amber-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT
+    // ==========================================
+    const VAULT_RULES = [
+      {
+        category: "dec2frac",
+        title: "Decimal → Fraction",
+        rule: "1. Read using place value. 2. Write over 10, 100, or 1000. 3. Simplify by dividing by the GCF.",
+        example: "0.65 = 65/100 -> divide by 5 -> 13/20",
+        tip: "0.375 has 3 decimal digits, so put 375 over 1000 -> divide by 125 -> 3/8."
+      },
+      {
+        category: "frac2dec",
+        title: "Fraction → Decimal",
+        rule: "A fraction is a division problem: numerator ÷ denominator (top number inside house, bottom outside).",
+        example: "5/8 = 5.000 ÷ 8 = 0.625",
+        tip: "Add a decimal and zeros to the numerator until it divides evenly or repeats."
+      },
+      {
+        category: "abs",
+        title: "Absolute Value Concept",
+        rule: "The distance a number is from 0 on a number line. Distance is ALWAYS positive or zero!",
+        example: "|-46| = 46  and  |0.7| = 0.7",
+        tip: "Symbols |x| make whatever is inside positive."
+      },
+      {
+        category: "abs",
+        title: "Absolute Value with Fractions & Decimals",
+        rule: "Whether it is an integer, decimal, or mixed fraction, absolute value removes the negative sign.",
+        example: "|-4 3/4| = 4 3/4  and  |-54.5| = 54.5",
+        tip: "|-7.35| = 7.35"
+      },
+      {
+        category: "dec2frac",
+        title: "Comparing Fractions & Decimals",
+        rule: "Convert both numbers to the same form (usually decimals) before comparing with <, >, or =.",
+        example: "3/4 vs 0.7 -> 3/4 = 0.75 -> 0.75 > 0.70, so 3/4 > 0.7",
+        tip: "5/8 = 0.625, so 0.6 < 5/8 (0.600 < 0.625)."
+      },
+      {
+        category: "abs",
+        title: "Distance From a Target (Horseshoes)",
+        rule: "When evaluating who is closer to a point (like 0), compare their absolute values, not their positive/negative signs.",
+        example: "-3 is smaller than +2, but |-3| = 3 ft away while |+2| = 2 ft away. 2 ft is closer!",
+        tip: "Smaller absolute value = closer to zero."
+      }
+    ];
+
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = VAULT_RULES;
+      if (filter !== 'all') list = VAULT_RULES.filter(w => w.category === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-amber-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-amber-500/10 text-amber-300 border-amber-500/30">
+              ${w.category.toUpperCase()}
+            </span>
+            <h3 class="text-xl font-black text-white">${w.title}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-amber-300">Rule:</b> ${w.rule}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 font-mono">
+              <span class="text-slate-500 font-semibold block mb-0.5 font-sans">Example:</span>
+              <span class="text-amber-200">${w.example}</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            💡 <span>${w.tip}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'dec2frac', 'frac2dec', 'abs'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-amber-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#f59e0b', '#eab308', '#10b981', '#06b6d4', '#6366f1'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
