@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Quest • Polygons & Distance on Coordinate Plane</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-cyan-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-cyan-500/30 text-xl font-bold">
+          📈
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-400 bg-clip-text text-transparent">MATH QUEST</h1>
+          <p class="text-xs text-slate-400 font-medium">Lesson 2-6 • Coordinate Plane & Polygons</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-5xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 1. MENU -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider">
+          Lesson 2-6: Coordinate Plane Mastery
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Polygons, Distance <span class="bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-400 bg-clip-text text-transparent">& Reflections</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Master distance using absolute values, reflecting across the x/y axes, and calculating the perimeter and area of polygons on the grid!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+        <div onclick="startGame('battle')" class="group bg-slate-900 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl">⚔️</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/30">Boss Quest</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-cyan-300 transition">Grid Boss Battle</h3>
+          <p class="text-sm text-slate-400 mt-2">Defeat bosses by finding side lengths, perimeter, area, and reflections of geometric figures.</p>
+          <div class="mt-4 flex items-center text-cyan-400 text-xs font-bold gap-1">START BATTLE <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('speed')" class="group bg-slate-900 border border-slate-800 hover:border-teal-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-teal-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-teal-500/20 text-teal-400 flex items-center justify-center text-2xl">⚡</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-teal-500/10 text-teal-300 rounded-full border border-teal-500/30">60s Blitz</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-teal-300 transition">Distance & Reflection Blitz</h3>
+          <p class="text-sm text-slate-400 mt-2">Quickly determine point distances and reflections across axes under the 60-second timer!</p>
+          <div class="mt-4 flex items-center text-teal-400 text-xs font-bold gap-1">RACE THE CLOCK <span>→</span></div>
+        </div>
+
+        <div onclick="startGame('memory')" class="group bg-slate-900 border border-slate-800 hover:border-blue-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl">🧩</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-blue-500/10 text-blue-300 rounded-full border border-blue-500/30">Puzzle</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-blue-300 transition">Coordinate Memory Matrix</h3>
+          <p class="text-sm text-slate-400 mt-2">Flip and match segment coordinates with their exact absolute value distance.</p>
+          <div class="mt-4 flex items-center text-blue-400 text-xs font-bold gap-1">START MATCHING <span>→</span></div>
+        </div>
+
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-indigo-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1">
+          <div class="flex items-start justify-between">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-indigo-500/10 text-indigo-300 rounded-full border border-indigo-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-indigo-300 transition">Coordinate Rules Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review same quadrant vs different quadrant rules, reflection formulas, and perimeter formulas.</p>
+          <div class="mt-4 flex items-center text-indigo-400 text-xs font-bold gap-1">OPEN RULES VAULT <span>→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-cyan-600 flex items-center justify-center text-2xl shadow-lg shadow-cyan-600/40">📐</div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-cyan-300">Cartesian Explorer</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-cyan-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-rose-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Polygon Titan</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">🔷</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-teal-500 to-blue-500"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="battleCategoryBadge" class="text-xs uppercase tracking-wider text-cyan-400 font-bold">Coordinate Geometry</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-bold text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center font-mono"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-cyan-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-cyan-500/10 text-cyan-400 text-xs font-bold rounded-full uppercase tracking-wider">Fast Solve!</span>
+        <h3 id="speedDefinition" class="text-xl md:text-2xl font-black text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center font-mono"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-cyan-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match the coordinates with their exact absolute value distance!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Coordinate Plane Rulebook Vault</h2>
+          <p class="text-xs text-slate-400">Key distance rules, reflection rules, and perimeter formulas from Lesson 2-6.</p>
+        </div>
+        <div class="flex items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-cyan-600 text-white">All Rules</button>
+          <button onclick="filterVault('distance')" id="tab-distance" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Distance</button>
+          <button onclick="filterVault('reflection')" id="tab-reflection" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Reflections</button>
+          <button onclick="filterVault('polygons')" id="tab-polygons" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Polygons & Perimeter</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-cyan-500/20 text-cyan-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Grid Master!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding coordinate geometry accuracy.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // DYNAMIC PROBLEM GENERATOR BASED DIRECTLY ON WORKSHEETS 5656, 5655, 5654
+    function generateCoordinateProblem() {
+      const types = ['distance_diff_quad', 'distance_same_quad', 'reflection_axis', 'rectangle_perimeter', 'rectangle_area', 'shape_identify'];
+      const chosen = types[Math.floor(Math.random() * types.length)];
+      let q = "", ans = "", distractors = [], hint = "", exp = "";
+
+      if (chosen === 'distance_diff_quad') {
+        // Crossing an axis (different signs): add absolute values |a| + |b|
+        const fixedCoord = Math.floor(Math.random() * 8) - 4;
+        const a = -(Math.floor(Math.random() * 7) + 2); // e.g. -3
+        const b = Math.floor(Math.random() * 7) + 2;   // e.g. +4
+        const isHorizontal = Math.random() < 0.5;
+        const p1 = isHorizontal ? `(${a}, ${fixedCoord})` : `(${fixedCoord}, ${a})`;
+        const p2 = isHorizontal ? `(${b}, ${fixedCoord})` : `(${fixedCoord}, ${b})`;
+        const dist = Math.abs(a) + Math.abs(b);
+
+        q = `Find the distance between ${p1} and ${p2}.`;
+        ans = `${dist} units`;
+        hint = `Since coordinates have different signs (cross the axis), ADD their absolute values: |${a}| + |${b}|.`;
+        exp = `|${a}| + |${b}| = ${Math.abs(a)} + ${b} = ${dist}`;
+        distractors = [
+          `${Math.abs(b - Math.abs(a))} units`,
+          `${dist + 2} units`,
+          `${dist - 1} units`
+        ];
+
+      } else if (chosen === 'distance_same_quad') {
+        // Same quadrant (same sign): subtract absolute values |larger| - |smaller|
+        const fixedCoord = Math.floor(Math.random() * 8) - 4;
+        const isNegative = Math.random() < 0.5;
+        const v1 = Math.floor(Math.random() * 5) + 1; // e.g. 2
+        const v2 = v1 + Math.floor(Math.random() * 6) + 2; // e.g. 7
+        const a = isNegative ? -v2 : v2;
+        const b = isNegative ? -v1 : v1;
+        const isHorizontal = Math.random() < 0.5;
+        const p1 = isHorizontal ? `(${a}, ${fixedCoord})` : `(${fixedCoord}, ${a})`;
+        const p2 = isHorizontal ? `(${b}, ${fixedCoord})` : `(${fixedCoord}, ${b})`;
+        const dist = v2 - v1;
+
+        q = `Find the distance between ${p1} and ${p2}.`;
+        ans = `${dist} units`;
+        hint = `Since coordinates share the same sign (same quadrant), SUBTRACT their absolute values: |${a}| - |${b}|.`;
+        exp = `|${a}| - |${b}| = ${v2} - ${v1} = ${dist}`;
+        distractors = [
+          `${v2 + v1} units`,
+          `${dist + 3} units`,
+          `${dist + 1} units`
+        ];
+
+      } else if (chosen === 'reflection_axis') {
+        const x = (Math.floor(Math.random() * 8) + 1) * (Math.random() < 0.5 ? -1 : 1);
+        const y = (Math.floor(Math.random() * 8) + 1) * (Math.random() < 0.5 ? -1 : 1);
+        const acrossX = Math.random() < 0.5;
+
+        if (acrossX) {
+          q = `What are the coordinates of point (${x}, ${y}) reflected across the x-axis?`;
+          ans = `(${x}, ${-y})`;
+          hint = "When reflecting across the x-axis, the x-coordinate stays the same and the y-coordinate changes sign.";
+          exp = `(${x}, ${y}) reflected across x-axis -> (${x}, ${-y})`;
+          distractors = [`(${-x}, ${y})`, `(${-x}, ${-y})`, `(${y}, ${x})`];
+        } else {
+          q = `What are the coordinates of point (${x}, ${y}) reflected across the y-axis?`;
+          ans = `(${-x}, ${y})`;
+          hint = "When reflecting across the y-axis, the y-coordinate stays the same and the x-coordinate changes sign.";
+          exp = `(${x}, ${y}) reflected across y-axis -> (${-x}, ${y})`;
+          distractors = [`(${x}, ${-y})`, `(${-x}, ${-y})`, `(${y}, ${x})`];
+        }
+
+      } else if (chosen === 'rectangle_perimeter') {
+        // e.g. A(-1, 6), B(-7, 6), C(-7, -3), D(-1, -3)
+        const x1 = -(Math.floor(Math.random() * 5) + 3); // e.g. -7
+        const x2 = -(Math.floor(Math.random() * 2) + 1); // e.g. -1
+        const y1 = -(Math.floor(Math.random() * 4) + 1); // e.g. -3
+        const y2 = Math.floor(Math.random() * 5) + 3;    // e.g. +6
+        const width = Math.abs(x2 - x1);
+        const height = Math.abs(y2 - y1);
+        const perim = 2 * (width + height);
+
+        q = `Find the perimeter of a rectangle with vertices at A(${x2}, ${y2}), B(${x1}, ${y2}), C(${x1}, ${y1}), and D(${x2}, ${y1}).`;
+        ans = `${perim} units`;
+        hint = `Find length (|${x2}| - |${x1}| = ${width}) and height (|${y2}| + |${y1}| = ${height}), then use P = 2(l + w).`;
+        exp = `Width = ${width}, Height = ${height}. Perimeter = 2 × (${width} + ${height}) = ${perim}`;
+        distractors = [
+          `${width * height} units`,
+          `${perim - 4} units`,
+          `${width + height} units`
+        ];
+
+      } else if (chosen === 'rectangle_area') {
+        const x1 = -(Math.floor(Math.random() * 4) + 2); // e.g. -3
+        const x2 = Math.floor(Math.random() * 4) + 2;    // e.g. +4
+        const y1 = -(Math.floor(Math.random() * 4) + 3); // e.g. -5
+        const y2 = Math.floor(Math.random() * 4) + 2;    // e.g. +3
+        const width = Math.abs(x1) + Math.abs(x2);
+        const height = Math.abs(y1) + Math.abs(y2);
+        const area = width * height;
+
+        q = `Find the area of a rectangle with vertices at (${x1}, ${y2}), (${x2}, ${y2}), (${x2}, ${y1}), and (${x1}, ${y1}).`;
+        ans = `${area} sq units`;
+        hint = `Width = |${x1}| + |${x2}| = ${width}. Height = |${y2}| + |${y1}| = ${height}. Area = length × width.`;
+        exp = `Area = ${width} × ${height} = ${area}`;
+        distractors = [
+          `${2 * (width + height)} sq units`,
+          `${area + 10} sq units`,
+          `${area - 8} sq units`
+        ];
+
+      } else {
+        // Classify shape from vertices
+        const side = Math.floor(Math.random() * 5) + 3;
+        const isSquare = Math.random() < 0.5;
+        const w = side;
+        const h = isSquare ? side : side + 3;
+
+        q = `A polygon on a grid has vertices A(0, 0), B(${w}, 0), C(${w}, ${h}), D(0, ${h}). What polygon is this?`;
+        ans = isSquare ? "Square (all 4 sides equal)" : "Rectangle (opposite sides equal)";
+        hint = `Check the side lengths: horizontal width = ${w}, vertical height = ${h}.`;
+        exp = isSquare ? `Width = ${w} and Height = ${h}. Equal sides = Square!` : `Width = ${w} and Height = ${h}. Opposite sides equal = Rectangle!`;
+        distractors = [
+          isSquare ? "Rectangle (not a square)" : "Square (all sides equal)",
+          "Trapezoid",
+          "Rhombus (non-right angles)"
+        ];
+      }
+
+      return { question: q, answer: ans, distractors: distractors, hint: hint, explanation: exp };
+    }
+
+    const MEMORY_PAIRS = [
+      { text: "(-3, 8) to (-3, -1)", match: "9 units (|8|+|-1|)", sub: "Vertical Distance" },
+      { text: "(-3, -1) to (4, -1)", match: "7 units (|-3|+|4|)", sub: "Horizontal Distance" },
+      { text: "Point (4, 5) over x-axis", match: "(4, -5)", sub: "Reflection" },
+      { text: "Point (-2, 6) over y-axis", match: "(2, 6)", sub: "Reflection" },
+      { text: "Same Sign Coordinates", match: "Subtract: |a| - |b|", sub: "Distance Rule" },
+      { text: "Different Sign Coordinates", match: "Add: |a| + |b|", sub: "Distance Rule" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+
+    const BOSS_DATA = [
+      { name: "Quadrant I Guardian", icon: "📐", maxHp: 100 },
+      { name: "Axis Reflection Wyrm", icon: "🪞", maxHp: 120 },
+      { name: "Absolute Distance Golem", icon: "🗿", maxHp: 140 },
+      { name: "Irregular Polygon Hydra", icon: "🐉", maxHp: 160 },
+      { name: "Cartesian Master", icon: "👑", maxHp: 200 }
+    ];
+
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      currentBattleWord = generateCoordinateProblem();
+      document.getElementById('battleQuestion').textContent = currentBattleWord.question;
+      document.getElementById('battleHint').textContent = `Hint: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.answer, ...currentBattleWord.distractors].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-cyan-950 border border-slate-700 hover:border-cyan-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95 font-mono text-sm md:text-base";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-cyan-400 font-sans">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      totalAttempts++;
+      const isCorrect = selected === currentBattleWord.answer;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Correct!</b> Deals ${dmg} damage! (${currentBattleWord.explanation})`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Grid Master!", "You conquered all 5 coordinate geometry bosses!", totalScore, `${acc}%`);
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> Correct answer: "<b>${currentBattleWord.answer}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review distance formulas and try again!", totalScore, `${acc}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Coordinate Blitz complete!", speedScoreVal, `${acc}%`);
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = generateCoordinateProblem();
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.question;
+
+      const options = [speedCurrentWord.answer, ...speedCurrentWord.distractors].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-cyan-950/60 border border-slate-700 hover:border-cyan-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md font-mono text-sm";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      totalAttempts++;
+      if (chosen === speedCurrentWord.answer) {
+        correctAttempts++;
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Value" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-cyan-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-cyan-400 transition">📈</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-cyan-400 block">${card.sub}</span>
+            <p class="font-black text-sm md:text-base text-slate-100 font-mono">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-cyan-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Solved!", `Completed in ${memoryMovesCount} flips!`, totalScore, `${memAcc}%`);
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-cyan-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-cyan-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT
+    // ==========================================
+    const VAULT_RULES = [
+      {
+        category: "distance",
+        title: "Distance: Different Quadrants (Opposite Signs)",
+        rule: "When coordinates cross an axis (one positive, one negative), ADD their absolute values.",
+        example: "Distance from (-3, -1) to (4, -1): |-3| + |4| = 3 + 4 = 7 units.",
+        tip: "Think: 3 units to the y-axis plus 4 units past it."
+      },
+      {
+        category: "distance",
+        title: "Distance: Same Quadrant (Same Signs)",
+        rule: "When coordinates share the same sign, SUBTRACT their absolute values.",
+        example: "Distance from (-3, -5) to (-3, -2): |-5| - |-2| = 5 - 2 = 3 units.",
+        tip: "Always subtract the smaller absolute value from the larger absolute value."
+      },
+      {
+        category: "reflection",
+        title: "Reflecting Across the X-Axis",
+        rule: "(x, y) reflected across the x-axis becomes (x, -y). The x stays the same; the y flips sign.",
+        example: "Point (3, 4) -> (3, -4)  and  Point (-2, -5) -> (-2, 5)",
+        tip: "Notice you are folding vertically across the horizontal x-axis."
+      },
+      {
+        category: "reflection",
+        title: "Reflecting Across the Y-Axis",
+        rule: "(x, y) reflected across the y-axis becomes (-x, y). The y stays the same; the x flips sign.",
+        example: "Point (3, 4) -> (-3, 4)  and  Point (-7, 2) -> (7, 2)",
+        tip: "Notice you are folding horizontally across the vertical y-axis."
+      },
+      {
+        category: "polygons",
+        title: "Perimeter of Rectangles on the Grid",
+        rule: "1. Find length of horizontal side. 2. Find length of vertical side. 3. Use P = 2(l + w).",
+        example: "A(-1, 6), B(-7, 6), C(-7, -3), D(-1, -3): Width = 6, Height = 9. P = 2(6 + 9) = 30 units.",
+        tip: "Area = l × w = 6 × 9 = 54 square units."
+      },
+      {
+        category: "polygons",
+        title: "Perimeter of Irregular Polygons (Holding Pens & Patios)",
+        rule: "Find the length of EVERY outer edge using absolute values, then add all edges together.",
+        example: "Cow holding pen: 11.75 + 10 + 12.75 + 6 + 24.50 + 16 = 81 yards.",
+        tip: "Make sure you trace all segments around the perimeter without missing any inward corners!"
+      }
+    ];
+
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = VAULT_RULES;
+      if (filter !== 'all') list = VAULT_RULES.filter(w => w.category === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-cyan-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-cyan-500/10 text-cyan-300 border-cyan-500/30">
+              ${w.category.toUpperCase()}
+            </span>
+            <h3 class="text-xl font-black text-white">${w.title}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-cyan-300">Rule:</b> ${w.rule}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80 font-mono">
+              <span class="text-slate-500 font-semibold block mb-0.5 font-sans">Example:</span>
+              <span class="text-cyan-200">${w.example}</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            💡 <span>${w.tip}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'distance', 'reflection', 'polygons'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-cyan-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#06b6d4', '#14b8a6', '#3b82f6', '#f59e0b', '#10b981'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
