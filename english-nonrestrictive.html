@@ -86,4 +86,856 @@
 
         <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1">
           <div class="flex items-start justify-between">
-            <div class="w-12 h-12 rounded-xl bg-
+            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">📖</div>
+            <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Study Deck</span>
+          </div>
+          <h3 class="text-xl font-bold mt-4 text-white group-hover:text-amber-300 transition">Punctuation Rules Vault</h3>
+          <p class="text-sm text-slate-400 mt-2">Review comma rules, dashes vs. parentheses, essential vs. nonessential clauses, and test tips.</p>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1">OPEN RULES VAULT <span>→</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. BOSS BATTLE -->
+    <div id="screen-battle" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 md:p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 w-full md:w-auto">
+          <div class="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center text-2xl shadow-lg shadow-indigo-600/40">🧙‍♂️</div>
+          <div class="flex-1">
+            <div class="flex justify-between text-xs font-bold mb-1">
+              <span class="text-indigo-300">Grammar Wizard</span>
+              <span id="playerHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="playerHpBar" class="bg-emerald-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center font-mono font-bold text-sm bg-slate-950 px-4 py-1.5 rounded-lg border border-slate-800 text-slate-300">
+          Stage <span id="battleStage" class="text-indigo-400">1</span> / 5 • Streak: <span id="battleStreak" class="text-amber-400">0</span>🔥
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+          <div class="flex-1 md:text-right">
+            <div class="flex justify-between md:justify-end gap-3 text-xs font-bold mb-1">
+              <span id="bossName" class="text-rose-400">Comma Splice Phantom</span>
+              <span id="bossHpText" class="text-slate-300">100 / 100 HP</span>
+            </div>
+            <div class="w-full md:w-44 bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="bossHpBar" class="bg-rose-500 h-full rounded-full transition-all duration-300" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div id="bossAvatar" class="w-12 h-12 rounded-xl bg-rose-900/40 border border-rose-500/40 flex items-center justify-center text-2xl">👻</div>
+        </div>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 via-sky-500 to-teal-400"></div>
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="battleCategoryBadge" class="text-xs uppercase tracking-wider text-indigo-400 font-bold">Punctuation Practice</span>
+          <p id="battleQuestion" class="text-lg md:text-xl font-medium text-slate-100 leading-relaxed min-h-[4.5rem] flex items-center justify-center font-sans"></p>
+          <p id="battleHint" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="battleOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="battleFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold transition-all"></div>
+      </div>
+    </div>
+
+    <!-- 3. SPEED MATCH -->
+    <div id="screen-speed" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6">
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Time Left</span>
+            <span id="speedTimer" class="font-mono text-2xl font-black text-amber-400">60s</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Score</span>
+            <span id="speedScore" class="font-mono text-2xl font-black text-emerald-400">0</span>
+          </div>
+          <div class="text-center">
+            <span class="text-[10px] text-slate-400 uppercase font-bold block">Combo</span>
+            <span id="speedMultiplier" class="font-mono text-2xl font-black text-indigo-400">1x</span>
+          </div>
+        </div>
+        <div class="w-16"></div>
+      </div>
+
+      <div class="bg-gradient-to-b from-slate-900 to-slate-900/70 border border-slate-800 rounded-2xl p-6 md:p-10 text-center space-y-4 shadow-xl">
+        <span class="inline-block px-3 py-1 bg-sky-500/10 text-sky-400 text-xs font-bold rounded-full uppercase tracking-wider">Quick Choice</span>
+        <h3 id="speedDefinition" class="text-lg md:text-xl font-bold text-slate-100 max-w-2xl mx-auto min-h-[4rem] flex items-center justify-center font-sans"></h3>
+      </div>
+
+      <div id="speedChoices" class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 4. MEMORY MATRIX -->
+    <div id="screen-memory" class="hidden space-y-6">
+      <div class="flex items-center justify-between bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-sm">
+          <div>Flips: <span id="memoryMoves" class="font-bold text-indigo-400 font-mono">0</span></div>
+          <div>Matches: <span id="memoryMatches" class="font-bold text-emerald-400 font-mono">0 / 6</span></div>
+        </div>
+        <button onclick="startGame('memory')" class="text-xs text-emerald-400 hover:text-emerald-300 font-semibold px-3 py-1 bg-emerald-950/50 border border-emerald-800 rounded-lg">Reset 🔄</button>
+      </div>
+
+      <p class="text-center text-xs text-slate-400">Match the punctuation mark or grammar rule with its definition or example!</p>
+      <div id="memoryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 max-w-4xl mx-auto"></div>
+    </div>
+
+    <!-- 5. VAULT -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Nonrestrictive & Punctuation Vault</h2>
+          <p class="text-xs text-slate-400">Complete guide to essential vs. nonessential elements, commas, parentheses, and dashes.</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white">All (6)</button>
+          <button onclick="filterVault('restrictive')" id="tab-restrictive" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Restrictive vs. Nonrestrictive</button>
+          <button onclick="filterVault('punctuation')" id="tab-punctuation" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Commas, Dashes & Parentheses</button>
+          <button onclick="filterVault('which_that')" id="tab-which_that" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">Which vs. That</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- 6. MODAL -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-indigo-500/20 text-indigo-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Grammar Mastered!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Outstanding comprehension of nonrestrictive elements.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentGame()" class="w-1/2 py-3 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    const GRAMMAR_QUESTIONS = [
+      {
+        section: "restrictive",
+        sectionTitle: "Concept: Nonrestrictive vs Restrictive",
+        q: "A _____ element gives extra, nonessential information that can be removed without changing the sentence's basic meaning.",
+        ans: "Nonrestrictive",
+        dist: ["Restrictive", "Prepositional", "Dependent"],
+        hint: "It does not 'restrict' or limit the noun to one specific thing.",
+        exp: "Nonrestrictive elements provide bonus information and MUST be set off with punctuation."
+      },
+      {
+        section: "restrictive",
+        sectionTitle: "Concept: Nonrestrictive vs Restrictive",
+        q: "A _____ element is essential to the sentence because it tells exactly WHICH person or thing is being talked about.",
+        ans: "Restrictive",
+        dist: ["Nonrestrictive", "Parenthetical", "Appositive"],
+        hint: "It 'restricts' the noun to a specific identity; you do NOT use commas around it.",
+        exp: "Restrictive elements are essential to identify the noun and take NO commas."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Punctuation Marks",
+        q: "Which three punctuation marks can be used to set off nonrestrictive and parenthetical elements?",
+        ans: "Commas, parentheses, and dashes",
+        dist: ["Periods, colons, and semicolons", "Apostrophes, hyphens, and slashes", "Exclamation marks, question marks, and quotes"],
+        hint: "One is standard, one is for quiet asides ( ), and one is for dramatic emphasis (—).",
+        exp: "Commas (gentle), parentheses (quiet aside), and dashes (dramatic emphasis) are the three options."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Comma Usage",
+        q: "Which sentence correctly punctuates the nonrestrictive element?",
+        ans: "My dog, a golden retriever, loves swimming.",
+        dist: [
+          "My dog a golden retriever, loves swimming.",
+          "My dog, a golden retriever loves swimming.",
+          "My dog a golden retriever loves swimming."
+        ],
+        hint: "When the element is in the middle of a sentence, it needs a comma BEFORE and AFTER it.",
+        exp: "'a golden retriever' is an appositive phrase in the middle, so it requires two commas."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Comma Placement",
+        q: "If a nonrestrictive element comes at the VERY END of a sentence, how many commas does it need?",
+        ans: "One comma before it",
+        dist: ["Two commas", "No punctuation at all", "A comma after it"],
+        hint: "The period at the end of the sentence finishes it, so you only need a comma to introduce it.",
+        exp: "Example: 'We visited Paris, the capital of France.' Only one comma is used."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Parentheses Usage",
+        q: "Parentheses are best used when the extra information is:",
+        ans: "A quiet aside, extra fact, or background detail",
+        dist: ["A sudden, dramatic interruption", "The main verb of the sentence", "An essential clause that identifies the noun"],
+        hint: "Think of whispering an extra detail into the reader's ear.",
+        exp: "Parentheses enclose supplemental facts or minor asides (like dates or numbers)."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Dashes Usage",
+        q: "Dashes (—) are best used when the writer wants to create:",
+        ans: "A dramatic pause or strong emphasis",
+        dist: ["A quiet, minor background detail", "A simple list of grocery items", "A complete question"],
+        hint: "Dashes draw sharp visual attention to the interrupted words.",
+        exp: "Em-dashes emphasize the parenthetical thought with punch and drama."
+      },
+      {
+        section: "which_that",
+        sectionTitle: "Which vs. That",
+        q: "As a general grammar rule, which relative pronoun introduces a NONRESTRICTIVE clause (using commas)?",
+        ans: "Which",
+        dist: ["That", "Whom", "Where"],
+        hint: "'The car, which was red, was fast.' vs. 'The car that won the race was red.'",
+        exp: "'Which' introduces nonessential info with commas; 'That' introduces essential info without commas."
+      },
+      {
+        section: "which_that",
+        sectionTitle: "Which vs. That",
+        q: "Choose the sentence that is punctuated correctly:",
+        ans: "The cookies that had chocolate chips were eaten first.",
+        dist: [
+          "The cookies, that had chocolate chips, were eaten first.",
+          "The cookies that had chocolate chips, were eaten first.",
+          "The cookies, that had chocolate chips were eaten first."
+        ],
+        hint: "'that had chocolate chips' is restrictive (it tells which cookies!). Do not use commas with 'that'.",
+        exp: "Restrictive clauses starting with 'that' should never be separated by commas."
+      },
+      {
+        section: "restrictive",
+        sectionTitle: "Identify the Element",
+        q: "In 'Abraham Lincoln, the 16th US president, was born in a log cabin,' the phrase 'the 16th US president' is a(n):",
+        ans: "Nonrestrictive appositive",
+        dist: ["Restrictive clause", "Prepositional phrase", "Independent clause"],
+        hint: "You already know who Abraham Lincoln is without that phrase; it's extra info set off by commas.",
+        exp: "Since the name alone identifies him, the phrase is a nonrestrictive appositive."
+      },
+      {
+        section: "restrictive",
+        sectionTitle: "Essential vs Nonessential",
+        q: "In 'The boy who won the spelling bee received a trophy,' is 'who won the spelling bee' restrictive or nonrestrictive?",
+        ans: "Restrictive (no commas needed)",
+        dist: ["Nonrestrictive (needs commas)", "Parenthetical dash", "A standalone sentence"],
+        hint: "If you remove it, 'The boy received a trophy' doesn't tell us WHICH boy.",
+        exp: "It restricts 'boy' to the specific one who won, making it essential."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Fix the Punctuation",
+        q: "What punctuation is missing? 'My favorite season autumn is starting to turn chilly.'",
+        ans: "Commas around 'autumn'",
+        dist: ["A dash before 'is'", "Parentheses around 'season'", "A comma after 'chilly'"],
+        hint: "'autumn' is an extra nonrestrictive appositive renaming the season.",
+        exp: "Correct: 'My favorite season, autumn, is starting to turn chilly.'"
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Paired Punctuation Rule",
+        q: "If you use an opening dash to interrupt a sentence in the middle, what MUST you use to close it?",
+        ans: "A second closing dash",
+        dist: ["A closing comma", "A closing parenthesis", "A semicolon"],
+        hint: "Never mix-and-match opening and closing marks in the middle of a sentence!",
+        exp: "Parenthetical marks must match in pairs: two commas, two dashes, or two parentheses."
+      },
+      {
+        section: "punctuation",
+        sectionTitle: "Sentence Practice",
+        q: "Choose the correctly punctuated sentence using dashes for dramatic emphasis:",
+        ans: "The treasure chest—filled with gold and rubies—was finally opened.",
+        dist: [
+          "The treasure chest, filled with gold and rubies—was finally opened.",
+          "The treasure chest—filled with gold and rubies, was finally opened.",
+          "The treasure chest (filled with gold and rubies—was finally opened."
+        ],
+        hint: "Both sides of the interruption must use matching dashes.",
+        exp: "Dashes must be used as a matching pair when in the middle of a sentence."
+      }
+    ];
+
+    const MEMORY_PAIRS = [
+      { text: "Nonrestrictive Clause", match: "Extra info (uses commas)", sub: "Grammar Rule" },
+      { text: "Restrictive Clause", match: "Essential info (no commas)", sub: "Grammar Rule" },
+      { text: "Dashes (— —)", match: "Dramatic pause & emphasis", sub: "Punctuation" },
+      { text: "Parentheses ( )", match: "Quiet aside / extra fact", sub: "Punctuation" },
+      { text: "'Which' Clause", match: "Typically nonrestrictive with commas", sub: "Usage" },
+      { text: "'That' Clause", match: "Always restrictive with no commas", sub: "Usage" }
+    ];
+
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentGameMode = null;
+
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    let battleStage = 1;
+    let battleStreak = 0;
+    let playerHp = 100;
+    let bossHp = 100;
+    let currentBattleWord = null;
+    let battlePool = [];
+
+    const BOSS_DATA = [
+      { name: "Comma Splice Phantom", icon: "👻", maxHp: 100 },
+      { name: "Mismatched Dash Wyrm", icon: "🐉", maxHp: 120 },
+      { name: "Run-On Ogre", icon: "🗿", maxHp: 140 },
+      { name: "Restrictive Chimera", icon: "🦁", maxHp: 160 },
+      { name: "Punctuation Overlord", icon: "👑", maxHp: 200 }
+    ];
+
+    let speedTimerVal = 60;
+    let speedTimerInterval = null;
+    let speedScoreVal = 0;
+    let speedMultiplierVal = 1;
+    let speedCurrentWord = null;
+    let speedStreak = 0;
+
+    let memoryCards = [];
+    let memoryFlipped = [];
+    let memoryMatchesFound = 0;
+    let memoryMovesCount = 0;
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'correct') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(160, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'flip') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(480, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+          osc.start(now);
+          osc.stop(now + 0.08);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const noteOsc = audioCtx.createOscillator();
+            const noteGain = audioCtx.createGain();
+            noteOsc.connect(noteGain);
+            noteGain.connect(audioCtx.destination);
+            noteOsc.type = 'triangle';
+            noteOsc.frequency.setValueAtTime(freq, now + i * 0.1);
+            noteGain.gain.setValueAtTime(0.2, now + i * 0.1);
+            noteGain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.1 + 0.3);
+            noteOsc.start(now + i * 0.1);
+            noteOsc.stop(now + i * 0.1 + 0.3);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      const btn = document.getElementById('soundBtn');
+      btn.textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function showScreen(screenId) {
+      clearInterval(speedTimerInterval);
+      ['menu', 'battle', 'speed', 'memory', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const active = document.getElementById(`screen-${screenId}`);
+      if (active) active.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function startGame(mode) {
+      currentGameMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
+      showScreen(mode);
+      if (mode === 'battle') initBattle();
+      if (mode === 'speed') initSpeedMatch();
+      if (mode === 'memory') initMemoryGame();
+    }
+
+    function restartCurrentGame() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentGameMode) startGame(currentGameMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    // ==========================================
+    // 1. BOSS BATTLE
+    // ==========================================
+    function initBattle() {
+      battleStage = 1;
+      battleStreak = 0;
+      playerHp = 100;
+      battlePool = [...GRAMMAR_QUESTIONS].sort(() => Math.random() - 0.5);
+      setupBattleStage();
+    }
+
+    function setupBattleStage() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      bossHp = boss.maxHp;
+      document.getElementById('bossName').textContent = boss.name;
+      document.getElementById('bossAvatar').textContent = boss.icon;
+      document.getElementById('battleStage').textContent = battleStage;
+      document.getElementById('battleStreak').textContent = battleStreak;
+      updateHpBars();
+      nextBattleQuestion();
+    }
+
+    function updateHpBars() {
+      const boss = BOSS_DATA[battleStage - 1] || BOSS_DATA[BOSS_DATA.length - 1];
+      document.getElementById('playerHpBar').style.width = `${Math.max(0, playerHp)}%`;
+      document.getElementById('bossHpBar').style.width = `${Math.max(0, (bossHp / boss.maxHp) * 100)}%`;
+      document.getElementById('playerHpText').textContent = `${playerHp} / 100 HP`;
+      document.getElementById('bossHpText').textContent = `${bossHp} / ${boss.maxHp} HP`;
+    }
+
+    function nextBattleQuestion() {
+      if (battlePool.length === 0) {
+        battlePool = [...GRAMMAR_QUESTIONS].sort(() => Math.random() - 0.5);
+      }
+      currentBattleWord = battlePool.pop();
+
+      document.getElementById('battleCategoryBadge').textContent = currentBattleWord.sectionTitle;
+      document.getElementById('battleQuestion').textContent = currentBattleWord.q;
+      document.getElementById('battleHint').textContent = `Hint: ${currentBattleWord.hint}`;
+
+      const options = [currentBattleWord.ans, ...currentBattleWord.dist].sort(() => Math.random() - 0.5);
+      const optsContainer = document.getElementById('battleOptions');
+      optsContainer.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-4 bg-slate-800 hover:bg-indigo-950 border border-slate-700 hover:border-indigo-500 rounded-xl font-bold text-slate-200 hover:text-white transition duration-200 text-left flex items-center justify-between group shadow-sm active:scale-95 text-sm md:text-base";
+        btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 group-hover:text-indigo-400 font-sans">Select ↵</span>`;
+        btn.onclick = () => handleBattleAnswer(opt, btn);
+        optsContainer.appendChild(btn);
+      });
+
+      document.getElementById('battleFeedback').className = "hidden";
+    }
+
+    function handleBattleAnswer(selected, btnEl) {
+      totalAttempts++;
+      const isCorrect = selected === currentBattleWord.ans;
+      const feedback = document.getElementById('battleFeedback');
+      feedback.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        battleStreak++;
+        const dmg = 45 + (battleStreak * 5);
+        bossHp = Math.max(0, bossHp - dmg);
+        updateNavScore(50 * battleStreak);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-emerald-900/60', 'border-emerald-500', 'text-emerald-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        feedback.innerHTML = `✨ <b>Correct!</b> Deals ${dmg} damage! (${currentBattleWord.exp})`;
+
+        updateHpBars();
+
+        if (bossHp <= 0) {
+          setTimeout(() => {
+            playSound('win');
+            triggerConfetti();
+            if (battleStage < BOSS_DATA.length) {
+              battleStage++;
+              setupBattleStage();
+            } else {
+              const acc = Math.round((correctAttempts / totalAttempts) * 100);
+              showGameOverModal("Punctuation Master!", "You conquered all 5 grammar bosses!", totalScore, `${acc}%`);
+            }
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 900);
+        }
+
+      } else {
+        playSound('wrong');
+        battleStreak = 0;
+        playerHp = Math.max(0, playerHp - 25);
+
+        btnEl.classList.remove('bg-slate-800', 'border-slate-700');
+        btnEl.classList.add('bg-rose-900/60', 'border-rose-500', 'text-rose-200');
+
+        feedback.className = "p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        feedback.innerHTML = `⚠️ <b>Boss Strikes!</b> Correct answer: "<b>${currentBattleWord.ans}</b>".`;
+
+        updateHpBars();
+
+        if (playerHp <= 0) {
+          setTimeout(() => {
+            const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+            showGameOverModal("Defeated in Arena", "Review your punctuation rules and try again!", totalScore, `${acc}%`);
+          }, 800);
+        } else {
+          setTimeout(nextBattleQuestion, 1200);
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. SPEED MATCH
+    // ==========================================
+    function initSpeedMatch() {
+      speedTimerVal = 60;
+      speedScoreVal = 0;
+      speedMultiplierVal = 1;
+      speedStreak = 0;
+      document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+      document.getElementById('speedScore').textContent = speedScoreVal;
+      document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+      clearInterval(speedTimerInterval);
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        document.getElementById('speedTimer').textContent = `${speedTimerVal}s`;
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          playSound('win');
+          triggerConfetti();
+          const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+          showGameOverModal("Time's Up!", "Speed Blitz complete!", speedScoreVal, `${acc}%`);
+        }
+      }, 1000);
+
+      nextSpeedCard();
+    }
+
+    function nextSpeedCard() {
+      speedCurrentWord = GRAMMAR_QUESTIONS[Math.floor(Math.random() * GRAMMAR_QUESTIONS.length)];
+      document.getElementById('speedDefinition').textContent = speedCurrentWord.q;
+
+      const options = [speedCurrentWord.ans, ...speedCurrentWord.dist].sort(() => Math.random() - 0.5);
+      const container = document.getElementById('speedChoices');
+      container.innerHTML = '';
+
+      options.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "py-4 px-3 bg-slate-800 hover:bg-sky-950/60 border border-slate-700 hover:border-sky-500 rounded-xl font-bold text-slate-100 hover:text-white transition duration-150 text-center active:scale-95 shadow-md text-sm";
+        btn.textContent = opt;
+        btn.onclick = () => handleSpeedChoice(opt, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleSpeedChoice(chosen, btnEl) {
+      totalAttempts++;
+      if (chosen === speedCurrentWord.ans) {
+        correctAttempts++;
+        playSound('correct');
+        speedStreak++;
+        if (speedStreak % 3 === 0 && speedMultiplierVal < 4) speedMultiplierVal++;
+        const pts = 100 * speedMultiplierVal;
+        speedScoreVal += pts;
+        updateNavScore(pts);
+
+        btnEl.classList.add('bg-emerald-600', 'border-emerald-400');
+        document.getElementById('speedScore').textContent = speedScoreVal;
+        document.getElementById('speedMultiplier').textContent = `${speedMultiplierVal}x`;
+
+        setTimeout(nextSpeedCard, 200);
+      } else {
+        playSound('wrong');
+        speedStreak = 0;
+        speedMultiplierVal = 1;
+        document.getElementById('speedMultiplier').textContent = `1x`;
+        btnEl.classList.add('bg-rose-600', 'border-rose-400');
+        setTimeout(nextSpeedCard, 350);
+      }
+    }
+
+    // ==========================================
+    // 3. MEMORY MATCH
+    // ==========================================
+    function initMemoryGame() {
+      memoryFlipped = [];
+      memoryMatchesFound = 0;
+      memoryMovesCount = 0;
+      document.getElementById('memoryMoves').textContent = memoryMovesCount;
+      document.getElementById('memoryMatches').textContent = `0 / 6`;
+
+      const pairs = [...MEMORY_PAIRS].sort(() => Math.random() - 0.5);
+      memoryCards = [];
+
+      pairs.forEach((item, idx) => {
+        memoryCards.push({ pairId: idx, text: item.text, sub: item.sub });
+        memoryCards.push({ pairId: idx, text: item.match, sub: "Rule / Example" });
+      });
+
+      memoryCards.sort(() => Math.random() - 0.5);
+
+      const grid = document.getElementById('memoryGrid');
+      grid.innerHTML = '';
+
+      memoryCards.forEach((card, index) => {
+        const cardEl = document.createElement('div');
+        cardEl.className = "h-28 bg-slate-900 border border-slate-800 rounded-xl p-3 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-300 hover:border-teal-500/50 shadow-md select-none group";
+
+        cardEl.innerHTML = `
+          <div class="card-back text-2xl text-slate-500 group-hover:text-teal-400 transition">✍️</div>
+          <div class="card-front hidden space-y-1">
+            <span class="text-xs uppercase font-bold text-teal-400 block">${card.sub}</span>
+            <p class="font-bold text-xs md:text-sm text-slate-100">${card.text}</p>
+          </div>
+        `;
+
+        cardEl.onclick = () => flipMemoryCard(cardEl, index);
+        grid.appendChild(cardEl);
+      });
+    }
+
+    function flipMemoryCard(cardEl, index) {
+      if (memoryFlipped.length >= 2 || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
+
+      playSound('flip');
+      cardEl.classList.add('flipped', 'bg-slate-800', 'border-teal-500');
+      cardEl.querySelector('.card-back').classList.add('hidden');
+      cardEl.querySelector('.card-front').classList.remove('hidden');
+
+      memoryFlipped.push({ element: cardEl, data: memoryCards[index] });
+
+      if (memoryFlipped.length === 2) {
+        memoryMovesCount++;
+        document.getElementById('memoryMoves').textContent = memoryMovesCount;
+
+        const [c1, c2] = memoryFlipped;
+        if (c1.data.pairId === c2.data.pairId) {
+          playSound('correct');
+          c1.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          c2.element.classList.add('matched', 'bg-emerald-950/60', 'border-emerald-500');
+          memoryMatchesFound++;
+          document.getElementById('memoryMatches').textContent = `${memoryMatchesFound} / 6`;
+          updateNavScore(100);
+          memoryFlipped = [];
+
+          if (memoryMatchesFound === 6) {
+            setTimeout(() => {
+              playSound('win');
+              triggerConfetti();
+              const memAcc = Math.max(20, Math.round((6 / memoryMovesCount) * 100));
+              showGameOverModal("Matrix Cleared!", `Solved in ${memoryMovesCount} flips!`, totalScore, `${memAcc}%`);
+            }, 500);
+          }
+        } else {
+          setTimeout(() => {
+            playSound('wrong');
+            c1.element.classList.remove('flipped', 'bg-slate-800', 'border-teal-500');
+            c2.element.classList.remove('flipped', 'bg-slate-800', 'border-teal-500');
+            c1.element.querySelector('.card-back').classList.remove('hidden');
+            c1.element.querySelector('.card-front').classList.add('hidden');
+            c2.element.querySelector('.card-back').classList.remove('hidden');
+            c2.element.querySelector('.card-front').classList.add('hidden');
+            memoryFlipped = [];
+          }, 900);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. VAULT
+    // ==========================================
+    const VAULT_RULES = [
+      {
+        category: "restrictive",
+        title: "Nonrestrictive (Nonessential) Elements",
+        rule: "Extra information that can be removed without changing the sentence's basic meaning. ALWAYS set off with commas, parentheses, or dashes.",
+        example: "My teacher, who loves iced coffee, arrived early.",
+        tip: "Test trick: Cross out the clause. Does the sentence still make complete sense and identify who/what? If yes, use commas!"
+      },
+      {
+        category: "restrictive",
+        title: "Restrictive (Essential) Elements",
+        rule: "Essential information needed to identify WHICH specific person, place, or thing is being talked about. NEVER use commas.",
+        example: "The student who forgot their homework had to stay in.",
+        tip: "If you remove 'who forgot their homework', you don't know which student had to stay in!"
+      },
+      {
+        category: "punctuation",
+        title: "Three Punctuation Options",
+        rule: "1. Commas (gentle, standard flow). 2. Parentheses (quiet aside, background fact). 3. Dashes (dramatic pause, strong emphasis).",
+        example: "Commas: 'The pizza, fresh from the oven, burned my tongue.' | Dashes: 'The pizza—fresh from the oven—burned my tongue.'",
+        tip: "Dashes create the biggest visual break and drama."
+      },
+      {
+        category: "punctuation",
+        title: "Paired Punctuation Rule",
+        rule: "When a parenthetical element sits in the middle of a sentence, punctuation MUST be used as a matching pair (two commas, two dashes, or two parentheses).",
+        example: "Incorrect: 'The dog, a beagle—ran away.' | Correct: 'The dog, a beagle, ran away.'",
+        tip: "Never mix an opening comma with a closing dash!"
+      },
+      {
+        category: "which_that",
+        title: "Which vs. That",
+        rule: "'Which' introduces nonrestrictive clauses and takes commas. 'That' introduces restrictive clauses and NEVER takes commas.",
+        example: "'The book, which took a year to write, was a bestseller.' vs. 'The book that I borrowed yesterday was great.'",
+        tip: "If it has 'that', keep the commas out!"
+      },
+      {
+        category: "punctuation",
+        title: "Appositive Phrases",
+        rule: "An appositive is a noun or phrase that renames a noun right next to it. Nonrestrictive appositives are set off with commas.",
+        example: "Paris, the capital of France, is famous for the Eiffel Tower.",
+        tip: "If the appositive comes at the end of the sentence, you only need one comma before it."
+      }
+    ];
+
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = VAULT_RULES;
+      if (filter !== 'all') list = VAULT_RULES.filter(w => w.category === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-indigo-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-indigo-500/10 text-indigo-300 border-indigo-500/30">
+              ${w.category.toUpperCase()}
+            </span>
+            <h3 class="text-xl font-black text-white">${w.title}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-indigo-300">Rule:</b> ${w.rule}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+              <span class="text-slate-500 font-semibold block mb-0.5">Example:</span>
+              <span class="text-indigo-200 font-medium">${w.example}</span>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-slate-800/60 text-[11px] text-slate-400">
+            💡 <span>${w.tip}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'restrictive', 'punctuation', 'which_that'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-indigo-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    function showGameOverModal(title, desc, score, accuracy) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = score;
+      document.getElementById('modalAccuracy').textContent = accuracy;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#6366f1', '#38bdf8', '#2dd4bf', '#f59e0b', '#ec4899'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
