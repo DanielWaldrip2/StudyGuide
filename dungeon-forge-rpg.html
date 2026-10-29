@@ -1,9 +1,9 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Dungeon & Forge RPG • Classes & Monsters</title>
+  <title>Dungeon & Forge RPG • Fantasy Classes</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #020617; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
@@ -22,7 +22,7 @@
     .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-top: 1.2rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
     .class-card { background: rgba(30, 41, 59, 0.6); border: 2px solid #334155; border-radius: 1rem; padding: 1rem; cursor: pointer; transition: 0.2s; text-align: left; }
-    .class-card:hover { background: rgba(51, 65, 85, 0.8); border-color: #38bdf8; transform: translateY(-3px); }
+    .class-card:hover { background: rgba(51, 65, 85, 0.8); border-color: #38bdf8; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
     .opt-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #f1f5f9; padding: 0.85rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-align: left; transition: all 0.15s; }
     .opt-btn:hover { background: #451a03; border-color: #f59e0b; color: #fff; transform: translateY(-3px); }
     .opt-btn.correct { background: linear-gradient(135deg, #065f46, #047857) !important; border-color: #10b981 !important; color: #fff !important; }
@@ -61,7 +61,7 @@
       <div class="hud-box" style="font-family: monospace;">
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#cbd5e1; margin-bottom:0.15rem; font-weight:700;">
-            <span id="hudClassType">WARRIOR</span>
+            <span id="hudClassType">HERO</span>
             <span id="hudHpText">100/100</span>
           </div>
           <div class="bar-bg">
@@ -96,7 +96,7 @@
   </div>
 
   <!-- CLASS SELECTION MODAL -->
-  <div id="modalClassSelect" class="modal-backdrop">
+  <div id="modalClassSelect" class="modal-backdrop hidden">
     <div class="modal-card">
       <h3 style="font-size:1.8rem; font-weight:900; margin-bottom:0.5rem; color:#fff;">Choose Your Hero</h3>
       <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:1.5rem;">Select a class to enter the dungeon. Your choice alters your combat style.</p>
@@ -106,7 +106,7 @@
           <div style="display:flex; align-items:center; gap:1rem;">
             <div style="font-size:2.5rem;">⚔️</div>
             <div>
-              <h4 style="font-size:1.2rem; font-weight:bold; color:#38bdf8;">Warrior</h4>
+              <h4 style="font-size:1.2rem; font-weight:bold; color:#38bdf8;">Knight Warrior</h4>
               <p style="font-size:0.8rem; color:#94a3b8;">High HP, Normal Speed. Swings a broadsword hitting multiple enemies in a sweeping arc.</p>
             </div>
           </div>
@@ -115,7 +115,7 @@
           <div style="display:flex; align-items:center; gap:1rem;">
             <div style="font-size:2.5rem;">🏹</div>
             <div>
-              <h4 style="font-size:1.2rem; font-weight:bold; color:#10b981;">Archer</h4>
+              <h4 style="font-size:1.2rem; font-weight:bold; color:#10b981;">Ranger Archer</h4>
               <p style="font-size:0.8rem; color:#94a3b8;">Low HP, Fast Speed. Fires high-speed piercing arrows that travel across the room.</p>
             </div>
           </div>
@@ -124,7 +124,7 @@
           <div style="display:flex; align-items:center; gap:1rem;">
             <div style="font-size:2.5rem;">💀</div>
             <div>
-              <h4 style="font-size:1.2rem; font-weight:bold; color:#c084fc;">Necromancer</h4>
+              <h4 style="font-size:1.2rem; font-weight:bold; color:#c084fc;">Void Necromancer</h4>
               <p style="font-size:0.8rem; color:#94a3b8;">Med HP, Slow Speed. Fires shadow orbs. <span style="color:#a7f3d0;">Lifesteal: Heals +3 HP per monster killed!</span></p>
             </div>
           </div>
@@ -136,25 +136,27 @@
   <!-- 10-SECOND ANVIL / TRIAL MODAL -->
   <div id="modalTrial" class="modal-backdrop hidden">
     <div class="modal-card">
-      <span style="font-size:0.75rem; font-weight:900; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.4rem 1rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.4); text-transform:uppercase;">
+      <span style="font-size:0.75rem; font-weight:900; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.4rem 1rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.4); text-transform:uppercase; letter-spacing:0.05em; box-shadow: 0 0 15px rgba(251,191,36,0.2);">
         ⚔️ Vocabulary Trial Challenge
       </span>
-      <h3 style="font-size:1.5rem; font-weight:900; margin:1rem 0 0.3rem; color:#fff;">Unit 4 Word Challenge</h3>
-      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.2rem;">Solve correctly to mine materials & heal!</p>
+      <h3 style="font-size:1.5rem; font-weight:900; margin:1rem 0 0.3rem; color:#fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Unit 4 Word Challenge</h3>
+      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.2rem;">Solve correctly to mine materials & heal your knight!</p>
+
       <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.5rem; margin-bottom:1rem; box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);">
         <p id="trialQuestion" style="font-size:1.05rem; font-weight:700; line-height:1.5; color:#f8fafc;"></p>
         <p id="trialHint" style="font-size:0.8rem; color:#94a3b8; font-style:italic; margin-top:0.6rem;"></p>
       </div>
+
       <div id="trialOptions" class="opt-grid"></div>
-      <div id="trialFeedback" style="margin-top:1.2rem; padding:0.8rem; border-radius:0.75rem; font-size:0.9rem; font-weight:800;" class="hidden"></div>
+      <div id="trialFeedback" style="margin-top:1.2rem; padding:0.8rem; border-radius:0.75rem; font-size:0.9rem; font-weight:800; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" class="hidden"></div>
     </div>
   </div>
 
   <!-- BLACKSMITH FORGE SHOP MODAL -->
   <div id="modalForge" class="modal-backdrop hidden">
     <div class="modal-card" style="border-color:#f59e0b; max-width:34rem;">
-      <div style="font-size:2.8rem; margin-bottom:0.25rem;">⚒️</div>
-      <h3 style="font-size:1.6rem; font-weight:900;">The Blacksmith's Anvil</h3>
+      <div style="font-size:2.8rem; margin-bottom:0.25rem; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">⚒️</div>
+      <h3 style="font-size:1.6rem; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">The Blacksmith's Anvil</h3>
       <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.5rem;">Spend mined dungeon loot to forge upgrades. <br><span style="color:#ef4444; font-weight:bold;">(Warning: Death resets all gear!)</span></p>
 
       <div class="forge-item-row">
@@ -188,13 +190,13 @@
   <!-- GAME OVER / RESTART MODAL -->
   <div id="modalGameOver" class="modal-backdrop hidden">
     <div class="modal-card" style="max-width:28rem; border-color:#ef4444; background: linear-gradient(180deg, #1e0505 0%, #020617 100%);">
-      <div style="font-size:3.5rem; margin-bottom:0.5rem;">💀</div>
-      <h3 style="font-size:1.8rem; font-weight:900; color:#ef4444;">Hero Slain!</h3>
+      <div style="font-size:3.5rem; margin-bottom:0.5rem; filter:drop-shadow(0 4px 10px rgba(239,68,68,0.5));">💀</div>
+      <h3 style="font-size:1.8rem; font-weight:900; color:#ef4444; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Hero Slain!</h3>
       <p style="font-size:0.85rem; color:#cbd5e1; margin:0.6rem 0 1.5rem; line-height:1.5;">
         You died in the depths. All forged weapons, armor, and gathered materials have been lost to the darkness!
       </p>
       
-      <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.2rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.8rem;">
+      <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.2rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.8rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
         <div>
           <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase; font-weight:700;">Floor</span>
           <span id="finalFloor" style="font-size:1.5rem; font-weight:900; color:#fbbf24;">1</span>
@@ -214,7 +216,7 @@
   </div>
 
   <script>
-    // UNIT 4 VOCABULARY QUESTION POOL
+    // VOCABULARY QUESTION POOL
     const QUESTIONS = [
       { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
       { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
@@ -294,11 +296,11 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // PLAYER ENTITY
+    // PLAYER ENTITY (ClassType initialized as null to force selection)
     const player = {
-      classType: 'warrior',
+      classType: null,
       x: 200, y: 200, size: 24,
-      facing: 'down',
+      facing: 'right',
       atkTimer: 0, invulnTimer: 0, isMoving: false,
       baseHp: 120, baseSpd: 210,
       hp: 120, maxHp: 120
@@ -355,7 +357,7 @@
     bindTouch('mUp', 'w'); bindTouch('mDown', 's'); bindTouch('mLeft', 'a'); bindTouch('mRight', 'd');
     document.getElementById('mAtk').onclick = () => { getAudio(); attack(); };
 
-    // CLASS SELECTION
+    // CLASS SELECTION & RESET
     function showClassSelect() {
       isPaused = true;
       document.getElementById('modalGameOver').classList.add('hidden');
@@ -364,8 +366,8 @@
 
     function selectClass(c) {
       player.classType = c;
-      if (c === 'warrior') { player.baseHp = 120; player.baseSpd = 215; document.getElementById('hudClassType').textContent = 'WARRIOR'; }
-      if (c === 'archer') { player.baseHp = 80; player.baseSpd = 265; document.getElementById('hudClassType').textContent = 'ARCHER'; }
+      if (c === 'warrior') { player.baseHp = 120; player.baseSpd = 215; document.getElementById('hudClassType').textContent = 'KNIGHT'; }
+      if (c === 'archer') { player.baseHp = 80; player.baseSpd = 265; document.getElementById('hudClassType').textContent = 'RANGER'; }
       if (c === 'necromancer') { player.baseHp = 100; player.baseSpd = 185; document.getElementById('hudClassType').textContent = 'NECRO'; }
       
       document.getElementById('modalClassSelect').classList.add('hidden');
@@ -631,38 +633,111 @@
       document.getElementById('modalGameOver').classList.remove('hidden');
     }
 
-    // RENDER HELPERS
+    // DRAWING HELPERS: TOP-DOWN SPRITES
     function drawPlayer() {
       if (player.invulnTimer > 0 && Math.floor(timeGlobal * 10) % 2 === 0) return;
+      
+      ctx.save();
+      ctx.translate(player.x, player.y);
+      const wobble = player.isMoving ? Math.sin(timeGlobal * 15) * 3 : 0;
+      
+      // Determine rotation angle based on facing
+      let angle = Math.PI/2;
+      if (player.facing === 'up') angle = -Math.PI/2;
+      if (player.facing === 'left') angle = Math.PI;
+      if (player.facing === 'right') angle = 0;
+      
+      ctx.rotate(angle);
+      
+      // Player Shadow
       ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.beginPath(); ctx.ellipse(player.x, player.y + 18, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(-wobble, 10, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
 
-      const walkWobble = player.isMoving ? Math.sin(timeGlobal * 15) * 4 : 0;
-      ctx.save(); ctx.translate(0, walkWobble);
+      ctx.translate(wobble, 0); // Apply walk wobble forward/back
 
       if (player.classType === 'warrior') {
-        ctx.fillStyle = '#0284c7'; ctx.beginPath(); ctx.arc(player.x - 12, player.y - 2, 7, 0, Math.PI * 2); ctx.arc(player.x + 12, player.y - 2, 7, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#38bdf8'; ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.moveTo(player.x, player.y - 6); ctx.lineTo(player.x + 6, player.y + 4); ctx.lineTo(player.x - 6, player.y + 4); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#0f172a'; ctx.beginPath(); let vx = player.x, vy = player.y; if (player.facing === 'up') vy -= 7; if (player.facing === 'down') vy += 5; if (player.facing === 'left') vx -= 7; if (player.facing === 'right') vx += 7; ctx.ellipse(vx, vy, 11, 7, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.shadowBlur = 8; ctx.shadowColor = '#38bdf8'; ctx.fillStyle = '#38bdf8'; ctx.fillRect(vx - 5, vy - 1, 10, 2); ctx.shadowBlur = 0;
-        ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.arc(player.x, player.y - player.size * 0.85, 5, 0, Math.PI * 2); ctx.fill();
+        // Red Cape (Trails behind)
+        ctx.fillStyle = '#991b1b';
+        ctx.beginPath(); ctx.moveTo(-6, -10); ctx.lineTo(-24, -16); ctx.lineTo(-24, 16); ctx.lineTo(-6, 10); ctx.fill();
+        
+        // Armor Body
+        ctx.fillStyle = '#94a3b8'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        
+        // Pauldrons (Shoulders)
+        ctx.fillStyle = '#64748b'; 
+        ctx.beginPath(); ctx.arc(0, -11, 6, 0, Math.PI*2); ctx.arc(0, 11, 6, 0, Math.PI*2); ctx.fill();
+        
+        // Sword Hilt (Right hand)
+        ctx.fillStyle = '#b45309'; ctx.fillRect(10, 10, 18, 3);
+        ctx.fillStyle = '#e2e8f0'; ctx.fillRect(10, 8, 3, 7); // crossguard
+
+        // Helmet
+        ctx.fillStyle = '#e2e8f0';
+        ctx.beginPath(); ctx.arc(4, 0, 10, 0, Math.PI*2); ctx.fill();
+        
+        // Visor
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(8, -5, 3, 10); // vertical slit
+        ctx.fillRect(4, -1.5, 9, 3); // horizontal slit
+        
+        // Gold Plume
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath(); ctx.arc(-2, 0, 4, 0, Math.PI*2); ctx.fill();
+        
       } else if (player.classType === 'archer') {
-        ctx.fillStyle = '#064e3b'; ctx.beginPath(); ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#10b981'; ctx.beginPath(); ctx.moveTo(player.x - player.size, player.y); ctx.lineTo(player.x, player.y + player.size + 4); ctx.lineTo(player.x + player.size, player.y); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#451a03'; ctx.beginPath(); ctx.arc(player.x, player.y - 8, 12, 0, Math.PI * 2); ctx.fill();
-        // Bow
-        ctx.strokeStyle = '#78350f'; ctx.lineWidth = 3; ctx.beginPath();
-        if (player.facing === 'right') { ctx.arc(player.x + 15, player.y, 14, -Math.PI/2, Math.PI/2); }
-        else if (player.facing === 'left') { ctx.arc(player.x - 15, player.y, 14, Math.PI/2, Math.PI*1.5); }
-        else if (player.facing === 'up') { ctx.arc(player.x, player.y - 15, 14, Math.PI, Math.PI*2); }
-        else { ctx.arc(player.x, player.y + 15, 14, 0, Math.PI); }
-        ctx.stroke();
+        // Green Cape
+        ctx.fillStyle = '#064e3b';
+        ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(-20, -16); ctx.lineTo(-20, 16); ctx.lineTo(0, 12); ctx.fill();
+        
+        // Quiver & Arrows
+        ctx.fillStyle = '#451a03'; ctx.fillRect(-15, -8, 6, 16);
+        ctx.fillStyle = '#fef08a'; ctx.fillRect(-18, -6, 4, 2); ctx.fillRect(-18, 0, 4, 2); ctx.fillRect(-18, 6, 4, 2);
+        
+        // Green Tunic
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill();
+        
+        // Head & Hood
+        ctx.fillStyle = '#fca5a5'; // Skin tone
+        ctx.beginPath(); ctx.arc(4, 0, 8, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#047857'; // Hood covering back
+        ctx.beginPath(); ctx.arc(2, 0, 9, Math.PI/2, -Math.PI/2); ctx.fill();
+        
+        // Bow (Right Hand)
+        ctx.strokeStyle = '#78350f'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(12, 12, 14, -Math.PI/2.5, Math.PI/2.5); ctx.stroke();
+        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1; // bowstring
+        ctx.beginPath(); ctx.moveTo(17, -1); ctx.lineTo(17, 25); ctx.stroke();
+        
       } else if (player.classType === 'necromancer') {
-        ctx.fillStyle = '#3b0764'; ctx.beginPath(); ctx.moveTo(player.x - player.size, player.y + player.size); ctx.lineTo(player.x + player.size, player.y + player.size); ctx.lineTo(player.x, player.y - player.size); ctx.closePath(); ctx.fill();
-        ctx.fillStyle = '#2e1065'; ctx.beginPath(); ctx.arc(player.x, player.y - 5, 14, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#f8fafc'; ctx.beginPath(); ctx.arc(player.x, player.y - 5, 8, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#22c55e'; ctx.shadowBlur = 8; ctx.shadowColor = '#22c55e'; ctx.beginPath(); ctx.arc(player.x - 3, player.y - 6, 2, 0, Math.PI*2); ctx.arc(player.x + 3, player.y - 6, 2, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+        // Shadow Aura
+        ctx.shadowBlur = 15; ctx.shadowColor = '#c084fc';
+        // Purple Robes
+        ctx.fillStyle = '#3b0764';
+        ctx.beginPath(); ctx.moveTo(5, -12); ctx.lineTo(-24, -16); ctx.lineTo(-24, 16); ctx.lineTo(5, 12); ctx.fill();
+        
+        ctx.fillStyle = '#581c87';
+        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        // Void Face
+        ctx.fillStyle = '#020617';
+        ctx.beginPath(); ctx.arc(4, 0, 9, 0, Math.PI*2); ctx.fill();
+        
+        // Glowing Eyes
+        ctx.fillStyle = '#a855f7'; ctx.shadowBlur = 8; ctx.shadowColor = '#a855f7';
+        ctx.beginPath(); ctx.arc(7, -3, 2.5, 0, Math.PI*2); ctx.arc(7, 3, 2.5, 0, Math.PI*2); ctx.fill();
+        ctx.shadowBlur = 0;
+        
+        // Staff
+        ctx.fillStyle = '#451a03';
+        ctx.fillRect(-6, 12, 28, 3);
+        
+        // Necrotic Gem
+        ctx.fillStyle = '#10b981'; ctx.shadowBlur = 10; ctx.shadowColor = '#10b981';
+        ctx.beginPath(); ctx.moveTo(26, 13.5); ctx.lineTo(22, 9); ctx.lineTo(29, 13.5); ctx.lineTo(22, 18); ctx.fill();
+        ctx.shadowBlur = 0;
       }
       ctx.restore();
     }
@@ -671,13 +746,12 @@
       const wobble = Math.sin(m.anim * 8) * 2;
       ctx.translate(0, wobble);
       ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3;
-      // Legs
       for(let i=0; i<4; i++) {
         ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - 15 - i*2, m.y - 10 + i*8); ctx.stroke();
         ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x + 15 + i*2, m.y - 10 + i*8); ctx.stroke();
       }
-      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(m.x, m.y + 4, m.size * 0.8, 0, Math.PI*2); ctx.fill(); // abdomen
-      ctx.beginPath(); ctx.arc(m.x, m.y - 6, m.size * 0.5, 0, Math.PI*2); ctx.fill(); // head
+      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(m.x, m.y + 4, m.size * 0.8, 0, Math.PI*2); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x, m.y - 6, m.size * 0.5, 0, Math.PI*2); ctx.fill();
       ctx.fillStyle = '#a3e635'; ctx.beginPath(); ctx.arc(m.x - 3, m.y - 8, 2, 0, Math.PI*2); ctx.arc(m.x + 3, m.y - 8, 2, 0, Math.PI*2); ctx.fill();
       ctx.translate(0, -wobble);
     }
@@ -705,7 +779,6 @@
         if (player.invulnTimer > 0) player.invulnTimer -= dt;
         if (swordSlash) { swordSlash.life -= dt; if (swordSlash.life <= 0) swordSlash = null; }
 
-        // Player Projectiles (Archer & Necro)
         playerProjectiles.forEach(p => {
           p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
           monsters.forEach(m => {
@@ -718,7 +791,6 @@
         playerProjectiles = playerProjectiles.filter(p => p.life > 0 && p.x>0 && p.x<W && p.y>0 && p.y<H);
         cleanupMonsters();
 
-        // Monsters AI
         monsters.forEach(m => {
           m.anim += dt * 4;
           const angle = Math.atan2(player.y - m.y, player.x - m.x);
@@ -754,7 +826,6 @@
         });
         enemyProjectiles = enemyProjectiles.filter(p => p.life > 0 && p.x>0 && p.x<W && p.y>0 && p.y<H);
 
-        // Loot Vacuum
         lootItems.forEach(item => {
           if (item.vx || item.vy) { item.x += item.vx * dt; item.y += item.vy * dt; item.vx *= 0.88; item.vy *= 0.88; }
           const distToPlayer = Math.hypot(player.x - item.x, player.y - item.y);
@@ -903,7 +974,7 @@
         ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2); ctx.stroke(); ctx.restore();
       }
 
-      if (player.classType && (player.invulnTimer <= 0 || Math.floor(time / 100) % 2 === 0)) drawPlayer();
+      if (player.classType) drawPlayer();
 
       particles.forEach(p => { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); });
       damageNumbers.forEach(d => {
