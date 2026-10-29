@@ -416,4 +416,124 @@
         updateHUD();
 
         fb.className = "p-3 rounded-xl text-xs font-bold bg-rose-950/80 border border-rose-500/50 text-rose-300";
-        fb.innerHTML = `⚠️ <b>SECURITY LOCKOUT!</b> Barrier shocked runner for
+        fb.innerHTML = `⚠️ <b>SECURITY LOCKOUT!</b> Barrier shocked runner for -35% Hull damage! Correct was: "${currentGateQuestion.ans}".`;
+
+        if (shieldHp <= 0) {
+          setTimeout(() => {
+            document.getElementById('grammarModal').classList.add('hidden');
+            triggerGameOver("Destroyed by Gate Shock", "Your hull failed at the Grammar Barrier!");
+          }, 1400);
+        } else {
+          setTimeout(() => {
+            document.getElementById('grammarModal').classList.add('hidden');
+            isGamePaused = false;
+          }, 1500);
+        }
+      }
+    }
+
+    // ==========================================
+    // 4. ANIMATION & COLLISION LOOP
+    // ==========================================
+    function animate() {
+      requestAnimationFrame(animate);
+
+      if (!isGamePaused && !isGameOver) {
+        // Smooth lane change
+        player.position.x += (targetX - player.position.x) * 0.18;
+        player.rotation.z = -(targetX - player.position.x) * 0.35; // banking tilt
+
+        distanceTraveled += 1;
+        document.getElementById('hudScore').textContent = `${distanceTraveled}m`;
+
+        // Move Obstacles
+        for (let i = 0; i < obstacles.length; i++) {
+          const obs = obstacles[i];
+          obs.position.z += gameSpeed;
+          obs.rotation.x += 0.02;
+          obs.rotation.y += 0.03;
+
+          // Collision Detection with Player
+          if (Math.abs(obs.position.z - player.position.z) < 1.0 && Math.abs(obs.position.x - player.position.x) < 0.85) {
+            playSound('hit');
+            shieldHp = Math.max(0, shieldHp - 25);
+            updateHUD();
+
+            // Push obstacle away after hit
+            obs.position.z = -140;
+            obs.position.x = (Math.floor(Math.random() * 3) - 1) * laneWidth;
+
+            if (shieldHp <= 0) {
+              triggerGameOver("Collision Failure", "Too many obstacle crashes destroyed the craft!");
+              return;
+            }
+          }
+
+          // Recycle obstacle
+          if (obs.position.z > 8) {
+            obs.position.z = -140;
+            obs.position.x = (Math.floor(Math.random() * 3) - 1) * laneWidth;
+          }
+        }
+
+        // Move Crystals (Collectibles)
+        for (let i = 0; i < crystals.length; i++) {
+          const cry = crystals[i];
+          cry.position.z += gameSpeed;
+          cry.rotation.y += 0.04;
+
+          // Collect detection
+          if (Math.abs(cry.position.z - player.position.z) < 1.0 && Math.abs(cry.position.x - player.position.x) < 0.8) {
+            distanceTraveled += 25;
+            cry.position.z = -130;
+            cry.position.x = (Math.floor(Math.random() * 3) - 1) * laneWidth;
+          }
+
+          if (cry.position.z > 8) {
+            cry.position.z = -130;
+            cry.position.x = (Math.floor(Math.random() * 3) - 1) * laneWidth;
+          }
+        }
+      }
+
+      renderer.render(scene, camera);
+    }
+
+    function updateHUD() {
+      document.getElementById('hudShieldBar').style.width = `${Math.max(0, shieldHp)}%`;
+      document.getElementById('hudShieldText').textContent = `${Math.max(0, shieldHp)}%`;
+      if (shieldHp < 35) {
+        document.getElementById('hudShieldBar').className = "bg-rose-500 h-full transition-all duration-300";
+      } else {
+        document.getElementById('hudShieldBar').className = "bg-cyan-400 h-full transition-all duration-300";
+      }
+    }
+
+    function triggerGameOver(title, desc) {
+      isGameOver = true;
+      clearInterval(timerInterval);
+      const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+      document.getElementById('overTitle').textContent = title;
+      document.getElementById('overDesc').textContent = desc;
+      document.getElementById('finalDistance').textContent = `${distanceTraveled}m`;
+      document.getElementById('finalAccuracy').textContent = `${acc}%`;
+      document.getElementById('gameOverModal').classList.remove('hidden');
+    }
+
+    function restart3DGame() {
+      document.getElementById('gameOverModal').classList.add('hidden');
+      init3D();
+    }
+
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+    });
+  </script>
+</body>
+</html>
