@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Dungeon & Forge RPG • 2D Action Quest</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #030712; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
+    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; image-rendering: pixelated; }
+    #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
+    .interactive { pointer-events: auto; }
+    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid #334155; border-radius: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(8px); }
+    .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.45rem 0.85rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn:hover { background: #334155; color: #fff; }
+    .btn-forge { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; }
+    .btn-forge:hover { filter: brightness(1.15); transform: translateY(-1px); }
+    .bar-bg { width: 6.5rem; height: 0.65rem; background: #1e293b; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
+    .bar-fill { height: 100%; width: 100%; background: #10b981; transition: width 0.25s ease; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(3, 7, 18, 0.92); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(8px); }
+    .modal-card { background: #0f172a; border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.6rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+    .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-top: 1rem; }
+    @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
+    .opt-btn { background: #1e293b; border: 1px solid #334155; color: #f1f5f9; padding: 0.8rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-align: left; transition: all 0.15s; }
+    .opt-btn:hover { background: #451a03; border-color: #f59e0b; color: #fff; }
+    .opt-btn.correct { background: #065f46 !important; border-color: #10b981 !important; color: #d1fae5 !important; }
+    .opt-btn.wrong { background: #881337 !important; border-color: #f43f5e !important; color: #ffe4e6 !important; }
+    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: #090d16; border: 1px solid #1e293b; padding: 0.8rem 1rem; border-radius: 0.85rem; margin-bottom: 0.6rem; text-align: left; }
+    .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .dpad-row { display: flex; gap: 0.35rem; }
+    .touch-btn { width: 3.6rem; height: 3.6rem; background: rgba(15, 23, 42, 0.85); border: 2px solid #334155; border-radius: 0.85rem; font-size: 1.4rem; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .touch-btn:active { background: #f59e0b; }
+    .touch-atk { width: 4.8rem; height: 4.8rem; border-radius: 50%; background: rgba(239, 68, 68, 0.85); border: 2px solid #f87171; font-weight: 900; font-size: 1rem; }
+    .touch-atk:active { background: #dc2626; }
+    @media (min-width: 768px) { .mobile-ui { display: none !important; } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <canvas id="canvasGame"></canvas>
+
+  <!-- Heads Up Display -->
+  <div id="hudLayer">
+    <!-- Top Stats Bar -->
+    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:58rem; margin:0 auto;" class="interactive">
+      <div class="hud-box">
+        <a href="index.html" class="btn">← Hub</a>
+        <div>
+          <span style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block;">DUNGEON FORGE</span>
+          <span style="font-size:0.9rem; font-weight:900;">Floor <span id="hudFloor">1</span></span>
+        </div>
+      </div>
+
+      <!-- Materials Inventory -->
+      <div class="hud-box" style="font-family: monospace; font-size: 0.8rem;">
+        <div>💎 <span id="hudObsidian" style="color:#38bdf8; font-weight:bold;">0</span></div>
+        <div>📜 <span id="hudRunes" style="color:#c084fc; font-weight:bold;">0</span></div>
+        <div>🐉 <span id="hudScales" style="color:#fbbf24; font-weight:bold;">0</span></div>
+      </div>
+
+      <!-- Player HP, 10s Timer & Forge Button -->
+      <div class="hud-box" style="font-family: monospace;">
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#94a3b8; margin-bottom:0.15rem;">
+            <span>HP</span>
+            <span id="hudHpText">100/100</span>
+          </div>
+          <div class="bar-bg">
+            <div id="hudHpFill" class="bar-fill"></div>
+          </div>
+        </div>
+        <div style="width:1px; height:1.5rem; background:#334155;"></div>
+        <div style="text-align:center;">
+          <span style="font-size:0.65rem; color:#94a3b8; display:block;">TRIAL IN</span>
+          <span id="hudTrialTimer" style="font-size:1.05rem; font-weight:900; color:#fbbf24;">10s</span>
+        </div>
+        <div style="width:1px; height:1.5rem; background:#334155;"></div>
+        <button onclick="openForge()" class="btn btn-forge">⚒️ Forge [F]</button>
+      </div>
+    </div>
+
+    <!-- On-screen Mobile Controls -->
+    <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:0.5rem;">
+      <div class="dpad-container">
+        <button class="touch-btn" id="mUp">▲</button>
+        <div class="dpad-row">
+          <button class="touch-btn" id="mLeft">◀</button>
+          <button class="touch-btn" id="mDown">▼</button>
+          <button class="touch-btn" id="mRight">▶</button>
+        </div>
+      </div>
+      <button class="touch-btn touch-atk" id="mAtk">SWORD<br>[SPACE]</button>
+    </div>
+
+    <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem;" class="interactive">
+      Move: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD</kbd> or <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">Arrows</kbd> • Attack: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> • Open Forge: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
+    </div>
+  </div>
+
+  <!-- 10-SECOND ANVIL / TRIAL MODAL -->
+  <div id="modalTrial" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <span style="font-size:0.7rem; font-weight:800; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.3rem 0.75rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.3); text-transform:uppercase;">
+        ⚔️ Dungeon Trial Challenge
+      </span>
+      <h3 style="font-size:1.35rem; font-weight:900; margin:0.8rem 0 0.2rem; color:#fff;">Ancient Runic Trial</h3>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Solve to mine materials & heal your knight!</p>
+
+      <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1.2rem; margin-bottom:1rem;">
+        <p id="trialQuestion" style="font-size:1rem; font-weight:700; line-height:1.4; color:#f8fafc;"></p>
+        <p id="trialHint" style="font-size:0.75rem; color:#94a3b8; font-style:italic; margin-top:0.4rem;"></p>
+      </div>
+
+      <div id="trialOptions" class="opt-grid"></div>
+      <div id="trialFeedback" style="margin-top:1rem; padding:0.6rem; border-radius:0.75rem; font-size:0.8rem; font-weight:700;" class="hidden"></div>
+    </div>
+  </div>
+
+  <!-- BLACKSMITH FORGE SHOP MODAL -->
+  <div id="modalForge" class="modal-backdrop hidden">
+    <div class="modal-card" style="border-color:#f59e0b; max-width:32rem;">
+      <div style="font-size:2.4rem; margin-bottom:0.25rem;">⚒️</div>
+      <h3 style="font-size:1.4rem; font-weight:900;">The Blacksmith's Anvil</h3>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Spend mined dungeon loot to forge permanent upgrades.</p>
+
+      <div class="forge-item-row">
+        <div>
+          <span style="font-weight:bold; font-size:0.85rem; color:#fff; display:block;">Circumference Blade (Tier <span id="uiBladeTier">1</span>)</span>
+          <span style="font-size:0.7rem; color:#94a3b8;">Damage: <b id="uiBladeDmg" style="color:#f87171;">25</b> • Cost: 4 💎 Obsidian, 2 📜 Runes</span>
+        </div>
+        <button onclick="upgradeGear('blade')" class="btn btn-forge">Upgrade</button>
+      </div>
+
+      <div class="forge-item-row">
+        <div>
+          <span style="font-weight:bold; font-size:0.85rem; color:#fff; display:block;">Concentric Armor Plate (Tier <span id="uiArmorTier">1</span>)</span>
+          <span style="font-size:0.7rem; color:#94a3b8;">Max HP: <b id="uiArmorHp" style="color:#34d399;">100</b> • Cost: 5 💎 Obsidian, 3 🐉 Scales</span>
+        </div>
+        <button onclick="upgradeGear('armor')" class="btn btn-forge">Upgrade</button>
+      </div>
+
+      <div class="forge-item-row">
+        <div>
+          <span style="font-weight:bold; font-size:0.85rem; color:#fff; display:block;">Swift Wind Boots (Tier <span id="uiBootsTier">1</span>)</span>
+          <span style="font-size:0.7rem; color:#94a3b8;">Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> • Cost: 4 📜 Runes, 3 🐉 Scales</span>
+        </div>
+        <button onclick="upgradeGear('boots')" class="btn btn-forge">Upgrade</button>
+      </div>
+
+      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:0.6rem; padding:0.75rem;">Return to Dungeon [ESC / F]</button>
+    </div>
+  </div>
+
+  <!-- GAME OVER MODAL -->
+  <div id="modalGameOver" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width:26rem; border-color:#ef4444;">
+      <div style="font-size:3rem; margin-bottom:0.5rem;">💀</div>
+      <h3 style="font-size:1.5rem; font-weight:900;">Knight Fallen!</h3>
+      <p style="font-size:0.8rem; color:#94a3b8; margin:0.4rem 0 1.2rem;">Your health reached zero in the catacombs.</p>
+      
+      <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
+        <div>
+          <span style="font-size:0.65rem; color:#94a3b8; display:block; text-transform:uppercase;">Floor Reached</span>
+          <span id="finalFloor" style="font-size:1.25rem; font-weight:900; color:#fbbf24;">1</span>
+        </div>
+        <div style="width:1px; background:#1e293b;"></div>
+        <div>
+          <span style="font-size:0.65rem; color:#94a3b8; display:block; text-transform:uppercase;">Trial Acc</span>
+          <span id="finalAccuracy" style="font-size:1.25rem; font-weight:900; color:#34d399;">0%</span>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.75rem;">
+        <a href="index.html" class="btn" style="flex:1;">Exit to Hub</a>
+        <button onclick="restartGame()" class="btn btn-forge" style="flex:1;">Respawn</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // UNIT 4 VOCABULARY & GRAMMAR QUESTION POOL
+    const QUESTIONS = [
+      { q: "The length of a line that goes around a circle is called the:", ans: "Circumference", dist: ["Circuit", "Central", "Concentric"], hint: "Latin root 'circum' means around." },
+      { q: "To get around something in a clever or dishonest way (to bypass):", ans: "Circumvent", dist: ["Circumference", "Concentric", "Cyclical"], hint: "Like trying to bypass a security screen." },
+      { q: "When two or more circles share the exact same center point, they are:", ans: "Concentric", dist: ["Eccentric", "Central", "Cyclical"], hint: "Root 'centr' means middle; 'con' means together." },
+      { q: "The complete closed path that an electric current travels along:", ans: "Circuit", dist: ["Cycle", "Circumstance", "Cyclone"], hint: "Electricity travels around it to power a light bulb." },
+      { q: "Tending to act in strange, odd, or unusual ways ('out of center'):", ans: "Eccentric", dist: ["Central", "Concentric", "Cyclical"], hint: "Jamie had an eccentric fashion style." },
+      { q: "A powerful, destructive storm with winds spinning around low pressure:", ans: "Cyclone", dist: ["Cycle", "Circumference", "Circuit"], hint: "Greek root 'cycl' means circle." },
+      { q: "Happening again and again in repeating order (like the 4 seasons):", ans: "Cyclical", dist: ["Eccentric", "Central", "Concentric"], hint: "Adjective form of cycle." },
+      { q: "A condition that surrounds or causes an event to happen:", ans: "Circumstance", dist: ["Circumference", "Circuit", "Cycle"], hint: "Like traffic or an alarm clock making you late." },
+      { q: "Complete the analogy: CIRCUMFERENCE : CIRCLE ::", ans: "perimeter : square", dist: ["area : rectangle", "center : middle", "circle : square"], hint: "Distance around a circle vs distance around a polygon." },
+      { q: "A nonrestrictive (nonessential) element in a sentence must be set off with:", ans: "Commas, dashes, or parentheses", dist: ["Periods or semicolons", "No punctuation at all", "Quotation marks"], hint: "It can be removed without changing the sentence's main meaning." }
+    ];
+
+    // AUDIO SYSTEM
+    let audioCtx = null;
+    function getAudio() {
+      if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function playSound(type) {
+      try {
+        const a = getAudio();
+        if (!a) return;
+        const now = a.currentTime;
+        const osc = a.createOscillator();
+        const gain = a.createGain();
+        osc.connect(gain); gain.connect(a.destination);
+
+        if (type === 'slash') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.12);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+          osc.start(now); osc.stop(now + 0.12);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.setValueAtTime(60, now + 0.15);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+          osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'loot') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(587, now);
+          osc.frequency.setValueAtTime(880, now + 0.08);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
+          osc.start(now); osc.stop(now + 0.16);
+        } else if (type === 'win') {
+          osc.type = 'triangle';
+          [523, 659, 784, 1046].forEach((f, i) => {
+            const o = a.createOscillator();
+            const g = a.createGain();
+            o.connect(g); g.connect(a.destination);
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(f, now + i * 0.08);
+            g.gain.setValueAtTime(0.18, now + i * 0.08);
+            g.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.2);
+            o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.2);
+          });
+        }
+      } catch(e) {}
+    }
+
+    // CANVAS SETUP
+    const canvas = document.getElementById('canvasGame');
+    const ctx = canvas.getContext('2d');
+    let W = window.innerWidth || 1024;
+    let H = window.innerHeight || 768;
+
+    function resize() {
+      W = canvas.width = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // PERSISTENT CRAFTING & GEAR TIERS
+    let bladeTier = parseInt(localStorage.getItem('df_bladeTier') || "1");
+    let armorTier = parseInt(localStorage.getItem('df_armorTier') || "1");
+    let bootsTier = parseInt(localStorage.getItem('df_bootsTier') || "1");
+
+    let matObsidian = parseInt(localStorage.getItem('df_obsidian') || "2");
+    let matRunes = parseInt(localStorage.getItem('df_runes') || "1");
+    let matScales = parseInt(localStorage.getItem('df_scales') || "0");
+
+    function saveGear() {
+      localStorage.setItem('df_bladeTier', bladeTier);
+      localStorage.setItem('df_armorTier', armorTier);
+      localStorage.setItem('df_bootsTier', bootsTier);
+      localStorage.setItem('df_obsidian', matObsidian);
+      localStorage.setItem('df_runes', matRunes);
+      localStorage.setItem('df_scales', matScales);
+    }
+
+    // GAME STATE
+    let floorNum = 1;
+    let maxHp = 100 + (armorTier - 1) * 35;
+    let playerHp = maxHp;
+    let isPaused = false;
+    let isOver = false;
+    let isForgeOpen = false;
+
+    let trialTimer = 10;
+    let trialInterval = null;
+    let totalTrials = 0;
+    let correctTrials = 0;
+
+    // PLAYER ENTITY
+    const player = {
+      x: 200,
+      y: 200,
+      size: 26,
+      vx: 0,
+      vy: 0,
+      facing: 'down',
+      atkTimer: 0,
+      invulnTimer: 0
+    };
+
+    let keys = {};
+    window.addEventListener('keydown', e => {
+      getAudio();
+      keys[e.key.toLowerCase()] = true;
+      if (e.key === ' ' || e.key === 'Spacebar') { attack(); e.preventDefault(); }
+      if (e.key === 'f' || e.key === 'F') toggleForge();
+      if (e.key === 'Escape' && isForgeOpen) closeForge();
+    });
+    window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+
+    // TOUCH CONTROLS
+    function bindTouch(id, k) {
+      const el = document.getElementById(id);
+      el.onmousedown = el.ontouchstart = (e) => { e.preventDefault(); getAudio(); keys[k] = true; };
+      el.onmouseup = el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
+    }
+    bindTouch('mUp', 'w');
+    bindTouch('mDown', 's');
+    bindTouch('mLeft', 'a');
+    bindTouch('mRight', 'd');
+    document.getElementById('mAtk').onclick = () => { getAudio(); attack(); };
+
+    // MONSTERS, NODES & LOOT PARTICLES
+    let monsters = [];
+    let lootItems = [];
+    let swordSlash = null;
+
+    function spawnFloor(f) {
+      floorNum = f;
+      document.getElementById('hudFloor').textContent = floorNum;
+      player.x = W * 0.15;
+      player.y = H * 0.5;
+
+      monsters = [];
+      lootItems = [];
+
+      // Monster count scales with floor
+      const count = 3 + f * 2;
+      for (let i = 0; i < count; i++) {
+        const isBoss = (f % 3 === 0 && i === 0);
+        monsters.push({
+          x: W * 0.35 + Math.random() * (W * 0.5),
+          y: H * 0.15 + Math.random() * (H * 0.7),
+          size: isBoss ? 42 : 24,
+          hp: isBoss ? (150 + f * 50) : (30 + f * 15),
+          maxHp: isBoss ? (150 + f * 50) : (30 + f * 15),
+          isBoss: isBoss,
+          color: isBoss ? '#f43f5e' : (Math.random() < 0.5 ? '#10b981' : '#a855f7'),
+          spd: isBoss ? 1.0 : (1.4 + Math.random() * 0.8)
+        });
+      }
+    }
+
+    function attack() {
+      if (isPaused || isOver || player.atkTimer > 0) return;
+      player.atkTimer = 0.22;
+      playSound('slash');
+
+      // Slash hitbox position
+      const reach = 38;
+      let sx = player.x;
+      let sy = player.y;
+      if (player.facing === 'up') sy -= reach;
+      if (player.facing === 'down') sy += reach;
+      if (player.facing === 'left') sx -= reach;
+      if (player.facing === 'right') sx += reach;
+
+      swordSlash = { x: sx, y: sy, r: 36, life: 0.15 };
+
+      // Damage calculation
+      const dmg = 25 + (bladeTier - 1) * 15;
+
+      monsters.forEach(m => {
+        const dist = Math.hypot(m.x - sx, m.y - sy);
+        if (dist < swordSlash.r + m.size) {
+          m.hp -= dmg;
+          playSound('hit');
+          // Knockback
+          m.x += (m.x - player.x) * 0.3;
+          m.y += (m.y - player.y) * 0.3;
+
+          // Death check & loot drop
+          if (m.hp <= 0) {
+            const dropCount = m.isBoss ? 4 : 1;
+            for (let d = 0; d < dropCount; d++) {
+              const r = Math.random();
+              const type = r < 0.45 ? 'obsidian' : (r < 0.8 ? 'rune' : 'scale');
+              lootItems.push({ x: m.x + (Math.random() - 0.5) * 20, y: m.y + (Math.random() - 0.5) * 20, type: type });
+            }
+          }
+        }
+      });
+
+      monsters = monsters.filter(m => m.hp > 0);
+
+      // Floor cleared?
+      if (monsters.length === 0) {
+        playSound('win');
+        setTimeout(() => spawnFloor(floorNum + 1), 700);
+      }
+    }
+
+    // 10-SECOND ANVIL TRIAL MODAL
+    function handleTrialTimer() {
+      if (isPaused || isOver) return;
+      trialTimer--;
+      document.getElementById('hudTrialTimer').textContent = `${trialTimer}s`;
+      if (trialTimer <= 0) {
+        openTrialModal();
+      }
+    }
+
+    let activeTrialQ = null;
+    let trialLocked = false;
+
+    function openTrialModal() {
+      isPaused = true;
+      trialLocked = false;
+      trialTimer = 10;
+
+      activeTrialQ = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+      document.getElementById('trialQuestion').textContent = activeTrialQ.q;
+      document.getElementById('trialHint').textContent = `Clue: ${activeTrialQ.hint}`;
+
+      const grid = document.getElementById('trialOptions');
+      grid.innerHTML = '';
+      const opts = [activeTrialQ.ans, ...activeTrialQ.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "opt-btn";
+        btn.textContent = opt;
+        btn.onclick = () => answerTrial(opt, btn);
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('trialFeedback').className = "hidden";
+      document.getElementById('modalTrial').classList.remove('hidden');
+    }
+
+    function answerTrial(choice, btnEl) {
+      if (trialLocked) return;
+      trialLocked = true;
+      getAudio();
+
+      totalTrials++;
+      const isCorrect = choice === activeTrialQ.ans;
+      const fb = document.getElementById('trialFeedback');
+      fb.classList.remove('hidden');
+
+      const allBtns = document.querySelectorAll('#trialOptions .opt-btn');
+      allBtns.forEach(b => {
+        b.style.pointerEvents = 'none';
+        if (b.textContent === activeTrialQ.ans) b.classList.add('correct');
+      });
+
+      if (isCorrect) {
+        correctTrials++;
+        playSound('win');
+        matObsidian += 3;
+        matRunes += 2;
+        matScales += 1;
+        playerHp = Math.min(maxHp, playerHp + 25);
+        player.invulnTimer = 2.5; // Invulnerable on return
+        updateHUD();
+
+        fb.style.background = "rgba(6, 78, 59, 0.9)";
+        fb.style.border = "1px solid #10b981";
+        fb.style.color = "#6ee7b7";
+        fb.innerHTML = `✨ <b>TRIAL SOLVED!</b> Mined +3 💎, +2 📜, +1 🐉 and restored +25 HP!`;
+      } else {
+        btnEl.classList.add('wrong');
+        playSound('hit');
+        playerHp = Math.max(0, playerHp - 25);
+        updateHUD();
+
+        fb.style.background = "rgba(136, 19, 55, 0.9)";
+        fb.style.border = "1px solid #f43f5e";
+        fb.style.color = "#fda4af";
+        fb.innerHTML = `⚠️ <b>TRIAL FAILED!</b> Cave-in dealt -25 HP damage!`;
+      }
+
+      setTimeout(() => {
+        document.getElementById('modalTrial').classList.add('hidden');
+        trialLocked = false;
+        if (playerHp <= 0) {
+          triggerGameOver();
+        } else {
+          lastTime = performance.now();
+          isPaused = false;
+        }
+      }, 1000);
+    }
+
+    // FORGE UPGRADES
+    function toggleForge() {
+      if (isForgeOpen) closeForge(); else openForge();
+    }
+
+    function openForge() {
+      if (isPaused && !isForgeOpen) return;
+      isPaused = true;
+      isForgeOpen = true;
+      updateForgeUI();
+      document.getElementById('modalForge').classList.remove('hidden');
+    }
+
+    function closeForge() {
+      document.getElementById('modalForge').classList.add('hidden');
+      isForgeOpen = false;
+      lastTime = performance.now();
+      isPaused = false;
+    }
+
+    function updateForgeUI() {
+      document.getElementById('uiBladeTier').textContent = bladeTier;
+      document.getElementById('uiBladeDmg').textContent = 25 + (bladeTier - 1) * 15;
+
+      document.getElementById('uiArmorTier').textContent = armorTier;
+      document.getElementById('uiArmorHp').textContent = 100 + (armorTier - 1) * 35;
+
+      document.getElementById('uiBootsTier').textContent = bootsTier;
+      document.getElementById('uiBootsSpd').textContent = `${Math.round((1 + (bootsTier - 1) * 0.2) * 100)}%`;
+
+      updateHUD();
+    }
+
+    function upgradeGear(type) {
+      if (type === 'blade') {
+        const costObs = 4 * bladeTier;
+        const costRunes = 2 * bladeTier;
+        if (matObsidian >= costObs && matRunes >= costRunes) {
+          matObsidian -= costObs; matRunes -= costRunes;
+          bladeTier++;
+          playSound('win');
+          saveGear();
+        } else alert(`Need ${costObs} Obsidian and ${costRunes} Runes! Solve trials to mine more.`);
+      } else if (type === 'armor') {
+        const costObs = 5 * armorTier;
+        const costScales = 3 * armorTier;
+        if (matObsidian >= costObs && matScales >= costScales) {
+          matObsidian -= costObs; matScales -= costScales;
+          armorTier++;
+          maxHp = 100 + (armorTier - 1) * 35;
+          playerHp = maxHp;
+          playSound('win');
+          saveGear();
+        } else alert(`Need ${costObs} Obsidian and ${costScales} Dragon Scales!`);
+      } else if (type === 'boots') {
+        const costRunes = 4 * bootsTier;
+        const costScales = 3 * bootsTier;
+        if (matRunes >= costRunes && matScales >= costScales) {
+          matRunes -= costRunes; matScales -= costScales;
+          bootsTier++;
+          playSound('win');
+          saveGear();
+        } else alert(`Need ${costRunes} Runes and ${costScales} Dragon Scales!`);
+      }
+      updateForgeUI();
+    }
+
+    function updateHUD() {
+      document.getElementById('hudObsidian').textContent = matObsidian;
+      document.getElementById('hudRunes').textContent = matRunes;
+      document.getElementById('hudScales').textContent = matScales;
+
+      document.getElementById('hudHpText').textContent = `${Math.round(playerHp)}/${maxHp}`;
+      const fill = document.getElementById('hudHpFill');
+      const pct = Math.max(0, (playerHp / maxHp) * 100);
+      fill.style.width = `${pct}%`;
+      fill.style.background = pct < 35 ? '#ef4444' : '#10b981';
+      saveGear();
+    }
+
+    function triggerGameOver() {
+      isOver = true;
+      clearInterval(trialInterval);
+      const acc = totalTrials > 0 ? Math.round((correctTrials / totalTrials) * 100) : 0;
+      document.getElementById('finalFloor').textContent = floorNum;
+      document.getElementById('finalAccuracy').textContent = `${acc}%`;
+      document.getElementById('modalGameOver').classList.remove('hidden');
+    }
+
+    function restartGame() {
+      document.getElementById('modalGameOver').classList.add('hidden');
+      document.getElementById('modalTrial').classList.add('hidden');
+      playerHp = maxHp;
+      trialTimer = 10;
+      isPaused = false;
+      isOver = false;
+      updateHUD();
+      spawnFloor(1);
+      clearInterval(trialInterval);
+      trialInterval = setInterval(handleTrialTimer, 1000);
+      lastTime = performance.now();
+    }
+
+    // MAIN 2D PHYSICS & RENDER LOOP
+    let lastTime = performance.now();
+
+    function gameLoop(time) {
+      requestAnimationFrame(gameLoop);
+      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
+
+      // 1. UPDATE LOGIC
+      if (!isPaused && !isOver) {
+        // Player Movement
+        let mx = 0, my = 0;
+        if (keys['w'] || keys['arrowup']) { my -= 1; player.facing = 'up'; }
+        if (keys['s'] || keys['arrowdown']) { my += 1; player.facing = 'down'; }
+        if (keys['a'] || keys['arrowleft']) { mx -= 1; player.facing = 'left'; }
+        if (keys['d'] || keys['arrowright']) { mx += 1; player.facing = 'right'; }
+
+        if (mx !== 0 && my !== 0) { mx *= 0.707; my *= 0.707; }
+
+        const moveSpeed = (200 + (bootsTier - 1) * 40) * dt;
+        player.x += mx * moveSpeed;
+        player.y += my * moveSpeed;
+
+        // Dungeon Walls Bounds
+        player.x = Math.max(player.size, Math.min(W - player.size, player.x));
+        player.y = Math.max(player.size, Math.min(H - player.size, player.y));
+
+        if (player.atkTimer > 0) player.atkTimer -= dt;
+        if (player.invulnTimer > 0) player.invulnTimer -= dt;
+        if (swordSlash) {
+          swordSlash.life -= dt;
+          if (swordSlash.life <= 0) swordSlash = null;
+        }
+
+        // Monsters AI: Chase Player
+        monsters.forEach(m => {
+          const angle = Math.atan2(player.y - m.y, player.x - m.x);
+          m.x += Math.cos(angle) * (m.spd * 95) * dt;
+          m.y += Math.sin(angle) * (m.spd * 95) * dt;
+
+          // Damage player on touch
+          const dist = Math.hypot(player.x - m.x, player.y - m.y);
+          if (dist < player.size + m.size && player.invulnTimer <= 0) {
+            playSound('hit');
+            const monsterDmg = m.isBoss ? 28 : 14;
+            playerHp = Math.max(0, playerHp - monsterDmg);
+            player.invulnTimer = 0.8; // Brief iframe
+            updateHUD();
+            if (playerHp <= 0) triggerGameOver();
+          }
+        });
+
+        // Collect Loot Particles
+        lootItems.forEach(item => {
+          const dist = Math.hypot(player.x - item.x, player.y - item.y);
+          if (dist < player.size + 18) {
+            playSound('loot');
+            if (item.type === 'obsidian') matObsidian++;
+            if (item.type === 'rune') matRunes++;
+            if (item.type === 'scale') matScales++;
+            item.collected = true;
+            updateHUD();
+          }
+        });
+        lootItems = lootItems.filter(i => !i.collected);
+      }
+
+      // 2. RENDER GRAPHICS
+      ctx.fillStyle = '#030712';
+      ctx.fillRect(0, 0, W, H);
+
+      // Dungeon Cobblestone Grid Background
+      ctx.strokeStyle = '#111827';
+      ctx.lineWidth = 1;
+      const gridSize = 48;
+      for (let gx = 0; gx < W; gx += gridSize) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
+      }
+      for (let gy = 0; gy < H; gy += gridSize) {
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+      }
+
+      // Render Loot Items
+      lootItems.forEach(item => {
+        ctx.font = '16px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        let icon = '💎';
+        if (item.type === 'rune') icon = '📜';
+        if (item.type === 'scale') icon = '🐉';
+        ctx.fillText(icon, item.x, item.y);
+      });
+
+      // Render Monsters
+      monsters.forEach(m => {
+        // Monster Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.7, m.size * 0.9, m.size * 0.4, 0, 0, Math.PI * 2); ctx.fill();
+
+        // Monster Body
+        ctx.fillStyle = m.color;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Monster Eyes
+        ctx.fillStyle = '#ffffff';
+        const eyeOffset = m.size * 0.35;
+        ctx.beginPath(); ctx.arc(m.x - eyeOffset, m.y - eyeOffset * 0.3, m.size * 0.22, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(m.x + eyeOffset, m.y - eyeOffset * 0.3, m.size * 0.22, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = '#000000';
+        ctx.beginPath(); ctx.arc(m.x - eyeOffset, m.y - eyeOffset * 0.3, m.size * 0.1, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.arc(m.x + eyeOffset, m.y - eyeOffset * 0.3, m.size * 0.1, 0, Math.PI * 2); ctx.fill();
+
+        // HP bar above monster
+        ctx.fillStyle = 'rgba(0,0,0,0.7)';
+        ctx.fillRect(m.x - m.size, m.y - m.size - 10, m.size * 2, 5);
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(m.x - m.size, m.y - m.size - 10, (m.hp / m.maxHp) * (m.size * 2), 5);
+      });
+
+      // Render Sword Slash Arc
+      if (swordSlash) {
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(swordSlash.x, swordSlash.y, swordSlash.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+      }
+
+      // Render Player Knight
+      if (player.invulnTimer <= 0 || Math.floor(time / 100) % 2 === 0) {
+        // Player Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.beginPath(); ctx.ellipse(player.x, player.y + 16, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
+
+        // Shield Armor (Base)
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Helmet Visor
+        ctx.fillStyle = '#1e1b4b';
+        ctx.beginPath();
+        let vx = player.x, vy = player.y;
+        if (player.facing === 'up') vy -= 7;
+        if (player.facing === 'down') vy += 4;
+        if (player.facing === 'left') vx -= 7;
+        if (player.facing === 'right') vx += 7;
+        ctx.ellipse(vx, vy, 11, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Golden Crest / Plume
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.arc(player.x, player.y - player.size * 0.7, 5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    // BOOTSTRAP
+    window.addEventListener('load', () => {
+      resize();
+      updateForgeUI();
+      spawnFloor(1);
+      clearInterval(trialInterval);
+      trialInterval = setInterval(handleTrialTimer, 1000);
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    });
+  </script>
+</body>
+</html>
