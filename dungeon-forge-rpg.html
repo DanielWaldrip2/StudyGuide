@@ -3,22 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Dungeon & Forge RPG • 2D Action Quest</title>
+  <title>Dungeon & Forge RPG • Action Roguelite</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    html, body { width: 100%; height: 100%; overflow: hidden; background: #030712; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
-    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; image-rendering: pixelated; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #020617; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
+    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; image-rendering: crisp-edges; }
     #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
     .interactive { pointer-events: auto; }
-    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid #334155; border-radius: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 25px rgba(0,0,0,0.6); backdrop-filter: blur(8px); }
+    .hud-box { background: rgba(15, 23, 42, 0.94); border: 1px solid #334155; border-radius: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
     .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.45rem 0.85rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
     .btn:hover { background: #334155; color: #fff; }
     .btn-forge { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; }
     .btn-forge:hover { filter: brightness(1.15); transform: translateY(-1px); }
     .bar-bg { width: 6.5rem; height: 0.65rem; background: #1e293b; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
     .bar-fill { height: 100%; width: 100%; background: #10b981; transition: width 0.25s ease; }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(3, 7, 18, 0.92); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(8px); }
-    .modal-card { background: #0f172a; border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.6rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.94); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
+    .modal-card { background: #0f172a; border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.6rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
     .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-top: 1rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
     .opt-btn { background: #1e293b; border: 1px solid #334155; color: #f1f5f9; padding: 0.8rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-align: left; transition: all 0.15s; }
@@ -40,26 +40,22 @@
 
   <canvas id="canvasGame"></canvas>
 
-  <!-- Heads Up Display -->
   <div id="hudLayer">
-    <!-- Top Stats Bar -->
     <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:58rem; margin:0 auto;" class="interactive">
       <div class="hud-box">
         <a href="index.html" class="btn">← Hub</a>
         <div>
-          <span style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block;">DUNGEON FORGE</span>
+          <span id="hudBiomeName" style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block;">CRYPT BIOME</span>
           <span style="font-size:0.9rem; font-weight:900;">Floor <span id="hudFloor">1</span></span>
         </div>
       </div>
 
-      <!-- Materials Inventory -->
       <div class="hud-box" style="font-family: monospace; font-size: 0.8rem;">
         <div>💎 <span id="hudObsidian" style="color:#38bdf8; font-weight:bold;">0</span></div>
         <div>📜 <span id="hudRunes" style="color:#c084fc; font-weight:bold;">0</span></div>
         <div>🐉 <span id="hudScales" style="color:#fbbf24; font-weight:bold;">0</span></div>
       </div>
 
-      <!-- Player HP, 10s Timer & Forge Button -->
       <div class="hud-box" style="font-family: monospace;">
         <div>
           <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#94a3b8; margin-bottom:0.15rem;">
@@ -80,7 +76,6 @@
       </div>
     </div>
 
-    <!-- On-screen Mobile Controls -->
     <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:0.5rem;">
       <div class="dpad-container">
         <button class="touch-btn" id="mUp">▲</button>
@@ -94,7 +89,7 @@
     </div>
 
     <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem;" class="interactive">
-      Move: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD</kbd> or <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">Arrows</kbd> • Attack: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> • Open Forge: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
+      Move: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD</kbd> or <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">Arrows</kbd> • Attack: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> • Forge: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
     </div>
   </div>
 
@@ -102,10 +97,10 @@
   <div id="modalTrial" class="modal-backdrop hidden">
     <div class="modal-card">
       <span style="font-size:0.7rem; font-weight:800; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.3rem 0.75rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.3); text-transform:uppercase;">
-        ⚔️ Dungeon Trial Challenge
+        ⚔️ Vocabulary Trial Challenge
       </span>
-      <h3 style="font-size:1.35rem; font-weight:900; margin:0.8rem 0 0.2rem; color:#fff;">Ancient Runic Trial</h3>
-      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Solve to mine materials & heal your knight!</p>
+      <h3 style="font-size:1.35rem; font-weight:900; margin:0.8rem 0 0.2rem; color:#fff;">Unit 4 Word Challenge</h3>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Solve correctly to mine materials & heal your knight!</p>
 
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1.2rem; margin-bottom:1rem;">
         <p id="trialQuestion" style="font-size:1rem; font-weight:700; line-height:1.4; color:#f8fafc;"></p>
@@ -122,7 +117,7 @@
     <div class="modal-card" style="border-color:#f59e0b; max-width:32rem;">
       <div style="font-size:2.4rem; margin-bottom:0.25rem;">⚒️</div>
       <h3 style="font-size:1.4rem; font-weight:900;">The Blacksmith's Anvil</h3>
-      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Spend mined dungeon loot to forge permanent upgrades.</p>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Spend mined dungeon loot to forge upgrades. (Death resets all gear!)</p>
 
       <div class="forge-item-row">
         <div>
@@ -152,12 +147,14 @@
     </div>
   </div>
 
-  <!-- GAME OVER MODAL -->
+  <!-- GAME OVER / RESTART MODAL (HARDCORE RESET) -->
   <div id="modalGameOver" class="modal-backdrop hidden">
     <div class="modal-card" style="max-width:26rem; border-color:#ef4444;">
       <div style="font-size:3rem; margin-bottom:0.5rem;">💀</div>
-      <h3 style="font-size:1.5rem; font-weight:900;">Knight Fallen!</h3>
-      <p style="font-size:0.8rem; color:#94a3b8; margin:0.4rem 0 1.2rem;">Your health reached zero in the catacombs.</p>
+      <h3 style="font-size:1.5rem; font-weight:900; color:#ef4444;">Knight Slain!</h3>
+      <p style="font-size:0.8rem; color:#94a3b8; margin:0.4rem 0 1rem;">
+        You died in the catacombs. All forged weapons, armor, boots, and gathered materials have been lost!
+      </p>
       
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
         <div>
@@ -173,23 +170,31 @@
 
       <div style="display:flex; gap:0.75rem;">
         <a href="index.html" class="btn" style="flex:1;">Exit to Hub</a>
-        <button onclick="restartGame()" class="btn btn-forge" style="flex:1;">Respawn</button>
+        <button onclick="hardcoreRestartGame()" class="btn btn-forge" style="flex:1;">Restart Floor 1</button>
       </div>
     </div>
   </div>
 
   <script>
     const QUESTIONS = [
-      { q: "The length of a line that goes around a circle is called the:", ans: "Circumference", dist: ["Circuit", "Central", "Concentric"], hint: "Latin root 'circum' means around." },
-      { q: "To get around something in a clever or dishonest way (to bypass):", ans: "Circumvent", dist: ["Circumference", "Concentric", "Cyclical"], hint: "Like trying to bypass a security screen." },
-      { q: "When two or more circles share the exact same center point, they are:", ans: "Concentric", dist: ["Eccentric", "Central", "Cyclical"], hint: "Root 'centr' means middle; 'con' means together." },
-      { q: "The complete closed path that an electric current travels along:", ans: "Circuit", dist: ["Cycle", "Circumstance", "Cyclone"], hint: "Electricity travels around it to power a light bulb." },
-      { q: "Tending to act in strange, odd, or unusual ways ('out of center'):", ans: "Eccentric", dist: ["Central", "Concentric", "Cyclical"], hint: "Jamie had an eccentric fashion style." },
-      { q: "A powerful, destructive storm with winds spinning around low pressure:", ans: "Cyclone", dist: ["Cycle", "Circumference", "Circuit"], hint: "Greek root 'cycl' means circle." },
-      { q: "Happening again and again in repeating order (like the 4 seasons):", ans: "Cyclical", dist: ["Eccentric", "Central", "Concentric"], hint: "Adjective form of cycle." },
-      { q: "A condition that surrounds or causes an event to happen:", ans: "Circumstance", dist: ["Circumference", "Circuit", "Cycle"], hint: "Like traffic or an alarm clock making you late." },
-      { q: "Complete the analogy: CIRCUMFERENCE : CIRCLE ::", ans: "perimeter : square", dist: ["area : rectangle", "center : middle", "circle : square"], hint: "Distance around a circle vs distance around a polygon." },
-      { q: "A nonrestrictive (nonessential) element in a sentence must be set off with:", ans: "Commas, dashes, or parentheses", dist: ["Periods or semicolons", "No punctuation at all", "Quotation marks"], hint: "It can be removed without changing the sentence's main meaning." }
+      { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
+      { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
+      { q: "An extremely large, powerful, destructive storm with very high winds that turn around low pressure:", ans: "cyclone", dist: ["circumference", "circumvent", "cycle"], hint: "A spinning vortex that can rip trees out of the ground." },
+      { q: "The length of a line that goes around a circle or other round shape:", ans: "circumference", dist: ["circuit", "central", "concentric"], hint: "In math, this is the perimeter or distance around a circle." },
+      { q: "The complete, closed path that an electric current travels along:", ans: "circuit", dist: ["circumstance", "circumvent", "cycle"], hint: "In science, electricity travels around this to light a bulb." },
+      { q: "A condition or situation that surrounds or causes an event to happen:", ans: "circumstance", dist: ["circumference", "eccentric", "cyclical"], hint: "A flat tire or traffic can be a bad _____ that makes you late." },
+      { q: "To get around something in a clever or dishonest way; to bypass or avoid:", ans: "circumvent", dist: ["concentric", "circuit", "cyclone"], hint: "He tried to _____ the password screen to access the computer." },
+      { q: "Located directly in the center or middle of a thing or place:", ans: "central", dist: ["concentric", "eccentric", "cyclical"], hint: "Kansas is located in the _____ United States." },
+      { q: "When two or more circles or objects share the exact same center point:", ans: "concentric", dist: ["eccentric", "central", "circumference"], hint: "Target rings and ripple circles in water are _____." },
+      { q: "Tending to act in strange, odd, or unusual ways ('out of center'):", ans: "eccentric", dist: ["central", "concentric", "circumstance"], hint: "Someone with wacky hairstyles and wild colorful clothes." },
+      { q: "What does the Greek root 'cycl' mean?", ans: "Circle", dist: ["Around", "Middle", "Water"], hint: "Seen in cycle, cyclical, cyclone, and bicycle." },
+      { q: "What does the Latin root 'circ / circum' mean?", ans: "Around", dist: ["Middle", "Circle", "Heat"], hint: "Seen in circumference, circumvent, and circumstance." },
+      { q: "What does the Greek root 'centr / center' mean?", ans: "Middle", dist: ["Circle", "Around", "Time"], hint: "Seen in central, concentric, and eccentric." },
+      { q: "Complete the analogy: ELECTRICITY : CIRCUIT ::", ans: "electric : current", dist: ["wheels : bicycle", "light bulb : wires", "car : hood"], hint: "Electricity travels around a closed circuit path." },
+      { q: "Complete the analogy: CENTRAL : OUTER ::", ans: "energetic : tired", dist: ["middle : center", "location : area", "town : street"], hint: "Central and outer are antonyms (opposites)." },
+      { q: "Complete the analogy: CIRCUMFERENCE : CIRCLE ::", ans: "perimeter : square", dist: ["area : rectangle", "center : middle", "circle : square"], hint: "Distance around a circle vs distance around a square." },
+      { q: "Complete the analogy: ECCENTRIC : LIKENESS ::", ans: "generous : greed", dist: ["illness : well", "same : alike", "strange : odd"], hint: "Eccentric departs from likeness, like generous departs from greed." },
+      { q: "A nonrestrictive (nonessential) element in a sentence must be set off with:", ans: "Commas, dashes, or parentheses", dist: ["Periods or semicolons", "No punctuation at all", "Quotation marks"], hint: "It can be removed without changing the sentence's core meaning." }
     ];
 
     // AUDIO SYSTEM
@@ -213,8 +218,8 @@
 
         if (type === 'slash') {
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(320, now);
-          osc.frequency.exponentialRampToValueAtTime(80, now + 0.12);
+          osc.frequency.setValueAtTime(360, now);
+          osc.frequency.exponentialRampToValueAtTime(70, now + 0.12);
           gain.gain.setValueAtTime(0.2, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
           osc.start(now); osc.stop(now + 0.12);
@@ -225,6 +230,13 @@
           gain.gain.setValueAtTime(0.25, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
           osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'fire') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.linearRampToValueAtTime(120, now + 0.18);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+          osc.start(now); osc.stop(now + 0.18);
         } else if (type === 'loot') {
           osc.type = 'triangle';
           osc.frequency.setValueAtTime(587, now);
@@ -261,13 +273,13 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // PERSISTENT CRAFTING & GEAR TIERS
+    // FORGE GEAR TIERS
     let bladeTier = parseInt(localStorage.getItem('df_bladeTier') || "1");
     let armorTier = parseInt(localStorage.getItem('df_armorTier') || "1");
     let bootsTier = parseInt(localStorage.getItem('df_bootsTier') || "1");
 
-    let matObsidian = parseInt(localStorage.getItem('df_obsidian') || "2");
-    let matRunes = parseInt(localStorage.getItem('df_runes') || "1");
+    let matObsidian = parseInt(localStorage.getItem('df_obsidian') || "0");
+    let matRunes = parseInt(localStorage.getItem('df_runes') || "0");
     let matScales = parseInt(localStorage.getItem('df_scales') || "0");
 
     function saveGear() {
@@ -277,6 +289,16 @@
       localStorage.setItem('df_obsidian', matObsidian);
       localStorage.setItem('df_runes', matRunes);
       localStorage.setItem('df_scales', matScales);
+    }
+
+    function resetAllProgress() {
+      bladeTier = 1;
+      armorTier = 1;
+      bootsTier = 1;
+      matObsidian = 0;
+      matRunes = 0;
+      matScales = 0;
+      localStorage.clear();
     }
 
     // GAME STATE
@@ -292,10 +314,29 @@
     let totalTrials = 0;
     let correctTrials = 0;
 
+    // SCREEN SHAKE & PARTICLES
+    let screenShake = 0;
+    let particles = [];
+    let damageNumbers = [];
+
     // EXIT PORTAL & LEVEL TRANSITION
     let exitPortal = null;
     let isTransitioningFloor = false;
     let transitionTimer = 0;
+
+    // BIOMES
+    const BIOMES = [
+      { name: "CATACOMB CRYPT", bg: "#030712", tile: "#111827", accent: "#38bdf8", floorType: "stone" },
+      { name: "MAGMA CAVERNS", bg: "#180606", tile: "#2b0a0a", accent: "#f97316", floorType: "magma" },
+      { name: "TOXIC MIRE", bg: "#04140d", tile: "#0a2618", accent: "#22c55e", floorType: "toxic" },
+      { name: "ANCIENT TEMPLE", bg: "#10091d", tile: "#1e1335", accent: "#a855f7", floorType: "runic" },
+      { name: "VOID RIFT", bg: "#02040a", tile: "#0f172a", accent: "#e2e8f0", floorType: "void" }
+    ];
+
+    function getBiome(f) {
+      const idx = Math.floor((f - 1) / 2) % BIOMES.length;
+      return BIOMES[idx];
+    }
 
     // PLAYER ENTITY
     const player = {
@@ -331,48 +372,73 @@
     bindTouch('mRight', 'd');
     document.getElementById('mAtk').onclick = () => { getAudio(); attack(); };
 
-    // MONSTERS & LOOT PARTICLES
+    // MONSTERS, ENEMY PROJECTILES & LOOT
     let monsters = [];
+    let enemyProjectiles = [];
     let lootItems = [];
     let swordSlash = null;
 
+    // PROGRESSIVE DIFFICULTY SCALING PER FLOOR
     function spawnFloor(f) {
       floorNum = f;
       document.getElementById('hudFloor').textContent = floorNum;
+      const b = getBiome(f);
+      document.getElementById('hudBiomeName').textContent = b.name;
+      document.getElementById('hudBiomeName').style.color = b.accent;
+
       player.x = W * 0.15;
       player.y = H * 0.5;
 
       monsters = [];
       lootItems = [];
+      enemyProjectiles = [];
       exitPortal = null;
       isTransitioningFloor = false;
 
-      // Monster count scales with floor
-      const count = 3 + f * 2;
+      // Scaling formulas:
+      // Density: Floor 1 = 4 monsters, Floor 5 = 12 monsters, Floor 10 = 22 monsters
+      const count = Math.min(22, 3 + Math.floor(f * 1.8));
+      
+      // Speed multiplier: 1.0 at floor 1 -> up to 1.7 at high floors
+      const speedScale = 1.0 + Math.min(0.7, (f - 1) * 0.08);
+
       for (let i = 0; i < count; i++) {
         const isBoss = (f % 3 === 0 && i === 0);
-        const type = isBoss ? 'boss' : (Math.random() < 0.5 ? 'slime' : 'skeleton');
+        
+        let type = 'slime';
+        if (isBoss) {
+          type = 'boss';
+        } else if (f >= 5 && Math.random() < 0.35) {
+          type = 'caster'; // Void Caster that shoots projectiles!
+        } else if (Math.random() < 0.5) {
+          type = 'skeleton';
+        }
+
+        // Scaled HP based on floor depth
+        const baseHp = isBoss ? 220 : (type === 'slime' ? 35 : (type === 'caster' ? 45 : 40));
+        const scaledHp = Math.round(baseHp * (1 + (f - 1) * 0.25));
+
         monsters.push({
-          x: W * 0.35 + Math.random() * (W * 0.5),
+          x: W * 0.35 + Math.random() * (W * 0.55),
           y: H * 0.15 + Math.random() * (H * 0.7),
-          size: isBoss ? 52 : (type === 'slime' ? 24 : 26),
-          hp: isBoss ? (180 + f * 55) : (35 + f * 16),
-          maxHp: isBoss ? (180 + f * 55) : (35 + f * 16),
+          size: isBoss ? 54 : (type === 'slime' ? 24 : (type === 'caster' ? 28 : 26)),
+          hp: scaledHp,
+          maxHp: scaledHp,
           isBoss: isBoss,
           type: type,
-          color: isBoss ? '#f43f5e' : (type === 'slime' ? '#10b981' : '#cbd5e1'),
-          spd: isBoss ? 0.95 : (type === 'slime' ? 1.2 : 1.55),
-          anim: Math.random() * Math.PI
+          spd: (isBoss ? 1.05 : (type === 'slime' ? 1.3 : (type === 'caster' ? 1.1 : 1.6))) * speedScale,
+          anim: Math.random() * Math.PI,
+          shootCooldown: Math.random() * 2 + 1.5
         });
       }
     }
 
     function attack() {
       if (isPaused || isOver || player.atkTimer > 0) return;
-      player.atkTimer = 0.22;
+      player.atkTimer = 0.2;
       playSound('slash');
 
-      const reach = 38;
+      const reach = 42;
       let sx = player.x;
       let sy = player.y;
       if (player.facing === 'up') sy -= reach;
@@ -380,7 +446,7 @@
       if (player.facing === 'left') sx -= reach;
       if (player.facing === 'right') sx += reach;
 
-      swordSlash = { x: sx, y: sy, r: 40, life: 0.15 };
+      swordSlash = { x: sx, y: sy, r: 44, life: 0.16, angle: player.facing };
 
       const dmg = 25 + (bladeTier - 1) * 15;
 
@@ -389,12 +455,30 @@
         if (dist < swordSlash.r + m.size) {
           m.hp -= dmg;
           playSound('hit');
+          screenShake = 6;
+
+          // Spawn blood/spark particles
+          for (let p = 0; p < 8; p++) {
+            particles.push({
+              x: m.x, y: m.y,
+              vx: (Math.random() - 0.5) * 220,
+              vy: (Math.random() - 0.5) * 220,
+              life: 0.3,
+              color: m.isBoss ? '#f43f5e' : (m.type === 'slime' ? '#34d399' : '#e2e8f0'),
+              size: Math.random() * 4 + 2
+            });
+          }
+
+          // Damage Floater
+          damageNumbers.push({ x: m.x, y: m.y - 15, text: `-${dmg}`, color: '#fbbf24', life: 0.6 });
+
+          // Knockback
           m.x += (m.x - player.x) * 0.35;
           m.y += (m.y - player.y) * 0.35;
 
-          // Death check & loot drop
+          // Death check & loot drops
           if (m.hp <= 0) {
-            const dropCount = m.isBoss ? 7 : 2;
+            const dropCount = m.isBoss ? 8 : (m.type === 'caster' ? 3 : 2);
             for (let d = 0; d < dropCount; d++) {
               const r = Math.random();
               const type = r < 0.45 ? 'obsidian' : (r < 0.8 ? 'rune' : 'scale');
@@ -413,7 +497,6 @@
 
       monsters = monsters.filter(m => m.hp > 0);
 
-      // Floor cleared? Open Exit Portal & trigger auto-loot magnet
       if (monsters.length === 0 && !exitPortal && !isTransitioningFloor) {
         playSound('win');
         triggerRoomCleared();
@@ -422,17 +505,15 @@
 
     function triggerRoomCleared() {
       isTransitioningFloor = true;
-      transitionTimer = 4.0; // 4 seconds before auto-teleport
+      transitionTimer = 4.0;
 
-      // Spawn Exit Portal at right side of chamber
       exitPortal = {
         x: W * 0.88,
         y: H * 0.5,
-        r: 34,
+        r: 36,
         rot: 0
       };
 
-      // Set all loot to auto-magnet vacuum directly into player
       lootItems.forEach(item => {
         item.autoVacuum = true;
       });
@@ -505,10 +586,11 @@
         fb.style.background = "rgba(6, 78, 59, 0.9)";
         fb.style.border = "1px solid #10b981";
         fb.style.color = "#6ee7b7";
-        fb.innerHTML = `✨ <b>TRIAL SOLVED!</b> Mined +3 💎, +2 📜, +1 🐉 and restored +25 HP!`;
+        fb.innerHTML = `✨ <b>TRIAL SOLVED!</b> Mined +3 💎, +2 📜, +1 🐉 & restored +25 HP!`;
       } else {
         btnEl.classList.add('wrong');
         playSound('hit');
+        screenShake = 12;
         playerHp = Math.max(0, playerHp - 25);
         updateHUD();
 
@@ -619,39 +701,42 @@
       document.getElementById('modalGameOver').classList.remove('hidden');
     }
 
-    function restartGame() {
+    // HARDCORE RESET ON DEATH: ALL GEAR AND INVENTORY LOST!
+    function hardcoreRestartGame() {
+      resetAllProgress();
       document.getElementById('modalGameOver').classList.add('hidden');
       document.getElementById('modalTrial').classList.add('hidden');
+      maxHp = 100;
       playerHp = maxHp;
       trialTimer = 10;
       isPaused = false;
       isOver = false;
-      updateHUD();
+      updateForgeUI();
       spawnFloor(1);
       clearInterval(trialInterval);
       trialInterval = setInterval(handleTrialTimer, 1000);
       lastTime = performance.now();
     }
 
-    // MONSTER RENDERING HELPERS (DISTINCT SHAPES)
+    // MONSTER PROCEDURAL SPRITE RENDERERS
     function drawSlime(m) {
-      // Bouncing blob shape
       const squish = Math.sin(m.anim) * 0.15;
       const rx = m.size * (1 + squish);
       const ry = m.size * (1 - squish);
 
-      ctx.fillStyle = '#059669';
+      // Outer Gelatinous Membrane with Transparency
+      ctx.fillStyle = 'rgba(5, 150, 105, 0.85)';
       ctx.beginPath();
       ctx.ellipse(m.x, m.y, rx, ry, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Slime inner core highlight
+      // Slime inner pulsating core
       ctx.fillStyle = '#34d399';
       ctx.beginPath();
       ctx.ellipse(m.x - rx * 0.2, m.y - ry * 0.25, rx * 0.45, ry * 0.35, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Slime eyes
+      // Glowing Eyes
       ctx.fillStyle = '#ffffff';
       ctx.beginPath(); ctx.arc(m.x - 7, m.y - 2, 4.5, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(m.x + 7, m.y - 2, 4.5, 0, Math.PI * 2); ctx.fill();
@@ -662,41 +747,28 @@
     }
 
     function drawSkeleton(m) {
-      // Skull shape
       ctx.fillStyle = '#e2e8f0';
       ctx.strokeStyle = '#94a3b8';
       ctx.lineWidth = 2;
 
-      // Forehead
       ctx.beginPath();
       ctx.arc(m.x, m.y - 4, m.size * 0.75, Math.PI, 0, false);
-      // Jaw
       ctx.lineTo(m.x + m.size * 0.45, m.y + m.size * 0.65);
       ctx.lineTo(m.x - m.size * 0.45, m.y + m.size * 0.65);
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
 
-      // Hollow Eye Sockets
+      // Glowing Eyes
       ctx.fillStyle = '#020617';
       ctx.beginPath(); ctx.ellipse(m.x - 8, m.y - 3, 5, 6, -0.2, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.ellipse(m.x + 8, m.y - 3, 5, 6, 0.2, 0, Math.PI * 2); ctx.fill();
 
-      // Glowing red pupil dots
       ctx.fillStyle = '#ef4444';
       ctx.beginPath(); ctx.arc(m.x - 8, m.y - 3, 1.8, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(m.x + 8, m.y - 3, 1.8, 0, Math.PI * 2); ctx.fill();
 
-      // Nose cavity
-      ctx.fillStyle = '#020617';
-      ctx.beginPath();
-      ctx.moveTo(m.x, m.y + 4);
-      ctx.lineTo(m.x - 2.5, m.y + 9);
-      ctx.lineTo(m.x + 2.5, m.y + 9);
-      ctx.closePath();
-      ctx.fill();
-
-      // Teeth notches
+      // Teeth
       ctx.strokeStyle = '#64748b';
       ctx.lineWidth = 1.5;
       for (let tx = -8; tx <= 8; tx += 4) {
@@ -704,26 +776,35 @@
       }
     }
 
+    function drawCaster(m) {
+      // Hooded Robe Void Cultist
+      ctx.fillStyle = '#581c87';
+      ctx.beginPath();
+      ctx.moveTo(m.x, m.y - m.size);
+      ctx.lineTo(m.x + m.size * 0.9, m.y + m.size);
+      ctx.lineTo(m.x - m.size * 0.9, m.y + m.size);
+      ctx.closePath();
+      ctx.fill();
+
+      // Glowing Rune Mask
+      ctx.fillStyle = '#c084fc';
+      ctx.beginPath();
+      ctx.arc(m.x, m.y - 4, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Floating Staff Crystal
+      const orbY = m.y + Math.sin(m.anim * 2) * 6;
+      ctx.fillStyle = '#ec4899';
+      ctx.beginPath();
+      ctx.arc(m.x + m.size * 0.9, orbY, 6, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
     function drawBoss(m) {
       const pulse = Math.sin(m.anim) * 4;
       const bSize = m.size + pulse;
 
-      // Heavy Demonic Shoulders / Armor
-      ctx.fillStyle = '#881337';
-      ctx.beginPath();
-      ctx.arc(m.x, m.y + 8, bSize * 1.05, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Armored Head
-      ctx.fillStyle = '#4c0519';
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.arc(m.x, m.y, bSize * 0.75, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Curved Demonic Horns (Left & Right)
+      // Heavy Demon Horns
       ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
       ctx.moveTo(m.x - bSize * 0.5, m.y - bSize * 0.3);
@@ -739,10 +820,19 @@
       ctx.closePath();
       ctx.fill();
 
-      // Spiky Iron Crown
+      // Armored Body
+      ctx.fillStyle = '#4c0519';
+      ctx.strokeStyle = '#f43f5e';
+      ctx.lineWidth = 3.5;
+      ctx.beginPath();
+      ctx.arc(m.x, m.y, bSize * 0.8, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Spiky Crown
       ctx.fillStyle = '#fbbf24';
       ctx.beginPath();
-      ctx.moveTo(m.x - 22, m.y - bSize * 0.6);
+      ctx.moveTo(m.x - 24, m.y - bSize * 0.6);
       ctx.lineTo(m.x - 14, m.y - bSize * 0.95);
       ctx.lineTo(m.x, m.y - bSize * 0.65);
       ctx.lineTo(m.x + 14, m.y - bSize * 0.95);
@@ -750,7 +840,7 @@
       ctx.closePath();
       ctx.fill();
 
-      // Glowing Slit Eyes
+      // Glowing Eyes
       ctx.fillStyle = '#fef08a';
       ctx.beginPath(); ctx.ellipse(m.x - 14, m.y - 2, 8, 4, -0.25, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.ellipse(m.x + 14, m.y - 2, 8, 4, 0.25, 0, Math.PI * 2); ctx.fill();
@@ -758,18 +848,6 @@
       ctx.fillStyle = '#dc2626';
       ctx.beginPath(); ctx.arc(m.x - 14, m.y - 2, 3, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(m.x + 14, m.y - 2, 3, 0, Math.PI * 2); ctx.fill();
-
-      // Glowing Maw
-      ctx.fillStyle = '#0f172a';
-      ctx.beginPath();
-      ctx.moveTo(m.x - 18, m.y + 14);
-      ctx.lineTo(m.x, m.y + 24);
-      ctx.lineTo(m.x + 18, m.y + 14);
-      ctx.closePath();
-      ctx.fill();
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 2;
-      ctx.stroke();
     }
 
     // MAIN 2D PHYSICS & RENDER LOOP
@@ -791,7 +869,7 @@
 
         if (mx !== 0 && my !== 0) { mx *= 0.707; my *= 0.707; }
 
-        const moveSpeed = (200 + (bootsTier - 1) * 40) * dt;
+        const moveSpeed = (210 + (bootsTier - 1) * 45) * dt;
         player.x += mx * moveSpeed;
         player.y += my * moveSpeed;
 
@@ -805,23 +883,72 @@
           if (swordSlash.life <= 0) swordSlash = null;
         }
 
-        // Monsters AI
+        // Monsters AI & Projectile Firing
         monsters.forEach(m => {
           m.anim += dt * 4;
           const angle = Math.atan2(player.y - m.y, player.x - m.x);
-          m.x += Math.cos(angle) * (m.spd * 90) * dt;
-          m.y += Math.sin(angle) * (m.spd * 90) * dt;
+          
+          // Casters keep distance and cast spells
+          if (m.type === 'caster') {
+            const distToPlayer = Math.hypot(player.x - m.x, player.y - m.y);
+            if (distToPlayer < 240) {
+              m.x -= Math.cos(angle) * (m.spd * 80) * dt;
+              m.y -= Math.sin(angle) * (m.spd * 80) * dt;
+            } else if (distToPlayer > 360) {
+              m.x += Math.cos(angle) * (m.spd * 80) * dt;
+              m.y += Math.sin(angle) * (m.spd * 80) * dt;
+            }
 
+            m.shootCooldown -= dt;
+            if (m.shootCooldown <= 0) {
+              m.shootCooldown = 2.2;
+              playSound('fire');
+              enemyProjectiles.push({
+                x: m.x, y: m.y,
+                vx: Math.cos(angle) * 220,
+                vy: Math.sin(angle) * 220,
+                r: 7,
+                life: 3.5,
+                color: '#ec4899'
+              });
+            }
+          } else {
+            // Melee Chasers
+            m.x += Math.cos(angle) * (m.spd * 90) * dt;
+            m.y += Math.sin(angle) * (m.spd * 90) * dt;
+          }
+
+          // Melee touch collision
           const dist = Math.hypot(player.x - m.x, player.y - m.y);
           if (dist < player.size + m.size * 0.75 && player.invulnTimer <= 0) {
             playSound('hit');
-            const monsterDmg = m.isBoss ? 26 : 13;
+            screenShake = 10;
+            const monsterDmg = m.isBoss ? 28 : (m.type === 'caster' ? 12 : 15);
             playerHp = Math.max(0, playerHp - monsterDmg);
             player.invulnTimer = 0.8;
             updateHUD();
             if (playerHp <= 0) triggerGameOver();
           }
         });
+
+        // Enemy Projectiles Physics
+        enemyProjectiles.forEach(p => {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.life -= dt;
+
+          const dist = Math.hypot(player.x - p.x, player.y - p.y);
+          if (dist < player.size + p.r && player.invulnTimer <= 0) {
+            playSound('hit');
+            screenShake = 8;
+            playerHp = Math.max(0, playerHp - 18);
+            player.invulnTimer = 0.7;
+            p.life = 0; // Destroy projectile
+            updateHUD();
+            if (playerHp <= 0) triggerGameOver();
+          }
+        });
+        enemyProjectiles = enemyProjectiles.filter(p => p.life > 0 && p.x > 0 && p.x < W && p.y > 0 && p.y < H);
 
         // Loot Physics: Scatter velocity damping + Auto-Vacuum to player
         lootItems.forEach(item => {
@@ -832,11 +959,10 @@
             item.vy *= 0.88;
           }
 
-          // Vacuum pull if floor is cleared OR close to player
           const distToPlayer = Math.hypot(player.x - item.x, player.y - item.y);
           if (item.autoVacuum || distToPlayer < 95) {
             const pullAngle = Math.atan2(player.y - item.y, player.x - item.x);
-            const pullSpeed = item.autoVacuum ? 580 : 320;
+            const pullSpeed = item.autoVacuum ? 620 : 320;
             item.x += Math.cos(pullAngle) * pullSpeed * dt;
             item.y += Math.sin(pullAngle) * pullSpeed * dt;
           }
@@ -852,12 +978,26 @@
         });
         lootItems = lootItems.filter(i => !i.collected);
 
+        // Update Damage Floaters
+        damageNumbers.forEach(d => {
+          d.y -= 25 * dt;
+          d.life -= dt;
+        });
+        damageNumbers = damageNumbers.filter(d => d.life > 0);
+
+        // Update Blood/Sparks Particles
+        particles.forEach(p => {
+          p.x += p.vx * dt;
+          p.y += p.vy * dt;
+          p.life -= dt;
+        });
+        particles = particles.filter(p => p.life > 0);
+
         // Floor Transition & Exit Portal countdown
         if (isTransitioningFloor) {
           transitionTimer -= dt;
           if (exitPortal) {
             exitPortal.rot += dt * 3.5;
-            // Step on portal or timer expires
             const distPortal = Math.hypot(player.x - exitPortal.x, player.y - exitPortal.y);
             if (distPortal < exitPortal.r + player.size || transitionTimer <= 0) {
               spawnFloor(floorNum + 1);
@@ -867,11 +1007,18 @@
       }
 
       // 2. RENDER GRAPHICS
-      ctx.fillStyle = '#030712';
+      ctx.save();
+      if (screenShake > 0) {
+        ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
+        screenShake = Math.max(0, screenShake - dt * 30);
+      }
+
+      const biome = getBiome(floorNum);
+      ctx.fillStyle = biome.bg;
       ctx.fillRect(0, 0, W, H);
 
-      // Cobblestone Dungeon Floor Tiles
-      ctx.strokeStyle = '#111827';
+      // Procedural Dungeon Floor Grid
+      ctx.strokeStyle = biome.tile;
       ctx.lineWidth = 1;
       const gridSize = 50;
       for (let gx = 0; gx < W; gx += gridSize) {
@@ -881,13 +1028,20 @@
         ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
       }
 
+      // Ambient Torch Light (Radial Vignette centered on player)
+      const torchGrad = ctx.createRadialGradient(player.x, player.y, 40, player.x, player.y, 480);
+      torchGrad.addColorStop(0, "rgba(251, 191, 36, 0.08)");
+      torchGrad.addColorStop(0.5, "rgba(0, 0, 0, 0.15)");
+      torchGrad.addColorStop(1, "rgba(0, 0, 0, 0.85)");
+      ctx.fillStyle = torchGrad;
+      ctx.fillRect(0, 0, W, H);
+
       // Render Exit Portal if active
       if (exitPortal) {
         ctx.save();
         ctx.translate(exitPortal.x, exitPortal.y);
         ctx.rotate(exitPortal.rot);
 
-        // Glowing Swirl Rings
         ctx.strokeStyle = '#818cf8';
         ctx.lineWidth = 5;
         ctx.beginPath(); ctx.arc(0, 0, exitPortal.r, 0, Math.PI * 1.5); ctx.stroke();
@@ -900,7 +1054,6 @@
         ctx.beginPath(); ctx.arc(0, 0, exitPortal.r * 0.35, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
 
-        // Portal Label / Countdown
         ctx.fillStyle = '#fbbf24';
         ctx.font = 'bold 12px system-ui';
         ctx.textAlign = 'center';
@@ -910,8 +1063,7 @@
 
       // Render Loot Items
       lootItems.forEach(item => {
-        // Soft glowing shadow under drop
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.fillStyle = 'rgba(255,255,255,0.2)';
         ctx.beginPath(); ctx.ellipse(item.x, item.y + 6, 9, 4, 0, 0, Math.PI * 2); ctx.fill();
 
         ctx.font = '18px system-ui';
@@ -923,24 +1075,34 @@
         ctx.fillText(icon, item.x, item.y);
       });
 
+      // Render Enemy Projectiles
+      enemyProjectiles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.shadowColor = p.color;
+        ctx.shadowBlur = 12;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
       // Render Monsters
       monsters.forEach(m => {
-        // Shadow under monster
         ctx.fillStyle = 'rgba(0,0,0,0.45)';
         ctx.beginPath();
         ctx.ellipse(m.x, m.y + m.size * 0.7, m.size * 0.9, m.size * 0.35, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Distinct custom monster visuals
         if (m.isBoss) {
           drawBoss(m);
         } else if (m.type === 'slime') {
           drawSlime(m);
+        } else if (m.type === 'caster') {
+          drawCaster(m);
         } else {
           drawSkeleton(m);
         }
 
-        // HP bar above monster
         const barW = m.size * 2.2;
         ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
         ctx.fillRect(m.x - barW / 2, m.y - m.size - 13, barW, 6);
@@ -948,9 +1110,9 @@
         ctx.fillRect(m.x - barW / 2, m.y - m.size - 13, (m.hp / m.maxHp) * barW, 6);
       });
 
-      // Render Sword Slash Arc
+      // Render Sword Slash Arc & Glowing Blade Trail
       if (swordSlash) {
-        ctx.fillStyle = 'rgba(245, 158, 11, 0.4)';
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.45)';
         ctx.strokeStyle = '#fef08a';
         ctx.lineWidth = 3.5;
         ctx.beginPath();
@@ -959,19 +1121,38 @@
         ctx.stroke();
       }
 
-      // Render Player Knight
+      // Render Player Knight (Full Armored Sprite Detail)
       if (player.invulnTimer <= 0 || Math.floor(time / 100) % 2 === 0) {
         ctx.fillStyle = 'rgba(0,0,0,0.4)';
         ctx.beginPath(); ctx.ellipse(player.x, player.y + 16, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
 
-        // Knight Body Armor
+        // Armored Pauldrons (Shoulders)
+        ctx.fillStyle = '#0284c7';
+        ctx.beginPath();
+        ctx.arc(player.x - 14, player.y - 2, 8, 0, Math.PI * 2);
+        ctx.arc(player.x + 14, player.y - 2, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Knight Cuirass (Steel Breastplate)
         ctx.fillStyle = '#38bdf8';
+        ctx.strokeStyle = '#7dd3fc';
+        ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
         ctx.fill();
+        ctx.stroke();
 
-        // Visor Direction Indicator
-        ctx.fillStyle = '#1e1b4b';
+        // Golden Chest Insignia
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath();
+        ctx.moveTo(player.x, player.y - 6);
+        ctx.lineTo(player.x + 6, player.y + 4);
+        ctx.lineTo(player.x - 6, player.y + 4);
+        ctx.closePath();
+        ctx.fill();
+
+        // Helmet & Directional Visor
+        ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         let vx = player.x, vy = player.y;
         if (player.facing === 'up') vy -= 7;
@@ -981,12 +1162,34 @@
         ctx.ellipse(vx, vy, 11, 6, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Golden Helmet Plume
-        ctx.fillStyle = '#fbbf24';
+        // Glowing Blue Slit Visor
+        ctx.fillStyle = '#38bdf8';
+        ctx.fillRect(vx - 5, vy - 1, 10, 2);
+
+        // Golden Plume Feather
+        ctx.fillStyle = '#f59e0b';
         ctx.beginPath();
-        ctx.arc(player.x, player.y - player.size * 0.7, 5, 0, Math.PI * 2);
+        ctx.arc(player.x, player.y - player.size * 0.75, 5, 0, Math.PI * 2);
         ctx.fill();
       }
+
+      // Render Blood / Spark Particles
+      particles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Render Floating Damage Numbers
+      damageNumbers.forEach(d => {
+        ctx.font = 'bold 16px system-ui';
+        ctx.fillStyle = d.color;
+        ctx.textAlign = 'center';
+        ctx.fillText(d.text, d.x, d.y);
+      });
+
+      ctx.restore();
     }
 
     // START ENGINE
