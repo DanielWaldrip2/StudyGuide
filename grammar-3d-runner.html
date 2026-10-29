@@ -3,26 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>3D Grammar Quest • Cyber Runner 3D</title>
+  <title>Cyber Runner 3D • Offline</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body, html { width: 100%; height: 100%; overflow: hidden; background: #030712; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
     #canvasGame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block; }
     #hudLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
     .interactive { pointer-events: auto; }
-    .hud-box { background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(51, 65, 85, 0.9); border-radius: 1rem; padding: 0.6rem 1.2rem; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.5rem 1rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid #334155; border-radius: 1rem; padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.5rem 1rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
     .btn:hover { background: #334155; color: #fff; }
     .btn-primary { background: linear-gradient(135deg, #4f46e5, #0284c7); border: none; color: #fff; }
-    .btn-primary:hover { filter: brightness(1.15); }
     .bar-bg { width: 7rem; height: 0.65rem; background: #1e293b; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
     .bar-fill { height: 100%; width: 100%; background: #38bdf8; transition: width 0.3s ease; }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(3, 7, 18, 0.88); backdrop-filter: blur(10px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal-card { background: #0f172a; border: 2px solid #6366f1; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.8rem; text-align: center; box-shadow: 0 25px 50px -12px rgba(99, 102, 241, 0.35); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(3, 7, 18, 0.9); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-card { background: #0f172a; border: 2px solid #6366f1; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.8rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
     .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; margin-top: 1rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
     .opt-btn { background: #1e293b; border: 1px solid #334155; color: #f1f5f9; padding: 0.85rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-align: left; transition: all 0.15s; }
-    .opt-btn:hover { background: #2e1065; border-color: #a855f7; transform: translateY(-2px); color: #fff; }
+    .opt-btn:hover { background: #2e1065; border-color: #a855f7; color: #fff; }
     .opt-btn.correct { background: #065f46 !important; border-color: #10b981 !important; color: #d1fae5 !important; }
     .opt-btn.wrong { background: #881337 !important; border-color: #f43f5e !important; color: #ffe4e6 !important; }
     .touch-controls { display: flex; justify-content: space-between; width: 100%; max-width: 24rem; margin: 0 auto; gap: 1rem; }
@@ -34,17 +33,15 @@
 </head>
 <body>
 
-  <!-- Game Canvas -->
   <canvas id="canvasGame"></canvas>
 
-  <!-- Heads Up Display -->
   <div id="hudLayer">
     <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:56rem; margin:0 auto;" class="interactive">
       <div class="hud-box">
         <a href="index.html" class="btn">← Hub</a>
         <div>
           <span style="font-size:0.65rem; color:#818cf8; font-weight:800; letter-spacing:0.05em; display:block;">CYBER RUNNER 3D</span>
-          <span style="font-size:0.9rem; font-weight:900;">Grammar Trials</span>
+          <span style="font-size:0.9rem; font-weight:900;">Offline Engine</span>
         </div>
       </div>
 
@@ -71,25 +68,24 @@
       </div>
     </div>
 
-    <!-- Touch Mobile Controls -->
     <div class="touch-controls interactive">
       <button class="touch-btn" id="btnLeft">←</button>
       <button class="touch-btn" id="btnRight">→</button>
     </div>
 
     <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.5rem;" class="interactive">
-      Keyboard: <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">A</span> / <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">D</span> or <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">←</span> / <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">→</span> to switch lanes
+      Keys: <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">A</span> / <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">D</span> or <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">←</span> / <span style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155;">→</span> to steer
     </div>
   </div>
 
-  <!-- 10-Second Grammar Lock Modal -->
+  <!-- 10-Second Question Modal -->
   <div id="modalGate" class="modal-backdrop hidden">
     <div class="modal-card">
-      <span style="font-size:0.7rem; font-weight:800; color:#c084fc; background:rgba(192,132,252,0.15); padding:0.3rem 0.75rem; border-radius:9999px; border:1px solid rgba(192,132,252,0.3); text-transform:uppercase; letter-spacing:0.05em;">
+      <span style="font-size:0.7rem; font-weight:800; color:#c084fc; background:rgba(192,132,252,0.15); padding:0.3rem 0.75rem; border-radius:9999px; border:1px solid rgba(192,132,252,0.3); text-transform:uppercase;">
         ⚠️ Boss Barrier Active • Solve to Breach!
       </span>
       <h3 style="font-size:1.35rem; font-weight:900; margin:0.8rem 0 0.3rem;">Grammar Security Lock</h3>
-      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Nonrestrictive & Parenthetical Elements</p>
+      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Nonrestrictive Elements & Punctuation</p>
 
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1.2rem; margin-bottom:1rem;">
         <p id="gateQuestion" style="font-size:1rem; font-weight:700; line-height:1.4;"></p>
@@ -106,7 +102,7 @@
     <div class="modal-card" style="max-width:26rem;">
       <div style="font-size:3rem; margin-bottom:0.5rem;">💥</div>
       <h3 style="font-size:1.5rem; font-weight:900;">Shield Depleted!</h3>
-      <p style="font-size:0.8rem; color:#94a3b8; margin:0.4rem 0 1.2rem;">Your runner took too much obstacle or barrier damage.</p>
+      <p style="font-size:0.8rem; color:#94a3b8; margin:0.4rem 0 1.2rem;">Your craft took too much barrier or hazard damage.</p>
       
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
         <div>
@@ -122,4 +118,250 @@
 
       <div style="display:flex; gap:0.75rem;">
         <a href="index.html" class="btn" style="flex:1;">Exit to Hub</a>
-        <button onclick="restartGame()" class="btn btn-primary" style="flex:1;">Play Again
+        <button onclick="restartGame()" class="btn btn-primary" style="flex:1;">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const QUESTIONS = [
+      {
+        q: "In 'The boy who won the spelling bee got a trophy,' the clause 'who won the spelling bee' is:",
+        ans: "Restrictive (essential, no commas)",
+        dist: ["Nonrestrictive (needs commas)", "A parenthetical dash", "A standalone sentence"],
+        hint: "If you remove it, you don't know WHICH boy got the trophy."
+      },
+      {
+        q: "Which sentence correctly punctuates the nonrestrictive element?",
+        ans: "My dog, a golden retriever, loves swimming.",
+        dist: [
+          "My dog a golden retriever, loves swimming.",
+          "My dog, a golden retriever loves swimming.",
+          "My dog a golden retriever loves swimming."
+        ],
+        hint: "When nonessential information is in the middle of a sentence, place commas on BOTH sides."
+      },
+      {
+        q: "A _____ element gives extra, nonessential details that can be removed without changing the core meaning.",
+        ans: "Nonrestrictive",
+        dist: ["Restrictive", "Prepositional", "Dependent"],
+        hint: "It does not restrict the noun's identity; it takes commas, dashes, or parentheses."
+      },
+      {
+        q: "A _____ element is essential to the sentence to identify WHICH person or thing is being talked about.",
+        ans: "Restrictive",
+        dist: ["Nonrestrictive", "Parenthetical", "Appositive"],
+        hint: "It restricts the noun; do NOT use commas around it!"
+      },
+      {
+        q: "Which relative pronoun introduces a restrictive (essential) clause with NO commas?",
+        ans: "That",
+        dist: ["Which", "Whom", "Where"],
+        hint: "'The cookies that had chocolate chips were eaten.' (No commas with 'that')."
+      },
+      {
+        q: "Which relative pronoun introduces a nonrestrictive (extra info) clause WITH commas?",
+        ans: "Which",
+        dist: ["That", "What", "Whose"],
+        hint: "'The car, which was red, went fast.'"
+      },
+      {
+        q: "What punctuation marks are best used for a sudden, dramatic pause or strong emphasis?",
+        ans: "Dashes (— —)",
+        dist: ["Parentheses ( )", "Hyphens (-)", "Semicolons (;)"],
+        hint: "Em-dashes draw the biggest visual interruption to the sentence."
+      },
+      {
+        q: "What punctuation marks are best used for a quiet aside, extra fact, or background detail?",
+        ans: "Parentheses ( )",
+        dist: ["Dashes (— —)", "Quotation marks", "Colons (:)"],
+        hint: "Think of whispering a minor bonus fact."
+      },
+      {
+        q: "Choose the correctly punctuated sentence using paired dashes:",
+        ans: "The treasure—filled with gold coins—was finally opened.",
+        dist: [
+          "The treasure, filled with gold coins—was finally opened.",
+          "The treasure—filled with gold coins, was finally opened.",
+          "The treasure (filled with gold coins—was finally opened."
+        ],
+        hint: "Never mix an opening dash with a closing comma! Punctuation must match in pairs."
+      },
+      {
+        q: "In 'Abraham Lincoln, the 16th US president, was born in a log cabin,' 'the 16th US president' is:",
+        ans: "A nonrestrictive appositive",
+        dist: ["A restrictive clause", "A verb phrase", "An independent sentence"],
+        hint: "His name already tells us who he is; the title is bonus information."
+      }
+    ];
+
+    const canvas = document.getElementById('canvasGame');
+    const ctx = canvas.getContext('2d');
+
+    let W = 0, H = 0;
+    function resize() {
+      W = canvas.width = window.innerWidth || 800;
+      H = canvas.height = window.innerHeight || 600;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    let distance = 0;
+    let shield = 100;
+    let timerVal = 10;
+    let timerInterval = null;
+    let isPaused = false;
+    let isOver = false;
+
+    let totalAns = 0;
+    let correctAns = 0;
+
+    const lanes = [-1, 0, 1];
+    let currentLane = 0;
+    let playerX = 0;
+    let speed = 1.35;
+
+    let obstacles = [];
+    let crystals = [];
+    let stars = [];
+
+    for (let i = 0; i < 90; i++) {
+      stars.push({
+        x: (Math.random() - 0.5) * 2000,
+        y: (Math.random() - 0.5) * 1000,
+        z: Math.random() * 1000 + 100
+      });
+    }
+
+    function spawnGameElements() {
+      obstacles = [];
+      crystals = [];
+      for (let z = 300; z < 2500; z += 240) {
+        obstacles.push({
+          lane: lanes[Math.floor(Math.random() * lanes.length)],
+          z: z,
+          rot: Math.random() * Math.PI
+        });
+      }
+      for (let z = 200; z < 2500; z += 160) {
+        crystals.push({
+          lane: lanes[Math.floor(Math.random() * lanes.length)],
+          z: z,
+          collected: false
+        });
+      }
+    }
+
+    function project(x, y, z) {
+      const fov = 340;
+      const scale = fov / (fov + z);
+      const projX = (x * scale) + (W / 2);
+      const projY = (y * scale) + (H * 0.58);
+      return { x: projX, y: projY, scale: scale };
+    }
+
+    function moveLeft() { if (!isPaused && !isOver && currentLane > -1) currentLane--; }
+    function moveRight() { if (!isPaused && !isOver && currentLane < 1) currentLane++; }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLeft();
+      if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveRight();
+    });
+
+    document.getElementById('btnLeft').onclick = moveLeft;
+    document.getElementById('btnRight').onclick = moveRight;
+
+    function handleCountdown() {
+      if (isPaused || isOver) return;
+      timerVal--;
+      document.getElementById('hudTimer').textContent = `${timerVal}s`;
+      if (timerVal <= 0) {
+        triggerGrammarLock();
+      }
+    }
+
+    let currentQ = null;
+    let isAnsweringLocked = false;
+
+    function triggerGrammarLock() {
+      isPaused = true;
+      isAnsweringLocked = false;
+      timerVal = 10;
+
+      currentQ = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+      document.getElementById('gateQuestion').textContent = currentQ.q;
+      document.getElementById('gateHint').textContent = `Rule hint: ${currentQ.hint}`;
+
+      const grid = document.getElementById('gateOptions');
+      grid.innerHTML = '';
+      const opts = [currentQ.ans, ...currentQ.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "opt-btn";
+        btn.textContent = opt;
+        btn.onclick = () => answerLock(opt, btn);
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('gateFeedback').className = "hidden";
+      document.getElementById('modalGate').classList.remove('hidden');
+    }
+
+    function answerLock(choice, btnEl) {
+      if (isAnsweringLocked) return;
+      isAnsweringLocked = true;
+
+      totalAns++;
+      const isCorrect = choice === currentQ.ans;
+      const fb = document.getElementById('gateFeedback');
+      fb.classList.remove('hidden');
+
+      const allBtns = document.querySelectorAll('#gateOptions .opt-btn');
+      allBtns.forEach(b => {
+        b.style.pointerEvents = 'none';
+        if (b.textContent === currentQ.ans) b.classList.add('correct');
+      });
+
+      if (isCorrect) {
+        correctAns++;
+        shield = Math.min(100, shield + 25);
+        distance += 150;
+        updateHUD();
+
+        fb.style.background = "rgba(6, 78, 59, 0.9)";
+        fb.style.border = "1px solid #10b981";
+        fb.style.color = "#6ee7b7";
+        fb.innerHTML = `✨ <b>BARRIER BREACHED!</b> Shield restored (+25%) & +150m Speed Boost!`;
+      } else {
+        btnEl.classList.add('wrong');
+        shield = Math.max(0, shield - 30);
+        updateHUD();
+
+        fb.style.background = "rgba(136, 19, 55, 0.9)";
+        fb.style.border = "1px solid #f43f5e";
+        fb.style.color = "#fda4af";
+        fb.innerHTML = `⚠️ <b>GATE LOCKOUT!</b> Barrier shocked runner for -30% damage!`;
+      }
+
+      setTimeout(() => {
+        document.getElementById('modalGate').classList.add('hidden');
+        isAnsweringLocked = false;
+
+        obstacles.forEach(o => {
+          if (o.z < 250) o.z += 450;
+        });
+
+        if (shield <= 0) {
+          gameOver();
+        } else {
+          isPaused = false;
+        }
+      }, 950);
+    }
+
+    function updateHUD() {
+      document.getElementById('hudShieldText').textContent = `${shield}%`;
+      const fill = document.getElementById('hudShieldFill');
+      fill.style.width = `${shield}%`;
+      fill.style.background = shield < 35 ? "#f43f5e" : "#38b
