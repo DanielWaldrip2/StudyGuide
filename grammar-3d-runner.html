@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Cyber Runner 3D • Offline</title>
+  <title>Cyber Runner 3D • Grammar Quest</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-    body, html { width: 100%; height: 100%; overflow: hidden; background: #030712; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
-    #canvasGame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; display: block; }
-    #hudLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #030712; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
+    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; }
+    #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
     .interactive { pointer-events: auto; }
-    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid #334155; border-radius: 1rem; padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid #334155; border-radius: 1rem; padding: 0.6rem 1.2rem; display: flex; align-items: center; gap: 1rem; box-shadow: 0 10px 25px rgba(0,0,0,0.5); backdrop-filter: blur(8px); }
     .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.5rem 1rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
     .btn:hover { background: #334155; color: #fff; }
     .btn-primary { background: linear-gradient(135deg, #4f46e5, #0284c7); border: none; color: #fff; }
     .bar-bg { width: 7rem; height: 0.65rem; background: #1e293b; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
     .bar-fill { height: 100%; width: 100%; background: #38bdf8; transition: width 0.3s ease; }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(3, 7, 18, 0.9); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(3, 7, 18, 0.92); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
     .modal-card { background: #0f172a; border: 2px solid #6366f1; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.8rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.8); }
     .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; margin-top: 1rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
@@ -33,15 +33,17 @@
 </head>
 <body>
 
+  <!-- Game Canvas -->
   <canvas id="canvasGame"></canvas>
 
+  <!-- Heads Up Display -->
   <div id="hudLayer">
     <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:56rem; margin:0 auto;" class="interactive">
       <div class="hud-box">
         <a href="index.html" class="btn">← Hub</a>
         <div>
           <span style="font-size:0.65rem; color:#818cf8; font-weight:800; letter-spacing:0.05em; display:block;">CYBER RUNNER 3D</span>
-          <span style="font-size:0.9rem; font-weight:900;">Offline Engine</span>
+          <span style="font-size:0.9rem; font-weight:900;">Grammar Trials</span>
         </div>
       </div>
 
@@ -68,6 +70,7 @@
       </div>
     </div>
 
+    <!-- Touch Mobile Controls -->
     <div class="touch-controls interactive">
       <button class="touch-btn" id="btnLeft">←</button>
       <button class="touch-btn" id="btnRight">→</button>
@@ -78,7 +81,7 @@
     </div>
   </div>
 
-  <!-- 10-Second Question Modal -->
+  <!-- 10-Second Grammar Lock Modal -->
   <div id="modalGate" class="modal-backdrop hidden">
     <div class="modal-card">
       <span style="font-size:0.7rem; font-weight:800; color:#c084fc; background:rgba(192,132,252,0.15); padding:0.3rem 0.75rem; border-radius:9999px; border:1px solid rgba(192,132,252,0.3); text-transform:uppercase;">
@@ -200,11 +203,9 @@
 
     let W = 0, H = 0;
     function resize() {
-      W = canvas.width = window.innerWidth || 800;
-      H = canvas.height = window.innerHeight || 600;
+      W = canvas.width = window.innerWidth || document.documentElement.clientWidth || 1024;
+      H = canvas.height = window.innerHeight || document.documentElement.clientHeight || 768;
     }
-    window.addEventListener('resize', resize);
-    resize();
 
     let distance = 0;
     let shield = 100;
@@ -219,31 +220,34 @@
     const lanes = [-1, 0, 1];
     let currentLane = 0;
     let playerX = 0;
-    let speed = 1.35;
+    let speed = 2.4;
 
     let obstacles = [];
     let crystals = [];
     let stars = [];
 
-    for (let i = 0; i < 90; i++) {
-      stars.push({
-        x: (Math.random() - 0.5) * 2000,
-        y: (Math.random() - 0.5) * 1000,
-        z: Math.random() * 1000 + 100
-      });
+    function initStars() {
+      stars = [];
+      for (let i = 0; i < 110; i++) {
+        stars.push({
+          x: (Math.random() - 0.5) * 2200,
+          y: (Math.random() - 0.5) * 1200,
+          z: Math.random() * 1200 + 50
+        });
+      }
     }
 
     function spawnGameElements() {
       obstacles = [];
       crystals = [];
-      for (let z = 300; z < 2500; z += 240) {
+      for (let z = 350; z < 2800; z += 240) {
         obstacles.push({
           lane: lanes[Math.floor(Math.random() * lanes.length)],
           z: z,
           rot: Math.random() * Math.PI
         });
       }
-      for (let z = 200; z < 2500; z += 160) {
+      for (let z = 220; z < 2800; z += 180) {
         crystals.push({
           lane: lanes[Math.floor(Math.random() * lanes.length)],
           z: z,
@@ -253,8 +257,9 @@
     }
 
     function project(x, y, z) {
-      const fov = 340;
-      const scale = fov / (fov + z);
+      const fov = 320;
+      const safeZ = Math.max(1, z);
+      const scale = fov / (fov + safeZ);
       const projX = (x * scale) + (W / 2);
       const projY = (y * scale) + (H * 0.58);
       return { x: projX, y: projY, scale: scale };
@@ -349,7 +354,7 @@
         isAnsweringLocked = false;
 
         obstacles.forEach(o => {
-          if (o.z < 250) o.z += 450;
+          if (o.z < 280) o.z += 450;
         });
 
         if (shield <= 0) {
@@ -364,4 +369,224 @@
       document.getElementById('hudShieldText').textContent = `${shield}%`;
       const fill = document.getElementById('hudShieldFill');
       fill.style.width = `${shield}%`;
-      fill.style.background = shield < 35 ? "#f43f5e" : "#38b
+      fill.style.background = shield < 35 ? "#f43f5e" : "#38bdf8";
+      document.getElementById('hudDistance').textContent = `${Math.floor(distance)}m`;
+    }
+
+    function gameOver() {
+      isOver = true;
+      clearInterval(timerInterval);
+      const acc = totalAns > 0 ? Math.round((correctAns / totalAns) * 100) : 0;
+      document.getElementById('finalDistance').textContent = `${Math.floor(distance)}m`;
+      document.getElementById('finalAccuracy').textContent = `${acc}%`;
+      document.getElementById('modalGameOver').classList.remove('hidden');
+    }
+
+    function restartGame() {
+      document.getElementById('modalGameOver').classList.add('hidden');
+      document.getElementById('modalGate').classList.add('hidden');
+      distance = 0;
+      shield = 100;
+      timerVal = 10;
+      isPaused = false;
+      isOver = false;
+      isAnsweringLocked = false;
+      currentLane = 0;
+      playerX = 0;
+      updateHUD();
+      spawnGameElements();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(handleCountdown, 1000);
+    }
+
+    function renderLoop() {
+      requestAnimationFrame(renderLoop);
+
+      if (!W || !H) resize();
+
+      // Clear Screen with Space Gradient
+      const grad = ctx.createLinearGradient(0, 0, 0, H);
+      grad.addColorStop(0, "#030712");
+      grad.addColorStop(1, "#0f172a");
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Starfield
+      ctx.fillStyle = "#ffffff";
+      stars.forEach(s => {
+        if (!isPaused && !isOver) {
+          s.z -= speed * 1.5;
+          if (s.z <= 20) s.z += 1150;
+        }
+        const sp = project(s.x, s.y, s.z);
+        if (sp.scale > 0) {
+          ctx.beginPath();
+          ctx.arc(sp.x, sp.y, Math.max(0.6, sp.scale * 3.2), 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+
+      // Runway base surface
+      const pTopL = project(-320, 140, 1800);
+      const pTopR = project(320, 140, 1800);
+      const pBotL = project(-320, 140, 0);
+      const pBotR = project(320, 140, 0);
+
+      ctx.fillStyle = "rgba(15, 23, 42, 0.75)";
+      ctx.beginPath();
+      ctx.moveTo(pBotL.x, pBotL.y);
+      ctx.lineTo(pTopL.x, pTopL.y);
+      ctx.lineTo(pTopR.x, pTopR.y);
+      ctx.lineTo(pBotR.x, pBotR.y);
+      ctx.closePath();
+      ctx.fill();
+
+      // Runway lines
+      const laneCoords = [-320, -105, 105, 320];
+      ctx.strokeStyle = "#4f46e5";
+      ctx.lineWidth = 3;
+      laneCoords.forEach(lx => {
+        const pFar = project(lx, 140, 1800);
+        const pNear = project(lx, 140, 0);
+        ctx.beginPath();
+        ctx.moveTo(pNear.x, pNear.y);
+        ctx.lineTo(pFar.x, pFar.y);
+        ctx.stroke();
+      });
+
+      if (!isPaused && !isOver) {
+        distance += speed * 0.45;
+        updateHUD();
+      }
+
+      // Moving Grid Lines
+      const gridOffset = (distance * 22) % 160;
+      ctx.strokeStyle = "#3730a3";
+      ctx.lineWidth = 2;
+      for (let gz = 1800; gz >= 20; gz -= 160) {
+        const effZ = gz - gridOffset;
+        if (effZ > 0) {
+          const pLeft = project(-320, 140, effZ);
+          const pRight = project(320, 140, effZ);
+          ctx.beginPath();
+          ctx.moveTo(pLeft.x, pLeft.y);
+          ctx.lineTo(pRight.x, pRight.y);
+          ctx.stroke();
+        }
+      }
+
+      // Smooth Lane Interpolation
+      const targetScreenX = currentLane * 210;
+      playerX += (targetScreenX - playerX) * 0.22;
+
+      // Crystals
+      crystals.forEach(cry => {
+        if (!isPaused && !isOver) {
+          cry.z -= speed * 12;
+          if (cry.z <= 0) {
+            cry.z = 2400;
+            cry.lane = lanes[Math.floor(Math.random() * lanes.length)];
+            cry.collected = false;
+          }
+        }
+
+        if (!cry.collected && cry.z < 1800 && cry.z > 0) {
+          const cp = project(cry.lane * 210, 80, cry.z);
+          const r = Math.max(3, 26 * cp.scale);
+
+          ctx.fillStyle = "#34d399";
+          ctx.beginPath();
+          ctx.moveTo(cp.x, cp.y - r);
+          ctx.lineTo(cp.x + r * 0.7, cp.y);
+          ctx.lineTo(cp.x, cp.y + r);
+          ctx.lineTo(cp.x - r * 0.7, cp.y);
+          ctx.closePath();
+          ctx.fill();
+
+          if (cry.z < 75 && cry.z > 5 && cry.lane === currentLane) {
+            cry.collected = true;
+            distance += 30;
+          }
+        }
+      });
+
+      // Obstacles
+      obstacles.forEach(obs => {
+        if (!isPaused && !isOver) {
+          obs.z -= speed * 12;
+          obs.rot += 0.04;
+          if (obs.z <= 0) {
+            obs.z = 2400;
+            obs.lane = lanes[Math.floor(Math.random() * lanes.length)];
+          }
+        }
+
+        if (obs.z < 1800 && obs.z > 0) {
+          const op = project(obs.lane * 210, 95, obs.z);
+          const size = Math.max(4, 90 * op.scale);
+
+          ctx.save();
+          ctx.translate(op.x, op.y);
+          ctx.rotate(obs.rot);
+          ctx.fillStyle = "#ef4444";
+          ctx.strokeStyle = "#f87171";
+          ctx.lineWidth = Math.max(1, 3 * op.scale);
+          ctx.fillRect(-size / 2, -size / 2, size, size);
+          ctx.strokeRect(-size / 2, -size / 2, size, size);
+          ctx.restore();
+
+          if (obs.z < 65 && obs.z > 5 && obs.lane === currentLane) {
+            shield = Math.max(0, shield - 25);
+            obs.z = 2400;
+            updateHUD();
+            if (shield <= 0) gameOver();
+          }
+        }
+      });
+
+      // Player Jet Craft
+      const pp = project(playerX, 105, 30);
+      const shipW = 80;
+      const shipH = 48;
+
+      // Thruster flame
+      ctx.fillStyle = "#38bdf8";
+      ctx.beginPath();
+      ctx.ellipse(pp.x, pp.y + 16, 14, 7, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Wing glow
+      ctx.fillStyle = "#06b6d4";
+      ctx.strokeStyle = "#67e8f9";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(pp.x, pp.y - shipH * 0.85);
+      ctx.lineTo(pp.x + shipW * 0.65, pp.y + shipH * 0.4);
+      ctx.lineTo(pp.x + shipW * 0.25, pp.y + shipH * 0.25);
+      ctx.lineTo(pp.x, pp.y + shipH * 0.35);
+      ctx.lineTo(pp.x - shipW * 0.25, pp.y + shipH * 0.25);
+      ctx.lineTo(pp.x - shipW * 0.65, pp.y + shipH * 0.4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      // Cockpit
+      ctx.fillStyle = "#c084fc";
+      ctx.beginPath();
+      ctx.ellipse(pp.x, pp.y - 6, 11, 16, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Initialize & Start
+    window.addEventListener('DOMContentLoaded', () => {
+      resize();
+      initStars();
+      spawnGameElements();
+      updateHUD();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(handleCountdown, 1000);
+      requestAnimationFrame(renderLoop);
+    });
+  </script>
+</body>
+</html>
