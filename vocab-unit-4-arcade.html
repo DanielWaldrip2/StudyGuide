@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocab Quest • Unit 4 RPG Arcade Arena</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-rose-500 selection:text-white pb-12">
+
+  <canvas id="confettiCanvas" class="fixed inset-0 pointer-events-none z-50"></canvas>
+
+  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800 sticky top-0 z-40 px-4 py-3 shadow-md">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('menu')">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-xs font-semibold mr-1 transition">
+          ← Hub
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 via-purple-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-rose-500/30 font-black text-xl">
+          🎮
+        </div>
+        <div>
+          <h1 class="font-bold text-lg bg-gradient-to-r from-rose-400 via-pink-300 to-indigo-400 bg-clip-text text-transparent">VOCAB RPG ARCADE</h1>
+          <p class="text-xs text-slate-400 font-medium">Unit 4: cycl, circ/circum, centr • 5 RPG Modes</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60 text-xs font-mono">
+          <span class="text-amber-400 font-bold">★</span>
+          <span id="navScore" class="font-semibold text-slate-200">0 XP</span>
+        </div>
+        <button id="soundBtn" onclick="toggleSound()" class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 border border-slate-700 text-sm transition">
+          🔊
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto w-full px-4 pt-6 flex-1 flex flex-col justify-center">
+
+    <!-- 0. HUB MENU: SELECT YOUR RPG GAME -->
+    <div id="screen-menu" class="space-y-8 py-4">
+      <div class="text-center space-y-3 max-w-2xl mx-auto">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-semibold uppercase tracking-wider">
+          Unit 4 Test Preparation
+        </div>
+        <h2 class="text-4xl md:text-5xl font-black tracking-tight text-white">
+          Choose Your <span class="bg-gradient-to-r from-rose-400 via-purple-400 to-indigo-400 bg-clip-text text-transparent">RPG Adventure</span>
+        </h2>
+        <p class="text-slate-400 text-sm md:text-base">
+          Ditch tile flipping! Master <b>cycle, circumference, central, circumvent</b> and analogies through 5 full playable game engines.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+        
+        <!-- Game 1: Dungeon Crawler -->
+        <div onclick="startMode('dungeon')" class="group bg-slate-900 border border-slate-800 hover:border-amber-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-2xl">🗝️</div>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-amber-500/10 text-amber-300 rounded-full border border-amber-500/30">Roguelite</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-amber-300 transition">1. Dungeon Crawler</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Descend through 10 perilous dungeon floors. Choose which mystery door to open, disarm traps, unlock chests, and consume potions!
+            </p>
+          </div>
+          <div class="mt-4 flex items-center text-amber-400 text-xs font-bold gap-1 pt-3 border-t border-slate-800/80">
+            <span>ENTER DUNGEON</span> <span>→</span>
+          </div>
+        </div>
+
+        <!-- Game 2: Monster Tamer Arena -->
+        <div onclick="startMode('tamer')" class="group bg-slate-900 border border-slate-800 hover:border-emerald-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl">🐉</div>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-emerald-500/10 text-emerald-300 rounded-full border border-emerald-500/30">Turn-Based</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-emerald-300 transition">2. Monster Tamer</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Pick your battle creature! Command tactical moves: <em>Quick Strike</em>, <em>Elemental Blast</em>, <em>Restore Shield</em>, and <em>Ultimate Finisher</em>.
+            </p>
+          </div>
+          <div class="mt-4 flex items-center text-emerald-400 text-xs font-bold gap-1 pt-3 border-t border-slate-800/80">
+            <span>CHOOSE CREATURE</span> <span>→</span>
+          </div>
+        </div>
+
+        <!-- Game 3: Blacksmith Forge & Loot -->
+        <div onclick="startMode('forge')" class="group bg-slate-900 border border-slate-800 hover:border-rose-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-rose-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-2xl">⚒️</div>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-rose-500/10 text-rose-300 rounded-full border border-rose-500/30">Crafting</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-rose-300 transition">3. Blacksmith Forge</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Answer vocabulary trials to mine Obsidian, Runes, and Dragon Scales. Forge and upgrade permanent legendary armor and weapons!
+            </p>
+          </div>
+          <div class="mt-4 flex items-center text-rose-400 text-xs font-bold gap-1 pt-3 border-t border-slate-800/80">
+            <span>ENTER FORGE</span> <span>→</span>
+          </div>
+        </div>
+
+        <!-- Game 4: Tower Defense -->
+        <div onclick="startMode('siege')" class="group bg-slate-900 border border-slate-800 hover:border-blue-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center text-2xl">🏰</div>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-blue-500/10 text-blue-300 rounded-full border border-blue-500/30">Strategy</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-blue-300 transition">4. Castle Siege</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Hordes march on your castle! Answer questions to generate mana crystals, build Arrow and Frost towers, and defend the gate.
+            </p>
+          </div>
+          <div class="mt-4 flex items-center text-blue-400 text-xs font-bold gap-1 pt-3 border-t border-slate-800/80">
+            <span>DEFEND CASTLE</span> <span>→</span>
+          </div>
+        </div>
+
+        <!-- Game 5: Survivor Rift -->
+        <div onclick="startMode('survivor')" class="group bg-slate-900 border border-slate-800 hover:border-purple-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center text-2xl">⚔️</div>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-purple-500/10 text-purple-300 rounded-full border border-purple-500/30">Horde Waves</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-purple-300 transition">5. Survivor Rift</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
