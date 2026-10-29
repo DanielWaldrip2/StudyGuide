@@ -132,3 +132,1248 @@
             </div>
             <h3 class="text-xl font-bold text-white group-hover:text-purple-300 transition">5. Survivor Rift</h3>
             <p class="text-xs text-slate-400 leading-relaxed">
+              Enemies swarm your character! Answering questions unleashes automatic blade storms. Level up to draft game-breaking perks.
+            </p>
+          </div>
+          <div class="mt-4 flex items-center text-purple-400 text-xs font-bold gap-1 pt-3 border-t border-slate-800/80">
+            <span>SURVIVE RIFT</span> <span>→</span>
+          </div>
+        </div>
+
+        <!-- Unit 4 Rule Deck -->
+        <div onclick="showScreen('vault')" class="group bg-slate-900 border border-slate-800 hover:border-cyan-500/60 p-6 rounded-2xl cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="flex items-start justify-between">
+              <div class="w-12 h-12 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl">📖</div>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-cyan-500/10 text-cyan-300 rounded-full border border-cyan-500/30">Study Deck</span>
+            </div>
+            <h3 class="text-xl font-bold text-white group-hover:text-cyan-300 transition">Unit 4 Word Vault</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Review all 10 words, Greek and Latin roots, parts of speech, worksheet sentences, and analogies with audio pronunciation.
+            </p>
+          </div>
+          <div class="mt-4 flex items-center text-cyan-400 text-xs font-bold gap-1 pt-3 border-t border-slate-800/80">
+            <span>OPEN VAULT</span> <span>→</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==========================================
+         GAME 1: DUNGEON CRAWLER (ROGUE-LITE)
+         ========================================== -->
+    <div id="screen-dungeon" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 rounded-lg">← Exit</button>
+          <div>
+            <span class="text-xs text-amber-400 font-bold uppercase tracking-wider block">Catacombs of Concentric</span>
+            <span class="font-mono text-lg font-black text-white">Floor <span id="dungFloor" class="text-amber-400">1</span> / 10</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 text-xs font-mono">
+          <div>
+            <div class="text-slate-400">Hero HP</div>
+            <div class="w-32 bg-slate-800 h-2.5 rounded-full overflow-hidden mt-1">
+              <div id="dungHpBar" class="bg-emerald-500 h-full transition-all" style="width: 100%;"></div>
+            </div>
+          </div>
+          <div class="bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-800">
+            Keys: <span id="dungKeys" class="text-amber-400 font-bold">1</span> 🗝️
+          </div>
+        </div>
+
+        <!-- Inventory quick slots -->
+        <div class="flex items-center gap-2">
+          <button onclick="useDungeonItem('clarity')" id="dungItemClarity" class="px-2.5 py-1.5 bg-indigo-950 border border-indigo-700/60 rounded-lg text-xs hover:bg-indigo-900 transition flex items-center gap-1" title="Eliminate 2 wrong answers">
+            🧪 Clarity (<span id="dungQtyClarity">1</span>)
+          </button>
+          <button onclick="useDungeonItem('shield')" id="dungItemShield" class="px-2.5 py-1.5 bg-cyan-950 border border-cyan-700/60 rounded-lg text-xs hover:bg-cyan-900 transition flex items-center gap-1" title="Blocks next mistake">
+            🛡️ Aegis (<span id="dungQtyShield">1</span>)
+          </button>
+        </div>
+      </div>
+
+      <!-- Door choices on current floor -->
+      <div id="dungDoorSelect" class="space-y-4">
+        <div class="text-center">
+          <h3 class="text-xl font-bold text-white">Floor <span id="dungFloorDisplay">1</span> Chambers</h3>
+          <p class="text-xs text-slate-400 mt-1">Choose which chamber door to breach:</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          <div onclick="enterDungeonChamber('monster')" class="bg-slate-900 border border-slate-800 hover:border-rose-500 p-6 rounded-2xl cursor-pointer text-center space-y-3 transition group hover:-translate-y-1">
+            <div class="text-4xl group-hover:scale-110 transition">🚪👹</div>
+            <h4 class="font-bold text-white group-hover:text-rose-400">Chamber of Monsters</h4>
+            <p class="text-xs text-slate-400">Defeat the guardian to gain huge XP and floor advance.</p>
+          </div>
+          <div onclick="enterDungeonChamber('trap')" class="bg-slate-900 border border-slate-800 hover:border-amber-500 p-6 rounded-2xl cursor-pointer text-center space-y-3 transition group hover:-translate-y-1">
+            <div class="text-4xl group-hover:scale-110 transition">🚪⚡</div>
+            <h4 class="font-bold text-white group-hover:text-amber-400">Riddle Trap Room</h4>
+            <p class="text-xs text-slate-400">Disarm the puzzle to earn extra potions and escape unharmed.</p>
+          </div>
+          <div onclick="enterDungeonChamber('chest')" class="bg-slate-900 border border-slate-800 hover:border-emerald-500 p-6 rounded-2xl cursor-pointer text-center space-y-3 transition group hover:-translate-y-1">
+            <div class="text-4xl group-hover:scale-110 transition">🚪🎁</div>
+            <h4 class="font-bold text-white group-hover:text-emerald-400">Locked Vault Chamber</h4>
+            <p class="text-xs text-slate-400">Requires 1 key! Crack the riddle for legendary rewards.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Room Question Modal inside Dungeon -->
+      <div id="dungQuestionBox" class="hidden bg-slate-900/90 border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6 shadow-2xl relative">
+        <div class="space-y-2 text-center max-w-2xl mx-auto">
+          <span id="dungRoomTypeBadge" class="text-xs uppercase font-bold text-amber-400">Guardian Trial</span>
+          <p id="dungQuestionText" class="text-lg md:text-xl font-medium text-slate-100 min-h-[4rem] flex items-center justify-center"></p>
+          <p id="dungHintText" class="text-xs text-slate-400 italic"></p>
+        </div>
+        <div id="dungOptionGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-2xl mx-auto"></div>
+        <div id="dungFeedback" class="hidden text-center p-3 rounded-xl text-sm font-semibold"></div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         GAME 2: MONSTER TAMER ARENA (POKÉMON STYLE)
+         ========================================== -->
+    <div id="screen-tamer" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="text-center">
+          <span class="text-xs text-emerald-400 font-bold uppercase">Monster Tamer Battle</span>
+          <span class="block font-mono text-sm text-slate-300">Turn-Based Arena</span>
+        </div>
+        <div class="text-xs font-mono bg-slate-950 px-3 py-1 rounded-lg border border-slate-800">
+          Combo: <span id="tamerCombo" class="text-emerald-400 font-bold">0</span>🔥
+        </div>
+      </div>
+
+      <!-- Creature Selection Screen if not picked -->
+      <div id="tamerPickScreen" class="space-y-4">
+        <h3 class="text-center font-bold text-xl text-white">Choose Your Starter Creature</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <div onclick="selectCreature('pyro')" class="bg-slate-900 border border-slate-800 hover:border-rose-500 p-5 rounded-2xl cursor-pointer text-center space-y-2 group">
+            <div class="text-5xl group-hover:scale-110 transition">🔥🐉</div>
+            <h4 class="font-bold text-rose-400">Pyrowyrm</h4>
+            <p class="text-xs text-slate-400">High attack power. Specializes in explosive root answers.</p>
+          </div>
+          <div onclick="selectCreature('frost')" class="bg-slate-900 border border-slate-800 hover:border-cyan-500 p-5 rounded-2xl cursor-pointer text-center space-y-2 group">
+            <div class="text-5xl group-hover:scale-110 transition">❄️🐺</div>
+            <h4 class="font-bold text-cyan-400">Glacier Wolf</h4>
+            <p class="text-xs text-slate-400">Balanced stats with strong recovery and shield moves.</p>
+          </div>
+          <div onclick="selectCreature('storm')" class="bg-slate-900 border border-slate-800 hover:border-amber-500 p-5 rounded-2xl cursor-pointer text-center space-y-2 group">
+            <div class="text-5xl group-hover:scale-110 transition">⚡🦅</div>
+            <h4 class="font-bold text-amber-400">Storm Raven</h4>
+            <p class="text-xs text-slate-400">High speed and combo bonuses for rapid recall.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Battle Field -->
+      <div id="tamerBattleField" class="hidden space-y-6">
+        <!-- Enemy Status -->
+        <div class="flex justify-end max-w-2xl mx-auto">
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl w-64 space-y-2 shadow-lg">
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span id="tamerEnemyName" class="text-rose-400">Wild Cyclone Golem</span>
+              <span id="tamerEnemyHpText" class="text-slate-400 font-mono">100/100</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="tamerEnemyHpBar" class="bg-rose-500 h-full transition-all" style="width: 100%;"></div>
+            </div>
+            <div class="text-right text-4xl" id="tamerEnemySprite">🌪️🗿</div>
+          </div>
+        </div>
+
+        <!-- Player Status -->
+        <div class="flex justify-start max-w-2xl mx-auto">
+          <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl w-64 space-y-2 shadow-lg">
+            <div class="text-4xl" id="tamerPlayerSprite">🔥🐉</div>
+            <div class="flex justify-between items-center text-xs font-bold">
+              <span id="tamerPlayerName" class="text-emerald-400">Pyrowyrm</span>
+              <span id="tamerPlayerHpText" class="text-slate-400 font-mono">100/100</span>
+            </div>
+            <div class="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden">
+              <div id="tamerPlayerHpBar" class="bg-emerald-500 h-full transition-all" style="width: 100%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Panel -->
+        <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 max-w-2xl mx-auto space-y-4">
+          <div id="tamerMoveSelect" class="grid grid-cols-2 gap-3">
+            <button onclick="pickTamerMove('quick')" class="p-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-left transition">
+              <span class="block font-bold text-white text-sm">⚡ Quick Strike</span>
+              <span class="text-[11px] text-slate-400">Low DMG, straightforward question</span>
+            </button>
+            <button onclick="pickTamerMove('blast')" class="p-3 bg-rose-950/40 hover:bg-rose-900/60 border border-rose-800/60 rounded-xl text-left transition">
+              <span class="block font-bold text-rose-300 text-sm">💥 Elemental Blast</span>
+              <span class="text-[11px] text-slate-400">High DMG, deeper analogy question</span>
+            </button>
+            <button onclick="pickTamerMove('heal')" class="p-3 bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-800/60 rounded-xl text-left transition">
+              <span class="block font-bold text-emerald-300 text-sm">🛡️ Shield & Heal</span>
+              <span class="text-[11px] text-slate-400">Restores +30 HP on correct answer</span>
+            </button>
+            <button onclick="pickTamerMove('ultimate')" id="btnTamerUlt" class="p-3 bg-purple-950/40 hover:bg-purple-900/60 border border-purple-800/60 rounded-xl text-left opacity-50 cursor-not-allowed transition" disabled>
+              <span class="block font-bold text-purple-300 text-sm">👑 Vortex Finisher</span>
+              <span class="text-[11px] text-slate-400">Requires 3-Answer Streak!</span>
+            </button>
+          </div>
+
+          <!-- Question prompt when move chosen -->
+          <div id="tamerPromptArea" class="hidden space-y-4 pt-3 border-t border-slate-800">
+            <p id="tamerQuestionText" class="text-sm md:text-base font-medium text-slate-200 text-center"></p>
+            <div id="tamerChoicesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         GAME 3: BLACKSMITH FORGE & CRAFTING
+         ========================================== -->
+    <div id="screen-forge" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 rounded-lg">← Exit</button>
+          <div>
+            <h3 class="text-sm font-bold text-white">The Runic Forge</h3>
+            <p class="text-xs text-slate-400">Answer vocabulary mining trials to craft permanent equipment!</p>
+          </div>
+        </div>
+        <!-- Material counts -->
+        <div class="flex items-center gap-3 text-xs font-mono bg-slate-950 px-4 py-2 rounded-xl border border-slate-800">
+          <div>💎 Obsidian: <span id="matObsidian" class="text-cyan-400 font-bold">0</span></div>
+          <div>📜 Runes: <span id="matRunes" class="text-purple-400 font-bold">0</span></div>
+          <div>🐉 Scales: <span id="matScales" class="text-amber-400 font-bold">0</span></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <!-- Mining Trial Section -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h4 class="font-bold text-rose-400 text-sm">⛏️ Mine Materials Trial</h4>
+            <span class="text-xs text-slate-400">Earn +2 to +5 items/correct</span>
+          </div>
+          <p id="forgeQuestion" class="text-sm text-slate-200 min-h-[3rem] flex items-center justify-center text-center"></p>
+          <div id="forgeOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+          <div id="forgeFeedback" class="hidden text-center text-xs p-2 rounded-lg font-semibold"></div>
+        </div>
+
+        <!-- Crafting Workshop -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 shadow-xl">
+          <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+            <h4 class="font-bold text-amber-400 text-sm">⚒️ Crafting Blueprints</h4>
+            <span class="text-xs text-slate-400">Auto-saves to browser</span>
+          </div>
+
+          <div class="space-y-3">
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-bold text-xs text-white block">Circumference Blade (Tier <span id="bladeTier">1</span>)</span>
+                <span class="text-[11px] text-slate-400">Cost: 5 Obsidian, 3 Runes</span>
+              </div>
+              <button onclick="craftItem('blade')" class="px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-bold transition">Forge</button>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-bold text-xs text-white block">Concentric Aegis Plate (Tier <span id="armorTier">1</span>)</span>
+                <span class="text-[11px] text-slate-400">Cost: 6 Obsidian, 4 Scales</span>
+              </div>
+              <button onclick="craftItem('armor')" class="px-3 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition">Forge</button>
+            </div>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex items-center justify-between">
+              <div>
+                <span class="font-bold text-xs text-white block">Cyclone Pet Companion (Tier <span id="petTier">1</span>)</span>
+                <span class="text-[11px] text-slate-400">Cost: 8 Runes, 6 Scales</span>
+              </div>
+              <button onclick="craftItem('pet')" class="px-3 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded-lg text-xs font-bold transition">Tame</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         GAME 4: CASTLE SIEGE TOWER DEFENSE
+         ========================================== -->
+    <div id="screen-siege" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-xs font-mono">
+          <div>Castle Gate: <span id="siegeGateHp" class="text-rose-400 font-bold">100 HP</span></div>
+          <div>Mana: <span id="siegeMana" class="text-cyan-400 font-bold">50</span> 💎</div>
+          <div>Wave: <span id="siegeWave" class="text-amber-400 font-bold">1</span> / 5</div>
+        </div>
+        <div class="w-12"></div>
+      </div>
+
+      <!-- Tower Defense Canvas / Lane representation -->
+      <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-4">
+        <!-- Visual Enemy March Track -->
+        <div class="relative bg-slate-900 h-28 rounded-xl border border-slate-800 flex items-center px-4 overflow-hidden">
+          <div class="absolute left-2 font-bold text-xs text-rose-400">CASTLE GATE 🏰</div>
+          <div id="siegeEnemiesTrack" class="flex-1 h-full relative mx-24 flex items-center">
+            <!-- Dynamic enemy dots march here -->
+          </div>
+          <div class="absolute right-2 font-bold text-xs text-slate-500">SPAWN PORTAL 🌀</div>
+        </div>
+
+        <!-- Tower Slots -->
+        <div class="grid grid-cols-3 gap-3 text-center text-xs">
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <span class="block font-bold text-white">Arrow Tower (Slot 1)</span>
+            <span id="slot1Status" class="text-slate-500">Empty</span>
+            <button onclick="buildTower(1, 'arrow')" class="mt-2 px-2.5 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-[11px] block mx-auto">Build (30 💎)</button>
+          </div>
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <span class="block font-bold text-white">Frost Tower (Slot 2)</span>
+            <span id="slot2Status" class="text-slate-500">Empty</span>
+            <button onclick="buildTower(2, 'frost')" class="mt-2 px-2.5 py-1 bg-cyan-600 hover:bg-cyan-500 text-white rounded text-[11px] block mx-auto">Build (40 💎)</button>
+          </div>
+          <div class="bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+            <span class="block font-bold text-white">Cyclone Cannon (Slot 3)</span>
+            <span id="slot3Status" class="text-slate-500">Empty</span>
+            <button onclick="buildTower(3, 'cannon')" class="mt-2 px-2.5 py-1 bg-purple-600 hover:bg-purple-500 text-white rounded text-[11px] block mx-auto">Build (50 💎)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mana Harvest Trivia Question -->
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center space-y-4 max-w-2xl mx-auto shadow-xl">
+        <span class="text-xs uppercase font-bold text-cyan-400 tracking-wider">Answer Correctly to Harvest +25 Mana</span>
+        <p id="siegeQuestion" class="text-sm md:text-base font-medium text-slate-200"></p>
+        <div id="siegeOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         GAME 5: SURVIVOR RIFT (HORDE ARENA)
+         ========================================== -->
+    <div id="screen-survivor" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between">
+        <button onclick="showScreen('menu')" class="text-xs text-slate-400 hover:text-white px-3 py-1.5 bg-slate-800 rounded-lg">← Exit</button>
+        <div class="flex items-center gap-6 text-xs font-mono">
+          <div>Hero HP: <span id="survHp" class="text-rose-400 font-bold">100</span></div>
+          <div>Level: <span id="survLevel" class="text-amber-400 font-bold">1</span></div>
+          <div>Kills: <span id="survKills" class="text-emerald-400 font-bold">0</span> 💀</div>
+        </div>
+        <div class="w-12"></div>
+      </div>
+
+      <!-- Survivor Arena Field -->
+      <div class="bg-gradient-to-b from-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-6 text-center space-y-4 relative overflow-hidden">
+        <div class="text-5xl py-4" id="survHeroAvatar">🧙‍♂️✨</div>
+        <p class="text-xs text-slate-400">Answer vocab challenges to unleash orbiting blade storms and defeat the surrounding swarm!</p>
+        <div class="flex justify-center gap-3 text-xs font-mono text-purple-300">
+          <span>Perks Active: <b id="survPerkList">None</b></span>
+        </div>
+      </div>
+
+      <!-- Horde Trivia Prompt -->
+      <div id="survQuestionCard" class="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-2xl mx-auto space-y-4 shadow-xl">
+        <span class="text-xs uppercase font-bold text-purple-400 tracking-wider block text-center">Cast Radial Spell</span>
+        <p id="survQuestion" class="text-sm md:text-base font-medium text-slate-200 text-center"></p>
+        <div id="survOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-2"></div>
+      </div>
+
+      <!-- Level Up Card Draft Modal -->
+      <div id="survLevelModal" class="hidden bg-slate-900 border-2 border-purple-500 p-6 rounded-2xl space-y-4 max-w-2xl mx-auto shadow-2xl">
+        <div class="text-center">
+          <span class="text-xs uppercase font-bold text-amber-400">Level Up!</span>
+          <h3 class="text-lg font-black text-white">Choose 1 Passive Boon</h3>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="survDraftCards"></div>
+      </div>
+    </div>
+
+    <!-- ==========================================
+         WORD VAULT & STUDY DECK
+         ========================================== -->
+    <div id="screen-vault" class="hidden space-y-6">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-900 border border-slate-800 p-4 rounded-2xl">
+        <div>
+          <h2 class="text-lg font-bold text-white">Unit 4 Word Vault & Audio</h2>
+          <p class="text-xs text-slate-400">Roots: <b>cycl</b> (circle), <b>circ/circum</b> (around), <b>centr/center</b> (middle).</p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
+          <button onclick="filterVault('all')" id="tab-all" class="px-3 py-1.5 rounded-lg font-semibold bg-rose-600 text-white">All (10)</button>
+          <button onclick="filterVault('cycl')" id="tab-cycl" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">cycl (circle)</button>
+          <button onclick="filterVault('circum')" id="tab-circum" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">circ/circum (around)</button>
+          <button onclick="filterVault('centr')" id="tab-centr" class="px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white">centr (middle)</button>
+        </div>
+      </div>
+      <div id="vaultCardsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    </div>
+
+    <!-- ==========================================
+         GAME OVER MODAL (UNIVERSAL STATS)
+         ========================================== -->
+    <div id="modal-gameover" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl relative">
+        <div id="modalIcon" class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 mx-auto flex items-center justify-center text-4xl">🏆</div>
+        <div>
+          <h3 id="modalTitle" class="text-2xl font-black text-white">Victory!</h3>
+          <p id="modalDesc" class="text-slate-400 text-sm mt-1">Quest completed successfully.</p>
+        </div>
+        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Final Score</span>
+            <span id="modalFinalScore" class="text-xl font-bold text-amber-400">0</span>
+          </div>
+          <div class="border-r border-slate-800"></div>
+          <div>
+            <span class="text-[10px] text-slate-400 block uppercase">Accuracy</span>
+            <span id="modalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+          </div>
+        </div>
+        <div class="flex gap-3">
+          <button onclick="closeModalAndGoMenu()" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-bold rounded-xl transition">Menu</button>
+          <button id="modalRestartBtn" onclick="restartCurrentMode()" class="w-1/2 py-3 bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white text-sm font-bold rounded-xl shadow-lg transition">Play Again</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // UNIT 4 DATA DIRECTLY FROM WORKSHEETS (VOCAB + ANALOGIES)
+    const UNIT4_VOCAB = [
+      { word: "cycle", root: "cycl", rootMeaning: "circle (Greek)", pos: "n.", def: "a set of events or actions that happen again and again in the same order; a repeating series", sentence: "The water _____ consists of evaporation, condensation, precipitation, collection, and then back to evaporation.", dist: ["cyclone", "circuit", "circumstance"] },
+      { word: "cyclical", root: "cycl", rootMeaning: "circle (Greek)", pos: "adj.", def: "happening again and again in the same order; happening in cycles", sentence: "The seasons of Earth change in a _____ manner.", dist: ["central", "concentric", "eccentric"] },
+      { word: "cyclone", root: "cycl", rootMeaning: "circle (Greek)", pos: "n.", def: "an extremely large, powerful, and destructive storm with very high winds that turn around in an area of low pressure", sentence: "The spinning _____ ripped trees right out of the ground.", dist: ["circumference", "circumvent", "cycle"] },
+      { word: "circumference", root: "circum", rootMeaning: "around (Latin)", pos: "n.", def: "the length of a line that goes around a circle or other round shape", sentence: "In math we learned the formula for finding the distance around, or _____, of a circle.", dist: ["circuit", "central", "concentric"] },
+      { word: "circuit", root: "circum", rootMeaning: "around (Latin)", pos: "n.", def: "the complete path that an electric current travels along", sentence: "In science we studied how electricity travels around in a _____ to power a light bulb.", dist: ["circumstance", "circumvent", "cyclone"] },
+      { word: "circumstance", root: "circum", rootMeaning: "around (Latin)", pos: "n.", def: "a condition that surrounds or causes an event to happen", sentence: "A number of _____ (broken alarm clock, traffic, and illness) caused me to be late to work today.", dist: ["circumference", "eccentric", "cycle"] },
+      { word: "circumvent", root: "circum", rootMeaning: "around (Latin)", pos: "v.", def: "to get around something in a clever and sometimes dishonest way; to bypass or avoid", sentence: "He tried to _____ the password screen in order to gain access to her computer.", dist: ["concentric", "circuit", "cyclical"] },
+      { word: "central", root: "centr", rootMeaning: "middle (Greek)", pos: "adj.", def: "located in the center of a thing or place", sentence: "Kansas is located in _____ United States.", dist: ["concentric", "eccentric", "cyclical"] },
+      { word: "concentric", root: "centr", rootMeaning: "middle (Greek)", pos: "adj.", def: "when two or more objects share the same center point", sentence: "You can use your compass to draw _____ circles.", dist: ["eccentric", "central", "circumference"] },
+      { word: "eccentric", root: "centr", rootMeaning: "middle (Greek)", pos: "adj.", def: "tending to act in strange or unusual ways; 'out of center'", sentence: "Jamie definitely had an _____ sense of style; she wore clothes that no one had ever seen before.", dist: ["central", "concentric", "circumstance"] }
+    ];
+
+    const UNIT4_ANALOGIES = [
+      { q: "Complete the analogy: ELECTRICITY : CIRCUIT ::", ans: "electric : current", dist: ["wheels : bicycle", "light bulb : wires", "car : hood"], hint: "Electricity travels around a closed circuit path." },
+      { q: "Complete the analogy: CENTRAL : OUTER ::", ans: "energetic : tired", dist: ["middle : center", "location : area", "town : street"], hint: "Central is the opposite of outer, just as energetic is the opposite of tired." },
+      { q: "Complete the analogy: CIRCUMFERENCE : CIRCLE ::", ans: "perimeter : square", dist: ["area : rectangle", "circle : square", "center : middle"], hint: "Distance around a circle vs distance around a square." },
+      { q: "Complete the analogy: CYCLICAL : RECURRING ::", ans: "patterned : unexpected", dist: ["random : unpredictable", "relaxing : stressful", "created : artificial"], hint: "Things that happen repeatedly in order." },
+      { q: "Complete the analogy: ECCENTRIC : LIKENESS ::", ans: "generous : greed", dist: ["illness : well", "same : alike", "strange : odd"], hint: "Eccentric departs from likeness, like generous departs from greed." }
+    ];
+
+    // GLOBAL STATE
+    let totalScore = 0;
+    let soundEnabled = true;
+    let currentMode = null;
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    // AUDIO SYSTEM
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(type) {
+      if (!soundEnabled) return;
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const now = audioCtx.currentTime;
+
+        if (type === 'hit') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(140, now + 0.15);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'win') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+            const o = audioCtx.createOscillator();
+            const g = audioCtx.createGain();
+            o.connect(g);
+            g.connect(audioCtx.destination);
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(freq, now + i * 0.08);
+            g.gain.setValueAtTime(0.15, now + i * 0.08);
+            g.gain.exponentialRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+            o.start(now + i * 0.08);
+            o.stop(now + i * 0.08 + 0.25);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundBtn').textContent = soundEnabled ? '🔊' : '🔇';
+    }
+
+    function speakWord(w) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(w);
+        u.rate = 0.9;
+        window.speechSynthesis.speak(u);
+      }
+    }
+
+    function showScreen(screenId) {
+      clearInterval(siegeLoop);
+      ['menu', 'dungeon', 'tamer', 'forge', 'siege', 'survivor', 'vault'].forEach(s => {
+        const el = document.getElementById(`screen-${s}`);
+        if (el) el.classList.add('hidden');
+      });
+      const target = document.getElementById(`screen-${screenId}`);
+      if (target) target.classList.remove('hidden');
+
+      if (screenId === 'vault') renderVault('all');
+    }
+
+    function updateNavScore(pts = 0) {
+      totalScore += pts;
+      document.getElementById('navScore').textContent = `${totalScore} XP`;
+    }
+
+    function getRandomQuestion() {
+      if (Math.random() < 0.75) {
+        const v = UNIT4_VOCAB[Math.floor(Math.random() * UNIT4_VOCAB.length)];
+        return {
+          q: `"${v.sentence.replace('_____', '_______')}"`,
+          ans: v.word,
+          dist: v.dist,
+          hint: `Definition clue: ${v.def}`
+        };
+      } else {
+        const a = UNIT4_ANALOGIES[Math.floor(Math.random() * UNIT4_ANALOGIES.length)];
+        return {
+          q: a.q,
+          ans: a.ans,
+          dist: a.dist,
+          hint: a.hint
+        };
+      }
+    }
+
+    function startMode(mode) {
+      currentMode = mode;
+      totalAttempts = 0;
+      correctAttempts = 0;
+      showScreen(mode);
+      if (mode === 'dungeon') initDungeon();
+      if (mode === 'tamer') initTamer();
+      if (mode === 'forge') initForge();
+      if (mode === 'siege') initSiege();
+      if (mode === 'survivor') initSurvivor();
+    }
+
+    function restartCurrentMode() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      if (currentMode) startMode(currentMode);
+    }
+
+    function closeModalAndGoMenu() {
+      document.getElementById('modal-gameover').classList.add('hidden');
+      showScreen('menu');
+    }
+
+    function showGameOver(title, desc) {
+      const acc = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalFinalScore').textContent = totalScore;
+      document.getElementById('modalAccuracy').textContent = `${acc}%`;
+      document.getElementById('modal-gameover').classList.remove('hidden');
+    }
+
+    // ================================================================
+    // 1. DUNGEON CRAWLER ENGINE
+    // ================================================================
+    let dungHp = 100;
+    let dungFloorNum = 1;
+    let dungKeysCount = 1;
+    let dungClarityCount = 1;
+    let dungShieldCount = 1;
+    let dungShieldActive = false;
+    let currentDungQuestion = null;
+
+    function initDungeon() {
+      dungHp = 100;
+      dungFloorNum = 1;
+      dungKeysCount = 1;
+      dungClarityCount = 1;
+      dungShieldCount = 1;
+      dungShieldActive = false;
+      updateDungeonUI();
+      document.getElementById('dungDoorSelect').classList.remove('hidden');
+      document.getElementById('dungQuestionBox').classList.add('hidden');
+    }
+
+    function updateDungeonUI() {
+      document.getElementById('dungFloor').textContent = dungFloorNum;
+      document.getElementById('dungFloorDisplay').textContent = dungFloorNum;
+      document.getElementById('dungHpBar').style.width = `${Math.max(0, dungHp)}%`;
+      document.getElementById('dungKeys').textContent = dungKeysCount;
+      document.getElementById('dungQtyClarity').textContent = dungClarityCount;
+      document.getElementById('dungQtyShield').textContent = dungShieldCount;
+    }
+
+    function useDungeonItem(type) {
+      if (type === 'clarity' && dungClarityCount > 0) {
+        dungClarityCount--;
+        updateDungeonUI();
+        const btns = document.querySelectorAll('#dungOptionGrid button');
+        let removed = 0;
+        btns.forEach(btn => {
+          if (btn.dataset.ans !== currentDungQuestion.ans && removed < 2) {
+            btn.classList.add('opacity-30', 'pointer-events-none');
+            removed++;
+          }
+        });
+      } else if (type === 'shield' && dungShieldCount > 0) {
+        dungShieldCount--;
+        dungShieldActive = true;
+        updateDungeonUI();
+        alert("🛡️ Aegis Shield Active! Your next mistake will be completely absorbed.");
+      }
+    }
+
+    function enterDungeonChamber(type) {
+      if (type === 'chest' && dungKeysCount <= 0) {
+        alert("🔒 You need a Key to open this Locked Vault! Defeat monsters on other doors to find keys.");
+        return;
+      }
+      if (type === 'chest') dungKeysCount--;
+
+      currentDungQuestion = getRandomQuestion();
+      document.getElementById('dungDoorSelect').classList.add('hidden');
+      document.getElementById('dungQuestionBox').classList.remove('hidden');
+
+      const badge = document.getElementById('dungRoomTypeBadge');
+      if (type === 'monster') badge.textContent = "👹 Floor Guardian Encounter";
+      if (type === 'trap') badge.textContent = "⚡ Trap Disarm Sequence";
+      if (type === 'chest') badge.textContent = "🎁 Ancient Vault Riddle";
+
+      document.getElementById('dungQuestionText').innerHTML = currentDungQuestion.q;
+      document.getElementById('dungHintText').textContent = currentDungQuestion.hint;
+
+      const opts = [currentDungQuestion.ans, ...currentDungQuestion.dist].sort(() => Math.random() - 0.5);
+      const grid = document.getElementById('dungOptionGrid');
+      grid.innerHTML = '';
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.dataset.ans = opt;
+        btn.className = "p-4 bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-amber-500 rounded-xl font-bold text-slate-200 text-left transition";
+        btn.textContent = opt;
+        btn.onclick = () => handleDungeonAnswer(opt, type);
+        grid.appendChild(btn);
+      });
+      document.getElementById('dungFeedback').className = "hidden";
+    }
+
+    function handleDungeonAnswer(choice, roomType) {
+      totalAttempts++;
+      const isCorrect = choice === currentDungQuestion.ans;
+      const fb = document.getElementById('dungFeedback');
+      fb.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        updateNavScore(50);
+        fb.className = "text-center p-3 rounded-xl text-sm font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        fb.innerHTML = `✨ <b>Chamber Cleared!</b> Correct answer was "${currentDungQuestion.ans}".`;
+
+        if (roomType === 'monster' && Math.random() < 0.5) dungKeysCount++;
+        if (roomType === 'chest') { dungClarityCount++; dungShieldCount++; }
+
+        setTimeout(() => {
+          dungFloorNum++;
+          if (dungFloorNum > 10) {
+            playSound('win');
+            triggerConfetti();
+            showGameOver("Dungeon Conquered!", "You successfully ascended all 10 floors of the Catacombs!");
+          } else {
+            updateDungeonUI();
+            document.getElementById('dungDoorSelect').classList.remove('hidden');
+            document.getElementById('dungQuestionBox').classList.add('hidden');
+          }
+        }, 900);
+
+      } else {
+        playSound('wrong');
+        if (dungShieldActive) {
+          dungShieldActive = false;
+          fb.className = "text-center p-3 rounded-xl text-sm font-semibold bg-cyan-950/80 border border-cyan-500/50 text-cyan-300";
+          fb.innerHTML = `🛡️ <b>Aegis Shield Absorbed the Damage!</b> Correct answer: "${currentDungQuestion.ans}".`;
+        } else {
+          dungHp -= 30;
+          updateDungeonUI();
+          fb.className = "text-center p-3 rounded-xl text-sm font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+          fb.innerHTML = `⚠️ <b>Damage Taken (-30 HP)!</b> Correct answer was "${currentDungQuestion.ans}".`;
+        }
+
+        if (dungHp <= 0) {
+          setTimeout(() => showGameOver("Fallen in the Dungeon", "Your HP reached 0. Review Unit 4 rules and try again!"), 900);
+        } else {
+          setTimeout(() => {
+            document.getElementById('dungDoorSelect').classList.remove('hidden');
+            document.getElementById('dungQuestionBox').classList.add('hidden');
+          }, 1200);
+        }
+      }
+    }
+
+    // ================================================================
+    // 2. MONSTER TAMER ARENA ENGINE
+    // ================================================================
+    let tamerCreature = null;
+    let tamerPlayerHp = 100;
+    let tamerEnemyHp = 100;
+    let tamerStreak = 0;
+    let currentTamerQuestion = null;
+    let activeTamerMove = null;
+
+    function initTamer() {
+      tamerPlayerHp = 100;
+      tamerEnemyHp = 100;
+      tamerStreak = 0;
+      document.getElementById('tamerCombo').textContent = "0";
+      document.getElementById('tamerPickScreen').classList.remove('hidden');
+      document.getElementById('tamerBattleField').classList.add('hidden');
+    }
+
+    function selectCreature(type) {
+      if (type === 'pyro') tamerCreature = { name: "Pyrowyrm", sprite: "🔥🐉" };
+      if (type === 'frost') tamerCreature = { name: "Glacier Wolf", sprite: "❄️🐺" };
+      if (type === 'storm') tamerCreature = { name: "Storm Raven", sprite: "⚡🦅" };
+
+      document.getElementById('tamerPlayerName').textContent = tamerCreature.name;
+      document.getElementById('tamerPlayerSprite').textContent = tamerCreature.sprite;
+      document.getElementById('tamerPickScreen').classList.add('hidden');
+      document.getElementById('tamerBattleField').classList.remove('hidden');
+      updateTamerUI();
+    }
+
+    function updateTamerUI() {
+      document.getElementById('tamerPlayerHpBar').style.width = `${Math.max(0, tamerPlayerHp)}%`;
+      document.getElementById('tamerPlayerHpText').textContent = `${tamerPlayerHp}/100`;
+      document.getElementById('tamerEnemyHpBar').style.width = `${Math.max(0, tamerEnemyHp)}%`;
+      document.getElementById('tamerEnemyHpText').textContent = `${tamerEnemyHp}/100`;
+      document.getElementById('tamerCombo').textContent = tamerStreak;
+
+      const ultBtn = document.getElementById('btnTamerUlt');
+      if (tamerStreak >= 3) {
+        ultBtn.disabled = false;
+        ultBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      } else {
+        ultBtn.disabled = true;
+        ultBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    function pickTamerMove(move) {
+      activeTamerMove = move;
+      currentTamerQuestion = getRandomQuestion();
+
+      document.getElementById('tamerPromptArea').classList.remove('hidden');
+      document.getElementById('tamerQuestionText').innerHTML = currentTamerQuestion.q;
+
+      const grid = document.getElementById('tamerChoicesGrid');
+      grid.innerHTML = '';
+      const opts = [currentTamerQuestion.ans, ...currentTamerQuestion.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl font-bold text-xs text-slate-200 transition";
+        btn.textContent = opt;
+        btn.onclick = () => handleTamerAnswer(opt);
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleTamerAnswer(selected) {
+      totalAttempts++;
+      const isCorrect = selected === currentTamerQuestion.ans;
+      document.getElementById('tamerPromptArea').classList.add('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        tamerStreak++;
+
+        let dmg = 25;
+        if (activeTamerMove === 'blast') dmg = 45;
+        if (activeTamerMove === 'heal') { dmg = 15; tamerPlayerHp = Math.min(100, tamerPlayerHp + 30); }
+        if (activeTamerMove === 'ultimate') { dmg = 80; tamerStreak = 0; }
+
+        tamerEnemyHp = Math.max(0, tamerEnemyHp - dmg);
+        updateNavScore(50);
+        updateTamerUI();
+
+        if (tamerEnemyHp <= 0) {
+          playSound('win');
+          triggerConfetti();
+          setTimeout(() => showGameOver("Enemy Defeated!", "Your creature triumphed in the Monster Tamer Arena!"), 800);
+        }
+      } else {
+        playSound('wrong');
+        tamerStreak = 0;
+        tamerPlayerHp = Math.max(0, tamerPlayerHp - 25);
+        updateTamerUI();
+
+        if (tamerPlayerHp <= 0) {
+          setTimeout(() => showGameOver("Creature Fainted", "Your creature was defeated! Review Unit 4 and try again."), 800);
+        }
+      }
+    }
+
+    // ================================================================
+    // 3. BLACKSMITH FORGE & CRAFTING ENGINE
+    // ================================================================
+    let matObsidian = parseInt(localStorage.getItem('vq_obsidian') || "0");
+    let matRunes = parseInt(localStorage.getItem('vq_runes') || "0");
+    let matScales = parseInt(localStorage.getItem('vq_scales') || "0");
+
+    let bladeTier = parseInt(localStorage.getItem('vq_blade') || "1");
+    let armorTier = parseInt(localStorage.getItem('vq_armor') || "1");
+    let petTier = parseInt(localStorage.getItem('vq_pet') || "1");
+
+    let currentForgeQuestion = null;
+
+    function initForge() {
+      updateForgeMatsUI();
+      nextForgeTrial();
+    }
+
+    function updateForgeMatsUI() {
+      document.getElementById('matObsidian').textContent = matObsidian;
+      document.getElementById('matRunes').textContent = matRunes;
+      document.getElementById('matScales').textContent = matScales;
+
+      document.getElementById('bladeTier').textContent = bladeTier;
+      document.getElementById('armorTier').textContent = armorTier;
+      document.getElementById('petTier').textContent = petTier;
+
+      localStorage.setItem('vq_obsidian', matObsidian);
+      localStorage.setItem('vq_runes', matRunes);
+      localStorage.setItem('vq_scales', matScales);
+      localStorage.setItem('vq_blade', bladeTier);
+      localStorage.setItem('vq_armor', armorTier);
+      localStorage.setItem('vq_pet', petTier);
+    }
+
+    function nextForgeTrial() {
+      currentForgeQuestion = getRandomQuestion();
+      document.getElementById('forgeQuestion').innerHTML = currentForgeQuestion.q;
+
+      const grid = document.getElementById('forgeOptions');
+      grid.innerHTML = '';
+      const opts = [currentForgeQuestion.ans, ...currentForgeQuestion.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold transition text-left";
+        btn.textContent = opt;
+        btn.onclick = () => handleForgeAnswer(opt);
+        grid.appendChild(btn);
+      });
+      document.getElementById('forgeFeedback').className = "hidden";
+    }
+
+    function handleForgeAnswer(selected) {
+      totalAttempts++;
+      const isCorrect = selected === currentForgeQuestion.ans;
+      const fb = document.getElementById('forgeFeedback');
+      fb.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('hit');
+        updateNavScore(25);
+
+        const r = Math.random();
+        let lootMsg = "";
+        if (r < 0.4) { matObsidian += 2; lootMsg = "+2 Obsidian Shards"; }
+        else if (r < 0.75) { matRunes += 2; lootMsg = "+2 Ancient Runes"; }
+        else { matScales += 1; lootMsg = "+1 Dragon Scale"; }
+
+        updateForgeMatsUI();
+        fb.className = "text-center text-xs p-2 rounded-lg font-semibold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        fb.innerHTML = `✨ <b>Mined Successfully!</b> ${lootMsg}`;
+        setTimeout(nextForgeTrial, 900);
+      } else {
+        playSound('wrong');
+        fb.className = "text-center text-xs p-2 rounded-lg font-semibold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        fb.innerHTML = `⚠️ <b>Vein Collapsed!</b> Correct was "${currentForgeQuestion.ans}".`;
+        setTimeout(nextForgeTrial, 1200);
+      }
+    }
+
+    function craftItem(item) {
+      if (item === 'blade' && matObsidian >= 5 && matRunes >= 3) {
+        matObsidian -= 5; matRunes -= 3;
+        bladeTier++;
+        playSound('win');
+        alert(`⚔️ Circumference Blade upgraded to Tier ${bladeTier}!`);
+      } else if (item === 'armor' && matObsidian >= 6 && matScales >= 4) {
+        matObsidian -= 6; matScales -= 4;
+        armorTier++;
+        playSound('win');
+        alert(`🛡️ Concentric Aegis Plate upgraded to Tier ${armorTier}!`);
+      } else if (item === 'pet' && matRunes >= 8 && matScales >= 6) {
+        matRunes -= 8; matScales -= 6;
+        petTier++;
+        playSound('win');
+        alert(`🐉 Cyclone Pet upgraded to Tier ${petTier}!`);
+      } else {
+        alert("Not enough materials! Mine more by answering vocabulary trials on the left.");
+      }
+      updateForgeMatsUI();
+    }
+
+    // ================================================================
+    // 4. CASTLE SIEGE TOWER DEFENSE ENGINE
+    // ================================================================
+    let siegeGateHp = 100;
+    let siegeMana = 50;
+    let siegeWave = 1;
+    let siegeLoop = null;
+    let siegeTowers = { 1: null, 2: null, 3: null };
+    let siegeEnemies = [];
+    let currentSiegeQuestion = null;
+
+    function initSiege() {
+      siegeGateHp = 100;
+      siegeMana = 50;
+      siegeWave = 1;
+      siegeTowers = { 1: null, 2: null, 3: null };
+      siegeEnemies = [];
+      updateSiegeUI();
+      nextSiegeQuestion();
+
+      clearInterval(siegeLoop);
+      spawnSiegeWave();
+      siegeLoop = setInterval(updateSiegeFrame, 600);
+    }
+
+    function updateSiegeUI() {
+      document.getElementById('siegeGateHp').textContent = `${siegeGateHp} HP`;
+      document.getElementById('siegeMana').textContent = siegeMana;
+      document.getElementById('siegeWave').textContent = siegeWave;
+      document.getElementById('slot1Status').textContent = siegeTowers[1] ? `🏹 Arrow T${siegeTowers[1]}` : "Empty";
+      document.getElementById('slot2Status').textContent = siegeTowers[2] ? `❄️ Frost T${siegeTowers[2]}` : "Empty";
+      document.getElementById('slot3Status').textContent = siegeTowers[3] ? `🌪️ Cannon T${siegeTowers[3]}` : "Empty";
+    }
+
+    function spawnSiegeWave() {
+      siegeEnemies = [
+        { id: 1, pos: 90, hp: 20 },
+        { id: 2, pos: 95, hp: 25 },
+        { id: 3, pos: 100, hp: 30 }
+      ];
+    }
+
+    function updateSiegeFrame() {
+      // Towers attack
+      let totalDmg = 0;
+      if (siegeTowers[1]) totalDmg += 8 * siegeTowers[1];
+      if (siegeTowers[2]) totalDmg += 6 * siegeTowers[2];
+      if (siegeTowers[3]) totalDmg += 14 * siegeTowers[3];
+
+      siegeEnemies.forEach(e => {
+        e.hp -= totalDmg;
+        const speed = siegeTowers[2] ? 2 : 5;
+        e.pos -= speed;
+
+        if (e.pos <= 0 && e.hp > 0) {
+          siegeGateHp = Math.max(0, siegeGateHp - 15);
+          e.pos = -999; // dead/passed
+        }
+      });
+
+      siegeEnemies = siegeEnemies.filter(e => e.hp > 0 && e.pos > 0);
+
+      // Render track
+      const track = document.getElementById('siegeEnemiesTrack');
+      track.innerHTML = '';
+      siegeEnemies.forEach(e => {
+        const dot = document.createElement('div');
+        dot.className = "absolute text-lg transition-all duration-500";
+        dot.style.left = `${e.pos}%`;
+        dot.textContent = "👾";
+        track.appendChild(dot);
+      });
+
+      updateSiegeUI();
+
+      if (siegeEnemies.length === 0 && siegeWave < 5) {
+        siegeWave++;
+        spawnSiegeWave();
+      } else if (siegeEnemies.length === 0 && siegeWave >= 5) {
+        clearInterval(siegeLoop);
+        playSound('win');
+        triggerConfetti();
+        showGameOver("Castle Defended!", "You repelled all waves of the siege!");
+      }
+
+      if (siegeGateHp <= 0) {
+        clearInterval(siegeLoop);
+        showGameOver("Castle Gate Breached", "The siege breached your defenses. Try again!");
+      }
+    }
+
+    function buildTower(slot, type) {
+      const cost = type === 'arrow' ? 30 : (type === 'frost' ? 40 : 50);
+      if (siegeMana >= cost) {
+        siegeMana -= cost;
+        siegeTowers[slot] = (siegeTowers[slot] || 0) + 1;
+        playSound('hit');
+        updateSiegeUI();
+      } else {
+        alert("Not enough Mana! Answer the vocabulary question below to harvest crystals.");
+      }
+    }
+
+    function nextSiegeQuestion() {
+      currentSiegeQuestion = getRandomQuestion();
+      document.getElementById('siegeQuestion').innerHTML = currentSiegeQuestion.q;
+
+      const grid = document.getElementById('siegeOptions');
+      grid.innerHTML = '';
+      const opts = [currentSiegeQuestion.ans, ...currentSiegeQuestion.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-slate-200";
+        btn.textContent = opt;
+        btn.onclick = () => handleSiegeAnswer(opt);
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleSiegeAnswer(selected) {
+      totalAttempts++;
+      if (selected === currentSiegeQuestion.ans) {
+        correctAttempts++;
+        playSound('hit');
+        siegeMana += 25;
+        updateNavScore(25);
+        updateSiegeUI();
+        nextSiegeQuestion();
+      } else {
+        playSound('wrong');
+        nextSiegeQuestion();
+      }
+    }
+
+    // ================================================================
+    // 5. SURVIVOR RIFT (WAVE HORDE SURVIVOR)
+    // ================================================================
+    let survHp = 100;
+    let survLevel = 1;
+    let survKills = 0;
+    let survPerks = [];
+    let currentSurvQuestion = null;
+
+    function initSurvivor() {
+      survHp = 100;
+      survLevel = 1;
+      survKills = 0;
+      survPerks = [];
+      updateSurvivorUI();
+      document.getElementById('survQuestionCard').classList.remove('hidden');
+      document.getElementById('survLevelModal').classList.add('hidden');
+      nextSurvivorQuestion();
+    }
+
+    function updateSurvivorUI() {
+      document.getElementById('survHp').textContent = survHp;
+      document.getElementById('survLevel').textContent = survLevel;
+      document.getElementById('survKills').textContent = survKills;
+      document.getElementById('survPerkList').textContent = survPerks.length > 0 ? survPerks.join(', ') : "None";
+    }
+
+    function nextSurvivorQuestion() {
+      currentSurvQuestion = getRandomQuestion();
+      document.getElementById('survQuestion').innerHTML = currentSurvQuestion.q;
+
+      const grid = document.getElementById('survOptions');
+      grid.innerHTML = '';
+      const opts = [currentSurvQuestion.ans, ...currentSurvQuestion.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-bold text-slate-200 transition";
+        btn.textContent = opt;
+        btn.onclick = () => handleSurvivorAnswer(opt);
+        grid.appendChild(btn);
+      });
+    }
+
+    function handleSurvivorAnswer(selected) {
+      totalAttempts++;
+      if (selected === currentSurvQuestion.ans) {
+        correctAttempts++;
+        playSound('hit');
+        survKills += 5;
+        updateNavScore(30);
+
+        if (survPerks.includes("Regen")) survHp = Math.min(100, survHp + 10);
+
+        if (survKills >= survLevel * 15) {
+          triggerLevelDraft();
+        } else {
+          updateSurvivorUI();
+          nextSurvivorQuestion();
+        }
+      } else {
+        playSound('wrong');
+        survHp -= 20;
+        updateSurvivorUI();
+        if (survHp <= 0) {
+          showGameOver("Overwhelmed in the Rift", "Review your circular roots and try again!");
+        } else {
+          nextSurvivorQuestion();
+        }
+      }
+    }
+
+    function triggerLevelDraft() {
+      survLevel++;
+      playSound('win');
+      document.getElementById('survQuestionCard').classList.add('hidden');
+      document.getElementById('survLevelModal').classList.remove('hidden');
+
+      const boons = [
+        { name: "Chain Lightning", desc: "Doubles kill count per answer" },
+        { name: "Regen", desc: "Heal +10 HP on every correct answer" },
+        { name: "Orbital Blade", desc: "Deals bonus damage across answers" }
+      ];
+
+      const draftGrid = document.getElementById('survDraftCards');
+      draftGrid.innerHTML = '';
+
+      boons.forEach(b => {
+        const c = document.createElement('div');
+        c.className = "p-4 bg-slate-950 border border-slate-800 hover:border-purple-400 rounded-xl cursor-pointer text-center space-y-2 transition";
+        c.innerHTML = `<span class="font-bold text-xs text-white block">${b.name}</span><span class="text-[11px] text-slate-400">${b.desc}</span>`;
+        c.onclick = () => {
+          survPerks.push(b.name);
+          document.getElementById('survLevelModal').classList.add('hidden');
+          document.getElementById('survQuestionCard').classList.remove('hidden');
+          updateSurvivorUI();
+          nextSurvivorQuestion();
+        };
+        draftGrid.appendChild(c);
+      });
+    }
+
+    // ================================================================
+    // WORD VAULT & AUDIO
+    // ================================================================
+    function renderVault(filter = 'all') {
+      const container = document.getElementById('vaultCardsGrid');
+      container.innerHTML = '';
+
+      let list = UNIT4_VOCAB;
+      if (filter !== 'all') list = UNIT4_VOCAB.filter(w => w.root === filter);
+
+      list.forEach(w => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 hover:border-rose-500/60 rounded-2xl p-5 space-y-3 transition shadow-lg flex flex-col justify-between";
+
+        card.innerHTML = `
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-bold uppercase px-2.5 py-0.5 rounded-full border bg-rose-500/10 text-rose-300 border-rose-500/30">
+                Root: ${w.root} (${w.rootMeaning})
+              </span>
+              <button onclick="speakWord('${w.word}')" class="text-xs bg-slate-800 hover:bg-rose-600 px-2 py-1 rounded-lg text-slate-300 hover:text-white transition flex items-center gap-1">
+                🔊 Listen
+              </button>
+            </div>
+            <h3 class="text-xl font-black text-white capitalize flex items-center gap-2">
+              ${w.word}
+              <span class="text-xs font-normal text-slate-400 italic">(${w.pos})</span>
+            </h3>
+            <p class="text-xs text-slate-300 leading-relaxed"><b class="text-rose-300">Definition:</b> ${w.def}</p>
+            <div class="text-xs text-slate-400 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+              <span class="text-slate-500 font-semibold block mb-0.5">Example Sentence:</span>
+              "${w.sentence.replace('_____', w.word)}"
+            </div>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterVault(type) {
+      ['all', 'cycl', 'circum', 'centr'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (btn) {
+          if (t === type) btn.className = "px-3 py-1.5 rounded-lg font-semibold bg-rose-600 text-white";
+          else btn.className = "px-3 py-1.5 rounded-lg font-semibold text-slate-400 hover:text-white";
+        }
+      });
+      renderVault(type);
+    }
+
+    function triggerConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const particles = [];
+      const colors = ['#f43f5e', '#ec4899', '#8b5cf6', '#06b6d4', '#10b981'];
+
+      for (let i = 0; i < 70; i++) {
+        particles.push({
+          x: canvas.width / 2,
+          y: canvas.height / 2,
+          vx: (Math.random() - 0.5) * 12,
+          vy: (Math.random() - 0.5) * 12 - 3,
+          size: Math.random() * 6 + 4,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: 1
+        });
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2;
+          p.alpha -= 0.015;
+          if (p.alpha > 0) {
+            active = true;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = p.color;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+        if (active) requestAnimationFrame(animate);
+        else ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+      animate();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      showScreen('menu');
+    });
+  </script>
+</body>
+</html>
