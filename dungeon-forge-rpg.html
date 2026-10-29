@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Dungeon & Forge RPG • Relics & Powerups</title>
+  <title>Dungeon & Forge RPG • Class Skills & Summons</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #020617; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
@@ -11,11 +11,9 @@
     #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 0.85rem 1.2rem; }
     .interactive { pointer-events: auto; }
     
-    /* Top HUD Styling */
-    .hud-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; max-width: 64rem; margin: 0 auto; gap: 0.5rem; flex-wrap: wrap; }
+    .hud-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; max-width: 66rem; margin: 0 auto; gap: 0.5rem; flex-wrap: wrap; }
     .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(71, 85, 105, 0.7); border-radius: 1rem; padding: 0.5rem 0.95rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.08); backdrop-filter: blur(10px); }
     
-    /* Active Buffs & Relics Row */
     .buff-row { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.4rem; flex-wrap: wrap; }
     .buff-pill { background: rgba(15, 23, 42, 0.9); border: 1px solid #475569; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 800; display: flex; align-items: center; gap: 0.35rem; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: popIn 0.2s ease-out; }
     @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
@@ -29,9 +27,8 @@
     .bar-bg { width: 7rem; height: 0.7rem; background: #090d16; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
     .bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
     
-    /* Modals */
     .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
-    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 40rem; width: 100%; padding: 1.75rem; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 40rem; width: 100%; padding: 1.5rem 1.75rem; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.1); max-height: 95vh; overflow-y: auto; }
     .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; margin-top: 1rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
     
@@ -43,8 +40,9 @@
     .opt-btn.correct { background: linear-gradient(135deg, #065f46, #047857) !important; border-color: #10b981 !important; color: #fff !important; }
     .opt-btn.wrong { background: linear-gradient(135deg, #881337, #be123c) !important; border-color: #f43f5e !important; color: #fff !important; }
     
-    .forge-wallet { display: flex; justify-content: space-around; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 1rem; padding: 0.75rem 1rem; margin-bottom: 1rem; font-family: monospace; font-size: 1rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); }
-    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(71, 85, 105, 0.6); padding: 0.9rem 1rem; border-radius: 1rem; margin-bottom: 0.65rem; text-align: left; }
+    .forge-wallet { display: flex; justify-content: space-around; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 1rem; padding: 0.65rem 1rem; margin-bottom: 0.75rem; font-family: monospace; font-size: 0.95rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); }
+    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(71, 85, 105, 0.6); padding: 0.75rem 1rem; border-radius: 1rem; margin-bottom: 0.55rem; text-align: left; }
+    .forge-skill-row { background: linear-gradient(90deg, rgba(88, 28, 135, 0.35), rgba(15, 23, 42, 0.85)); border: 1px solid #a855f7; }
     
     .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
     .dpad-row { display: flex; gap: 0.35rem; }
@@ -132,7 +130,7 @@
         🏰 Enter The Catacombs
       </span>
       <h3 style="font-size:1.75rem; font-weight:900; margin:0.75rem 0 0.35rem; color:#fff;">Choose Your Hero Class</h3>
-      <p style="font-size:0.82rem; color:#cbd5e1; margin-bottom:1.25rem;">Collect materials, drink temporary battle elixirs, and discover rare permanent relics!</p>
+      <p style="font-size:0.82rem; color:#cbd5e1; margin-bottom:1.25rem;">Each class has a unique visual design and a powerful upgradable Special Skill in the Forge!</p>
       
       <div style="display:grid; grid-template-columns:1fr; gap:0.85rem; text-align:left;">
         <div class="class-card" onclick="selectClass('warrior')">
@@ -140,7 +138,7 @@
             <div style="font-size:2.4rem; background:#0f172a; width:3.8rem; height:3.8rem; border-radius:0.85rem; display:flex; align-items:center; justify-content:center; border:1px solid #38bdf8;">⚔️</div>
             <div>
               <h4 style="font-size:1.1rem; font-weight:900; color:#38bdf8;">Paladin Knight (Warrior)</h4>
-              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>120 HP • Normal Speed.</b> Armored knight with a crimson cape & shield. Cleaves multiple enemies in a wide broadsword arc.</p>
+              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>125 HP • Agile Melee.</b> Heavy broadsword cleave. <span style="color:#fde047; font-weight:bold;">Upgradable Skill: Titan Knockback</span> (blasts enemies backward & stuns them!).</p>
             </div>
           </div>
         </div>
@@ -148,8 +146,8 @@
           <div style="display:flex; align-items:center; gap:1rem;">
             <div style="font-size:2.4rem; background:#0f172a; width:3.8rem; height:3.8rem; border-radius:0.85rem; display:flex; align-items:center; justify-content:center; border:1px solid #10b981;">🏹</div>
             <div>
-              <h4 style="font-size:1.1rem; font-weight:900; color:#10b981;">Forest Ranger (Archer)</h4>
-              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>85 HP • Fast Speed.</b> Agile hooded marksman. Fires rapid high-velocity arrows across the room from safety.</p>
+              <h4 style="font-size:1.1rem; font-weight:900; color:#10b981;">Master Ranger (Archer)</h4>
+              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>90 HP • Fast Speed.</b> Long-range composite bow. <span style="color:#fde047; font-weight:bold;">Upgradable Skill: Volley Multishot</span> (unlocks 2, 3, 4, up to 5 arrows per shot!).</p>
             </div>
           </div>
         </div>
@@ -158,7 +156,7 @@
             <div style="font-size:2.4rem; background:#0f172a; width:3.8rem; height:3.8rem; border-radius:0.85rem; display:flex; align-items:center; justify-content:center; border:1px solid #c084fc;">💀</div>
             <div>
               <h4 style="font-size:1.1rem; font-weight:900; color:#c084fc;">Void Warlock (Necromancer)</h4>
-              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>100 HP • Slow Speed.</b> Casts piercing shadow orbs. <span style="color:#a7f3d0; font-weight:bold;">Soul Siphon: Heals +3 HP per monster slain!</span></p>
+              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>105 HP • +3 HP Lifesteal on Kill.</b> Piercing dark orbs. <span style="color:#fde047; font-weight:bold;">Upgradable Skill: Skeletal Minions</span> (summons allied skeletons to fight for you!).</p>
             </div>
           </div>
         </div>
@@ -185,12 +183,12 @@
     </div>
   </div>
 
-  <!-- BLACKSMITH FORGE SHOP MODAL (WITH LIVE RESOURCES DISPLAY) -->
+  <!-- BLACKSMITH FORGE SHOP MODAL -->
   <div id="modalForge" class="modal-backdrop hidden">
-    <div class="modal-card" style="border-color:#f59e0b; max-width:35rem;">
-      <div style="font-size:2.4rem; margin-bottom:0.1rem;">⚒️</div>
-      <h3 style="font-size:1.5rem; font-weight:900;">The Blacksmith's Anvil</h3>
-      <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:0.85rem;">Upgrade your gear using mined resources. <span style="color:#f87171; font-weight:bold;">(Death resets all gear!)</span></p>
+    <div class="modal-card" style="border-color:#f59e0b; max-width:36rem;">
+      <div style="font-size:2.2rem; margin-bottom:0.1rem;">⚒️</div>
+      <h3 style="font-size:1.4rem; font-weight:900;">The Blacksmith's Anvil</h3>
+      <p style="font-size:0.75rem; color:#cbd5e1; margin-bottom:0.75rem;">Upgrade weapons, armor, and your rare Class Skill. <span style="color:#f87171; font-weight:bold;">(Death resets all gear!)</span></p>
 
       <!-- Live Resources Wallet inside Forge -->
       <div class="forge-wallet">
@@ -202,37 +200,51 @@
       </div>
 
       <!-- Permanent Relic Bonuses Banner inside Forge -->
-      <div style="font-size:0.75rem; color:#fde047; background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.25); border-radius:0.75rem; padding:0.45rem; margin-bottom:1rem; font-family:monospace;">
+      <div style="font-size:0.72rem; color:#fde047; background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.25); border-radius:0.75rem; padding:0.4rem; margin-bottom:0.8rem; font-family:monospace;">
         ✨ Relic Bonuses Active: <b>+<span id="forgeRelicHp">0</span> Max HP</b> &nbsp;•&nbsp; <b>+<span id="forgeRelicDmg">0</span> Base DMG</b> &nbsp;•&nbsp; <b>+<span id="forgeRelicSpd">0</span>% Speed</b>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Weapon Mastery (Tier <span id="uiBladeTier">1</span>)</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Attack Power: <b id="uiBladeDmg" style="color:#f87171;">25</b> &nbsp;•&nbsp; Cost: <b style="color:#38bdf8;"><span id="costBladeObs">4</span> 💎</b>, <b style="color:#c084fc;"><span id="costBladeRunes">2</span> 📜</b></span>
+          <span style="font-weight:900; font-size:0.9rem; color:#fff; display:block;">Weapon Mastery (Tier <span id="uiBladeTier">1</span>)</span>
+          <span style="font-size:0.72rem; color:#94a3b8;">Attack Power: <b id="uiBladeDmg" style="color:#f87171;">25</b> &nbsp;•&nbsp; Cost: <b style="color:#38bdf8;"><span id="costBladeObs">4</span> 💎</b>, <b style="color:#c084fc;"><span id="costBladeRunes">2</span> 📜</b></span>
         </div>
         <button id="btnUpgradeBlade" onclick="upgradeGear('blade')" class="btn btn-forge">Forge</button>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Concentric Armor (Tier <span id="uiArmorTier">1</span>)</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Max Health: <b id="uiArmorHp" style="color:#34d399;">100</b> &nbsp;•&nbsp; Cost: <b style="color:#38bdf8;"><span id="costArmorObs">5</span> 💎</b>, <b style="color:#fbbf24;"><span id="costArmorScales">3</span> 🐉</b></span>
+          <span style="font-weight:900; font-size:0.9rem; color:#fff; display:block;">Concentric Armor (Tier <span id="uiArmorTier">1</span>)</span>
+          <span style="font-size:0.72rem; color:#94a3b8;">Max Health: <b id="uiArmorHp" style="color:#34d399;">100</b> &nbsp;•&nbsp; Cost: <b style="color:#38bdf8;"><span id="costArmorObs">5</span> 💎</b>, <b style="color:#fbbf24;"><span id="costArmorScales">3</span> 🐉</b></span>
         </div>
         <button id="btnUpgradeArmor" onclick="upgradeGear('armor')" class="btn btn-forge">Forge</button>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Cyclone Greaves (Tier <span id="uiBootsTier">1</span>)</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Move Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> &nbsp;•&nbsp; Cost: <b style="color:#c084fc;"><span id="costBootsRunes">4</span> 📜</b>, <b style="color:#fbbf24;"><span id="costBootsScales">3</span> 🐉</b></span>
+          <span style="font-weight:900; font-size:0.9rem; color:#fff; display:block;">Cyclone Greaves (Tier <span id="uiBootsTier">1</span>)</span>
+          <span style="font-size:0.72rem; color:#94a3b8;">Move Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> &nbsp;•&nbsp; Cost: <b style="color:#c084fc;"><span id="costBootsRunes">4</span> 📜</b>, <b style="color:#fbbf24;"><span id="costBootsScales">3</span> 🐉</b></span>
         </div>
         <button id="btnUpgradeBoots" onclick="upgradeGear('boots')" class="btn btn-forge">Forge</button>
       </div>
 
-      <div id="forgeMsg" style="font-size:0.78rem; font-weight:bold; min-height:1.2rem; margin-top:0.3rem; color:#34d399;"></div>
+      <!-- 4TH ROW: CLASS SPECIAL SKILL (EXPENSIVE / HIGH IMPACT) -->
+      <div class="forge-item-row forge-skill-row">
+        <div>
+          <span style="font-weight:900; font-size:0.92rem; color:#fde047; display:block;">
+            ★ <span id="uiSkillName">Class Skill</span> (Lv. <span id="uiSkillTier">0</span> / 4)
+          </span>
+          <span id="uiSkillDesc" style="font-size:0.72rem; color:#e9d5ff; display:block; margin:0.1rem 0;">Unlocks special class ability.</span>
+          <span id="uiSkillCostWrap" style="font-size:0.72rem; color:#94a3b8;">
+            Cost: <b style="color:#38bdf8;"><span id="costSkillObs">10</span> 💎</b>, <b style="color:#c084fc;"><span id="costSkillRunes">8</span> 📜</b>, <b style="color:#fbbf24;"><span id="costSkillScales">6</span> 🐉</b>
+          </span>
+        </div>
+        <button id="btnUpgradeSkill" onclick="upgradeGear('skill')" class="btn btn-forge" style="background:linear-gradient(135deg, #9333ea, #6b21a8); border-color:#c084fc;">Ascend</button>
+      </div>
 
-      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:0.5rem; padding:0.8rem; font-size:0.9rem;">Return to Dungeon [ESC / F]</button>
+      <div id="forgeMsg" style="font-size:0.78rem; font-weight:bold; min-height:1.1rem; margin-top:0.2rem; color:#34d399;"></div>
+
+      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:0.4rem; padding:0.75rem; font-size:0.88rem;">Return to Dungeon [ESC / F]</button>
     </div>
   </div>
 
@@ -242,7 +254,7 @@
       <div style="font-size:3.2rem; margin-bottom:0.4rem;">💀</div>
       <h3 style="font-size:1.75rem; font-weight:900; color:#ef4444;">Hero Slain!</h3>
       <p style="font-size:0.82rem; color:#cbd5e1; margin:0.5rem 0 1.4rem; line-height:1.5;">
-        You fell in battle. All forged tiers, relics, and gathered materials have been claimed by the catacombs!
+        You fell in battle. All forged tiers, skills, relics, and gathered materials have been claimed by the catacombs!
       </p>
       
       <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
@@ -347,7 +359,7 @@
     const ctx = canvas.getContext('2d', { alpha: false });
     let W = window.innerWidth;
     let H = window.innerHeight;
-    const WALL_PAD = 42; // 3D Dungeon stone border thickness
+    const WALL_PAD = 42;
 
     function resize() {
       W = canvas.width = window.innerWidth;
@@ -362,20 +374,18 @@
       x: 200, y: 200, size: 22,
       facing: 'right',
       atkTimer: 0, invulnTimer: 0, isMoving: false,
-      baseHp: 120, baseSpd: 210,
-      hp: 120, maxHp: 120,
-      // Permanent Relic Bonuses (Persist until death)
+      baseHp: 125, baseSpd: 235,
+      hp: 125, maxHp: 125,
       permBonusHp: 0,
       permBonusDmg: 0,
       permBonusSpd: 0,
-      // Temporary Buff Timers (in seconds)
-      buffBerserk: 0, // +35% Damage
-      buffHaste: 0,   // +30% Speed & Attack Rate
-      buffShield: 0   // 50% Damage Reduction
+      buffBerserk: 0,
+      buffHaste: 0,
+      buffShield: 0
     };
 
-    // PROGRESSION
-    let bladeTier = 1, armorTier = 1, bootsTier = 1;
+    // PROGRESSION & SKILL TIERS
+    let bladeTier = 1, armorTier = 1, bootsTier = 1, skillTier = 0; // skillTier: 0 to 4
     let matObsidian = 0, matRunes = 0, matScales = 0;
     let floorNum = 1;
     let isPaused = true, isOver = false, isForgeOpen = false;
@@ -386,9 +396,10 @@
     let particles = [];
     let damageNumbers = [];
     let ambientParticles = [];
-    let floorProps = []; // Cracks, moss, pebbles
+    let floorProps = [];
     let wallTorches = [];
     let monsters = [];
+    let minions = []; // Necromancer Skeleton Pets!
     let enemyProjectiles = [];
     let playerProjectiles = [];
     let lootItems = [];
@@ -432,9 +443,10 @@
 
     function selectClass(c) {
       player.classType = c;
-      if (c === 'warrior') { player.baseHp = 120; player.baseSpd = 215; document.getElementById('hudClassType').textContent = 'KNIGHT'; }
-      if (c === 'archer') { player.baseHp = 85; player.baseSpd = 265; document.getElementById('hudClassType').textContent = 'RANGER'; }
-      if (c === 'necromancer') { player.baseHp = 100; player.baseSpd = 190; document.getElementById('hudClassType').textContent = 'NECRO'; }
+      // Faster, snappier base speeds across all classes!
+      if (c === 'warrior') { player.baseHp = 125; player.baseSpd = 235; document.getElementById('hudClassType').textContent = 'KNIGHT'; }
+      if (c === 'archer') { player.baseHp = 90; player.baseSpd = 275; document.getElementById('hudClassType').textContent = 'RANGER'; }
+      if (c === 'necromancer') { player.baseHp = 105; player.baseSpd = 225; document.getElementById('hudClassType').textContent = 'NECRO'; }
       
       document.getElementById('modalClassSelect').classList.add('hidden');
       resetAllProgress();
@@ -451,20 +463,37 @@
     }
 
     function resetAllProgress() {
-      bladeTier = 1; armorTier = 1; bootsTier = 1;
+      bladeTier = 1; armorTier = 1; bootsTier = 1; skillTier = 0;
       matObsidian = 0; matRunes = 0; matScales = 0;
       player.permBonusHp = 0; player.permBonusDmg = 0; player.permBonusSpd = 0;
       player.buffBerserk = 0; player.buffHaste = 0; player.buffShield = 0;
+      minions = [];
       totalTrials = 0; correctTrials = 0;
     }
 
     function recalcStats() {
       player.maxHp = player.baseHp + (armorTier - 1) * 35 + player.permBonusHp;
       if (player.hp > player.maxHp) player.hp = player.maxHp;
+      syncMinions();
+    }
+
+    // NECROMANCER SKELETAL MINIONS MANAGER
+    function syncMinions() {
+      if (player.classType !== 'necromancer') { minions = []; return; }
+      while (minions.length < skillTier) {
+        const idx = minions.length;
+        minions.push({
+          x: player.x + (Math.random() - 0.5) * 50,
+          y: player.y + (Math.random() - 0.5) * 50,
+          atkCooldown: 0,
+          orbitAngle: (idx * Math.PI) / 2,
+          anim: Math.random() * Math.PI * 2
+        });
+      }
     }
 
     function getPlayerAttackDamage() {
-      const base = player.classType === 'archer' ? 20 : (player.classType === 'warrior' ? 30 : 18);
+      const base = player.classType === 'archer' ? 20 : (player.classType === 'warrior' ? 30 : 19);
       let dmg = base + (bladeTier - 1) * 15 + player.permBonusDmg;
       if (player.buffBerserk > 0) dmg = Math.round(dmg * 1.35);
       return dmg;
@@ -483,7 +512,9 @@
       monsters = []; lootItems = []; enemyProjectiles = []; playerProjectiles = []; particles = []; ambientParticles = [];
       exitPortal = null; isTransitioningFloor = false;
 
-      // Generate Wall Torches around room perimeter
+      // Teleport minions to player on new floor
+      minions.forEach(min => { min.x = player.x; min.y = player.y; });
+
       wallTorches = [
         { x: W * 0.25, y: WALL_PAD - 6 },
         { x: W * 0.50, y: WALL_PAD - 6 },
@@ -493,7 +524,6 @@
         { x: W * 0.75, y: H - WALL_PAD + 6 }
       ];
 
-      // Generate Floor Cracks & Pebbles
       floorProps = [];
       for (let i = 0; i < 24; i++) {
         floorProps.push({
@@ -533,15 +563,16 @@
           spd: (isBoss ? 1.05 : (type === 'slime' ? 1.35 : (type === 'spider' ? 1.55 : 1.25))) * speedScale,
           anim: Math.random() * Math.PI * 2,
           shootCooldown: Math.random() * 2 + 1.2,
-          hitFlash: 0
+          hitFlash: 0,
+          stunTimer: 0
         });
       }
     }
 
-    // COMBAT & LOOT DROPS
+    // COMBAT & CLASS SKILLS
     function attack() {
       if (isPaused || isOver || player.atkTimer > 0) return;
-      let baseCd = player.classType === 'archer' ? 0.2 : (player.classType === 'warrior' ? 0.24 : 0.32);
+      let baseCd = player.classType === 'archer' ? 0.21 : (player.classType === 'warrior' ? 0.24 : 0.3);
       if (player.buffHaste > 0) baseCd *= 0.72;
       player.atkTimer = baseCd;
       
@@ -556,36 +587,54 @@
 
       if (player.classType === 'warrior') {
         playSound('slash');
-        swordSlash = { x: sx + Math.cos(angle)*28, y: sy + Math.sin(angle)*28, r: 52, life: 0.18, angle: angle };
+        // Skill increases cleave radius and massive knockback!
+        const cleaveRadius = 52 + skillTier * 8;
+        const knockbackDist = 18 + skillTier * 28;
+        swordSlash = { x: sx + Math.cos(angle)*28, y: sy + Math.sin(angle)*28, r: cleaveRadius, life: 0.18, angle: angle };
         monsters.forEach(m => {
-          if (Math.hypot(m.x - swordSlash.x, m.y - swordSlash.y) < swordSlash.r + m.size) hitMonster(m, dmg, angle);
+          if (Math.hypot(m.x - swordSlash.x, m.y - swordSlash.y) < swordSlash.r + m.size) {
+            hitMonster(m, dmg, angle, false, knockbackDist);
+            if (skillTier > 0) m.stunTimer = 0.12 * skillTier; // Brief stun from heavy knockback!
+          }
         });
       } else if (player.classType === 'archer') {
         playSound('shoot');
-        playerProjectiles.push({
-          x: sx, y: sy, vx: Math.cos(angle) * 720, vy: Math.sin(angle) * 720, 
-          type: 'arrow', life: 1.0, dmg: dmg, angle: angle
-        });
+        // Skill fires multishot cone (1 + skillTier arrows)
+        const numArrows = 1 + skillTier;
+        const spreadArc = 0.16; // radians between arrows
+        for (let i = 0; i < numArrows; i++) {
+          const offsetAngle = angle + (i - (numArrows - 1) / 2) * spreadArc;
+          playerProjectiles.push({
+            x: sx, y: sy,
+            vx: Math.cos(offsetAngle) * 720,
+            vy: Math.sin(offsetAngle) * 720,
+            type: 'arrow', life: 1.0, dmg: dmg, angle: offsetAngle
+          });
+        }
       } else if (player.classType === 'necromancer') {
         playSound('shoot');
+        // Fixed bug: angle property explicitly included on Necromancer void orbs!
         playerProjectiles.push({
-          x: sx, y: sy, vx: Math.cos(angle) * 300, vy: Math.sin(angle) * 300, 
-          type: 'void', life: 2.0, dmg: dmg, r: 18, hitList: []
+          x: sx, y: sy,
+          vx: Math.cos(angle) * 320,
+          vy: Math.sin(angle) * 320,
+          type: 'void', life: 2.0, dmg: dmg, r: 18, angle: angle, hitList: []
         });
       }
 
       cleanupMonsters();
     }
 
-    function hitMonster(m, dmg, angle, isNecroHit = false) {
+    function hitMonster(m, dmg, angle, isNecroHit = false, knockbackForce = 14) {
       if (m.hp <= 0) return;
+      const safeAngle = (typeof angle === 'number' && !isNaN(angle)) ? angle : 0;
       m.hp -= dmg;
       m.hitFlash = 0.12;
       playSound('hit');
       screenShake = 4;
 
       for (let p = 0; p < 7; p++) {
-        const spread = angle + (Math.random() - 0.5) * 1.5;
+        const spread = safeAngle + (Math.random() - 0.5) * 1.5;
         const vel = Math.random() * 220 + 60;
         particles.push({
           x: m.x, y: m.y, vx: Math.cos(spread) * vel, vy: Math.sin(spread) * vel,
@@ -593,7 +642,10 @@
         });
       }
       damageNumbers.push({ x: m.x, y: m.y - 18, text: `-${Math.floor(dmg)}`, color: player.buffBerserk > 0 ? '#f87171' : '#fef08a', life: 0.65, vy: -45 });
-      m.x += Math.cos(angle) * 14; m.y += Math.sin(angle) * 14;
+      
+      // Apply knockback & clamp safely inside arena
+      m.x = Math.max(WALL_PAD + m.size, Math.min(W - WALL_PAD - m.size, m.x + Math.cos(safeAngle) * knockbackForce));
+      m.y = Math.max(WALL_PAD + m.size, Math.min(H - WALL_PAD - m.size, m.y + Math.sin(safeAngle) * knockbackForce));
 
       if (m.hp <= 0) {
         if (isNecroHit && player.classType === 'necromancer') {
@@ -602,21 +654,18 @@
           updateHUD();
         }
 
-        // Standard Material Drops
         const dropCount = m.isBoss ? 7 : (m.type === 'caster' ? 3 : 2);
         for (let d = 0; d < dropCount; d++) {
           const type = Math.random() < 0.45 ? 'obsidian' : (Math.random() < 0.8 ? 'rune' : 'scale');
           spawnLootDrop(m.x, m.y, type);
         }
 
-        // Temporary Power-Up Roll (18% chance on normal, 100% on boss)
         if (m.isBoss || Math.random() < 0.18) {
           const bRoll = Math.random();
           const bType = bRoll < 0.28 ? 'buff_berserk' : (bRoll < 0.56 ? 'buff_haste' : (bRoll < 0.82 ? 'buff_shield' : 'heal_heart'));
           spawnLootDrop(m.x, m.y, bType);
         }
 
-        // Rare Permanent Relic Roll (3.5% on normal, 45% on Boss!)
         if ((m.isBoss && Math.random() < 0.45) || (!m.isBoss && Math.random() < 0.035)) {
           const rRoll = Math.random();
           const rType = rRoll < 0.34 ? 'relic_hp' : (rRoll < 0.67 ? 'relic_dmg' : 'relic_spd');
@@ -638,7 +687,8 @@
     }
 
     function cleanupMonsters() {
-      monsters = monsters.filter(m => m.hp > 0);
+      // Filter dead or corrupted NaN monsters so floor transitions never get stuck!
+      monsters = monsters.filter(m => m.hp > 0 && !isNaN(m.x) && !isNaN(m.y));
       if (monsters.length === 0 && !exitPortal && !isTransitioningFloor) {
         playSound('win');
         isTransitioningFloor = true; transitionTimer = 4.0;
@@ -698,7 +748,7 @@
       }, 1100);
     }
 
-    // FORGE SYSTEM (WITH LIVE RESOURCE WALLET)
+    // FORGE SYSTEM (WITH CLASS SPECIAL SKILL UPGRADE)
     function toggleForge() { if (isForgeOpen) closeForge(); else openForge(); }
     function openForge() {
       if (isPaused && !isForgeOpen) return;
@@ -713,7 +763,6 @@
     }
     function updateForgeUI() {
       recalcStats();
-      // Sync live wallet inside Forge modal
       document.getElementById('forgeMatObsidian').textContent = matObsidian;
       document.getElementById('forgeMatRunes').textContent = matRunes;
       document.getElementById('forgeMatScales').textContent = matScales;
@@ -743,6 +792,35 @@
       document.getElementById('costBootsScales').textContent = cBootsScales;
       document.getElementById('btnUpgradeBoots').disabled = !(matRunes >= cBootsRunes && matScales >= cBootsScales);
 
+      // Class Special Skill Row (Steep Costs: 10 Obs, 8 Runes, 6 Scales per tier)
+      const nextSkill = skillTier + 1;
+      const cSkillObs = 10 * nextSkill, cSkillRunes = 8 * nextSkill, cSkillScales = 6 * nextSkill;
+      document.getElementById('uiSkillTier').textContent = skillTier;
+
+      if (player.classType === 'warrior') {
+        document.getElementById('uiSkillName').textContent = "Titan Knockback";
+        document.getElementById('uiSkillDesc').textContent = skillTier === 0 ? "Unlocks heavy knockback & stun on sword cleaves." : `Current: +${skillTier * 28} Knockback Force & ${(skillTier*0.12).toFixed(2)}s Stun`;
+      } else if (player.classType === 'archer') {
+        document.getElementById('uiSkillName').textContent = "Volley Multishot";
+        document.getElementById('uiSkillDesc').textContent = `Current: Fires ${1 + skillTier} arrow(s) per shot (Next: ${2 + skillTier} arrows!)`;
+      } else {
+        document.getElementById('uiSkillName').textContent = "Skeletal Minions";
+        document.getElementById('uiSkillDesc').textContent = `Current: ${skillTier} allied Skeleton Pet(s) fighting for you!`;
+      }
+
+      const btnSkill = document.getElementById('btnUpgradeSkill');
+      if (skillTier >= 4) {
+        document.getElementById('uiSkillCostWrap').innerHTML = `<b style="color:#34d399;">MAX LEVEL REACHED!</b>`;
+        btnSkill.disabled = true;
+        btnSkill.textContent = "MAXED";
+      } else {
+        document.getElementById('costSkillObs').textContent = cSkillObs;
+        document.getElementById('costSkillRunes').textContent = cSkillRunes;
+        document.getElementById('costSkillScales').textContent = cSkillScales;
+        btnSkill.textContent = "Ascend";
+        btnSkill.disabled = !(matObsidian >= cSkillObs && matRunes >= cSkillRunes && matScales >= cSkillScales);
+      }
+
       updateHUD();
     }
 
@@ -766,6 +844,16 @@
         if (matRunes >= costRunes && matScales >= costScales) {
           matRunes -= costRunes; matScales -= costScales; bootsTier++; playSound('win');
           msg.textContent = `🥾 Greaves upgraded to Tier ${bootsTier}!`;
+        }
+      } else if (type === 'skill' && skillTier < 4) {
+        const nextSkill = skillTier + 1;
+        const cObs = 10 * nextSkill, cRunes = 8 * nextSkill, cScales = 6 * nextSkill;
+        if (matObsidian >= cObs && matRunes >= cRunes && matScales >= cScales) {
+          matObsidian -= cObs; matRunes -= cRunes; matScales -= cScales;
+          skillTier++;
+          recalcStats();
+          playSound('relic');
+          msg.textContent = `🌟 Class Skill Ascended to Level ${skillTier}!`;
         }
       }
       updateForgeUI();
@@ -811,7 +899,7 @@
     }
 
     // ==========================================
-    // SPRITE & WORLD RENDERING
+    // REMASTERED HERO & MINION SPRITE RENDERING
     // ==========================================
     function drawPlayer() {
       if (player.invulnTimer > 0 && Math.floor(timeGlobal * 12) % 2 === 0) return;
@@ -819,7 +907,7 @@
       ctx.save();
       ctx.translate(player.x, player.y);
 
-      // Active Power-Up Auras around Player
+      // Power-Up Auras
       if (player.buffBerserk > 0) {
         ctx.strokeStyle = 'rgba(239, 68, 68, 0.75)'; ctx.lineWidth = 3;
         ctx.beginPath(); ctx.arc(0, 0, player.size + 8 + Math.sin(timeGlobal * 12) * 3, 0, Math.PI * 2); ctx.stroke();
@@ -854,12 +942,12 @@
         ctx.fillStyle = '#991b1b';
         ctx.beginPath(); ctx.moveTo(-4, -11); ctx.lineTo(-24, -16 + Math.sin(timeGlobal*10)*2); ctx.lineTo(-24, 16 + Math.sin(timeGlobal*10)*2); ctx.lineTo(-4, 11); ctx.fill();
         
-        // Broadsword Blade extending right
+        // Broadsword Blade
         ctx.fillStyle = '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.moveTo(10, 11); ctx.lineTo(32, 11); ctx.lineTo(36, 13); ctx.lineTo(32, 15); ctx.lineTo(10, 15); ctx.closePath(); ctx.fill(); ctx.stroke();
-        ctx.fillStyle = '#fbbf24'; ctx.fillRect(9, 8, 3, 10); // Golden Crossguard
+        ctx.fillStyle = '#fbbf24'; ctx.fillRect(9, 8, 3, 10);
 
-        // Heater Shield on Left Arm
+        // Heater Shield
         ctx.fillStyle = '#1e3a8a'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.roundRect(2, -17, 10, 14, 3); ctx.fill(); ctx.stroke();
 
@@ -867,67 +955,111 @@
         ctx.fillStyle = '#64748b'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(0, -12, 6.5, 0, Math.PI*2); ctx.arc(0, 12, 6.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
         
-        // Great Helm
+        // Great Helm & Visor
         ctx.fillStyle = '#cbd5e1'; ctx.strokeStyle = '#475569'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.arc(3, 0, 10.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-        
-        // T-Visor Slit
-        ctx.fillStyle = '#090d16';
-        ctx.fillRect(8, -5, 3, 10);
-        ctx.fillRect(4, -1.5, 9, 3);
-        
-        // Flowing Plume
-        ctx.fillStyle = '#f59e0b';
-        ctx.beginPath(); ctx.ellipse(-4, 0, 6, 3.5, 0, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#090d16'; ctx.fillRect(8, -5, 3, 10); ctx.fillRect(4, -1.5, 9, 3);
+        ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.ellipse(-4, 0, 6, 3.5, 0, 0, Math.PI*2); ctx.fill();
         
       } else if (player.classType === 'archer') {
-        // Ranger Cloak
-        ctx.fillStyle = '#064e3b';
-        ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(-22, -15 + Math.sin(timeGlobal*12)*2); ctx.lineTo(-22, 15 + Math.sin(timeGlobal*12)*2); ctx.lineTo(0, 12); ctx.fill();
+        // Layered Woodland Ranger Cloak with Gold Trim
+        ctx.fillStyle = '#064e3b'; strokeStyle = '#047857'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(-2, -12); ctx.lineTo(-25, -17 + Math.sin(timeGlobal*12)*2.5); ctx.lineTo(-21, 0); ctx.lineTo(-25, 17 + Math.sin(timeGlobal*12)*2.5); ctx.lineTo(-2, 12); ctx.closePath(); ctx.fill();
         
-        // Leather Quiver & Fletched Arrows
-        ctx.fillStyle = '#78350f'; ctx.fillRect(-15, -9, 6, 14);
-        ctx.fillStyle = '#fef08a'; ctx.fillRect(-18, -7, 4, 2); ctx.fillRect(-18, -2, 4, 2);
+        // Strapped Leather Quiver & Feathered Arrows
+        ctx.fillStyle = '#78350f'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.roundRect(-16, -11, 7, 14, 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#fef08a'; ctx.fillRect(-20, -9, 5, 2); ctx.fillRect(-20, -5, 5, 2); ctx.fillRect(-20, -1, 5, 2);
         
-        // Emerald Tunic & Leather Shoulderpads
-        ctx.fillStyle = '#059669'; ctx.beginPath(); ctx.arc(0, 0, 12.5, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#92400e'; ctx.beginPath(); ctx.arc(0, -11, 5, 0, Math.PI*2); ctx.arc(0, 11, 5, 0, Math.PI*2); ctx.fill();
+        // Studded Leather Pauldrons & Emerald Tunic
+        ctx.fillStyle = '#059669'; ctx.strokeStyle = '#34d399'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(0, 0, 11.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#92400e'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(1, -12, 6, 0, Math.PI*2); ctx.arc(1, 12, 6, 0, Math.PI*2); ctx.fill(); ctx.stroke();
         
-        // Carved Recurve Bow
-        ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(10, 0, 14, -Math.PI*0.42, Math.PI*0.42); ctx.stroke();
-        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.moveTo(13, -13); ctx.lineTo(13, 13); ctx.stroke();
+        // Master Composite Recurve Bow + Nocked Arrow
+        ctx.strokeStyle = '#d97706'; ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.arc(11, 0, 15, -Math.PI*0.44, Math.PI*0.44); ctx.stroke();
+        ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 1.2;
+        ctx.beginPath(); ctx.moveTo(14, -14); ctx.lineTo(8, 0); ctx.lineTo(14, 14); ctx.stroke();
+        // Drawn Arrow
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(27, 0); ctx.stroke();
+        ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.moveTo(27, -3.5); ctx.lineTo(33, 0); ctx.lineTo(27, 3.5); ctx.fill();
 
-        // Hooded Head
-        ctx.fillStyle = '#047857'; ctx.strokeStyle = '#34d399'; ctx.lineWidth = 1.5;
+        // Pointed Ranger Hood & Crimson Feather
+        ctx.fillStyle = '#047857'; ctx.strokeStyle = '#10b981'; ctx.lineWidth = 1.5;
         ctx.beginPath(); ctx.arc(3, 0, 9.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#ef4444';
+        ctx.beginPath(); ctx.ellipse(-3, -7, 7, 2.5, -0.3, 0, Math.PI*2); ctx.fill();
         
       } else if (player.classType === 'necromancer') {
-        // Tattered Cultist Mantle
-        ctx.fillStyle = '#2e1065';
-        ctx.beginPath(); ctx.moveTo(4, -12); ctx.lineTo(-24, -17 + Math.sin(timeGlobal*8)*2); ctx.lineTo(-24, 17 + Math.sin(timeGlobal*8)*2); ctx.lineTo(4, 12); ctx.fill();
+        // Tattered Dark-Violet Warlock Vestments with Gold Runes
+        ctx.fillStyle = '#2e1065'; ctx.strokeStyle = '#7e22ce'; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(4, -12);
+        ctx.lineTo(-26, -18 + Math.sin(timeGlobal*8)*2);
+        ctx.lineTo(-20, -6);
+        ctx.lineTo(-27, 0);
+        ctx.lineTo(-20, 6);
+        ctx.lineTo(-26, 18 + Math.sin(timeGlobal*8)*2);
+        ctx.lineTo(4, 12);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
         
-        // Runic Robes
-        ctx.fillStyle = '#4c1d95'; ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 1.5;
-        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-        
-        // Shadow Cowled Head
-        ctx.fillStyle = '#090d16';
-        ctx.beginPath(); ctx.arc(4, 0, 9, 0, Math.PI*2); ctx.fill();
-        
-        // Glowing Violet Eyes
-        ctx.fillStyle = '#e879f9'; ctx.shadowBlur = 8; ctx.shadowColor = '#e879f9';
-        ctx.beginPath(); ctx.arc(7, -3.5, 2.2, 0, Math.PI*2); ctx.arc(7, 3.5, 2.2, 0, Math.PI*2); ctx.fill();
+        // Bone-Spiked Shoulder Pauldrons
+        ctx.fillStyle = '#e2e8f0'; strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(1, -13, 6, 0, Math.PI*2); ctx.arc(1, 13, 6, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        // Bone Spikes
+        ctx.beginPath(); ctx.moveTo(1, -19); ctx.lineTo(-2, -25); ctx.lineTo(4, -19); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(1, 19); ctx.lineTo(-2, 25); ctx.lineTo(4, 19); ctx.fill();
+
+        // Floating Grimoire Book on Left Side
+        const bookY = -17 + Math.sin(timeGlobal * 6) * 2;
+        ctx.fillStyle = '#4c1d95'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 1.5;
+        ctx.fillRect(8, bookY, 9, 11); ctx.strokeRect(8, bookY, 9, 11);
+
+        // Skull-Crowned Warlock Staff on Right Side
+        ctx.fillStyle = '#451a03'; ctx.fillRect(-6, 12, 30, 3);
+        ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.arc(24, 13.5, 4.5, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#a855f7'; ctx.shadowBlur = 12; ctx.shadowColor = '#c084fc';
+        ctx.beginPath(); ctx.arc(28, 13.5, 4 + Math.sin(timeGlobal*10)*1.5, 0, Math.PI*2); ctx.fill();
         ctx.shadowBlur = 0;
-        
-        // Bone Staff & Floating Soul Gem
-        ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-6, 12, 28, 3);
-        ctx.fillStyle = '#34d399'; ctx.shadowBlur = 12; ctx.shadowColor = '#34d399';
-        ctx.beginPath(); ctx.arc(25, 13.5, 4.5 + Math.sin(timeGlobal*8)*1.5, 0, Math.PI*2); ctx.fill();
+
+        // Shadow Cowled Hood & Glowing Eyes
+        ctx.fillStyle = '#090d16'; ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(3, 0, 9.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#34d399'; ctx.shadowBlur = 8; ctx.shadowColor = '#34d399';
+        ctx.beginPath(); ctx.arc(7, -3.5, 2.2, 0, Math.PI*2); ctx.arc(7, 3.5, 2.2, 0, Math.PI*2); ctx.fill();
         ctx.shadowBlur = 0;
       }
       ctx.restore();
+    }
+
+    // DRAW NECROMANCER ALLIED SKELETON PETS
+    function drawMinions() {
+      minions.forEach(min => {
+        ctx.save();
+        ctx.translate(min.x, min.y);
+        // Necrotic green ally ring
+        ctx.strokeStyle = 'rgba(52, 211, 153, 0.5)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0, 4, 14, 0, Math.PI * 2); ctx.stroke();
+
+        const bob = Math.abs(Math.sin(min.anim * 5)) * 3;
+        ctx.translate(0, -bob);
+
+        // Mini Scimitar Blade
+        ctx.fillStyle = '#cbd5e1';
+        ctx.beginPath(); ctx.moveTo(8, 2); ctx.lineTo(18, -6); ctx.lineTo(15, 6); ctx.closePath(); ctx.fill();
+
+        // Allied Skeleton Skull
+        ctx.fillStyle = '#d1fae5'; ctx.strokeStyle = '#10b981'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(0, 0, 10, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Glowing Green Eyes
+        ctx.fillStyle = '#059669';
+        ctx.beginPath(); ctx.arc(-3.5, -1, 2.2, 0, Math.PI * 2); ctx.arc(3.5, -1, 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+      });
     }
 
     function drawSpider(m) {
@@ -942,7 +1074,6 @@
       ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#0f172a';
       ctx.strokeStyle = '#475569'; ctx.lineWidth = 1.5;
       ctx.beginPath(); ctx.arc(0, 4, m.size * 0.78, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-      // Red hourglass marking on spider back
       ctx.fillStyle = '#ef4444';
       ctx.beginPath(); ctx.moveTo(-3, 1); ctx.lineTo(3, 1); ctx.lineTo(-3, 7); ctx.lineTo(3, 7); ctx.closePath(); ctx.fill();
       ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#0f172a';
@@ -960,7 +1091,6 @@
       lastTime = time; timeGlobal += dt;
 
       if (!isPaused && !isOver && player.classType) {
-        // Tick Temporary Buffs
         if (player.buffBerserk > 0) player.buffBerserk = Math.max(0, player.buffBerserk - dt);
         if (player.buffHaste > 0) player.buffHaste = Math.max(0, player.buffHaste - dt);
         if (player.buffShield > 0) player.buffShield = Math.max(0, player.buffShield - dt);
@@ -980,7 +1110,6 @@
         player.x = Math.max(WALL_PAD + player.size, Math.min(W - WALL_PAD - player.size, player.x + mx * spd * dt));
         player.y = Math.max(WALL_PAD + player.size, Math.min(H - WALL_PAD - player.size, player.y + my * spd * dt));
 
-        // Haste trail particles
         if (player.buffHaste > 0 && player.isMoving && Math.random() < 0.4) {
           particles.push({ x: player.x, y: player.y, vx: 0, vy: 0, life: 0.2, color: '#38bdf8', size: 4 });
         }
@@ -989,21 +1118,59 @@
         if (player.invulnTimer > 0) player.invulnTimer -= dt;
         if (swordSlash) { swordSlash.life -= dt; if (swordSlash.life <= 0) swordSlash = null; }
 
+        // Update Necromancer Skeletal Minions AI
+        minions.forEach((min, idx) => {
+          min.anim += dt;
+          if (min.atkCooldown > 0) min.atkCooldown -= dt;
+
+          // Find nearest living monster
+          let nearest = null, minDist = 9999;
+          monsters.forEach(m => {
+            if (m.hp > 0) {
+              const d = Math.hypot(m.x - min.x, m.y - min.y);
+              if (d < minDist) { minDist = d; nearest = m; }
+            }
+          });
+
+          if (nearest && minDist < 380) {
+            const ang = Math.atan2(nearest.y - min.y, nearest.x - min.x);
+            min.x += Math.cos(ang) * 210 * dt;
+            min.y += Math.sin(ang) * 210 * dt;
+
+            if (minDist < nearest.size + 16 && min.atkCooldown <= 0) {
+              min.atkCooldown = 0.65;
+              const petDmg = Math.round(getPlayerAttackDamage() * 0.55);
+              hitMonster(nearest, petDmg, ang, true, 8);
+            }
+          } else {
+            // Orbit player when no monsters nearby
+            min.orbitAngle += dt * 2.2;
+            const targetX = player.x + Math.cos(min.orbitAngle + idx * 1.5) * 48;
+            const targetY = player.y + Math.sin(min.orbitAngle + idx * 1.5) * 48;
+            min.x += (targetX - min.x) * 5 * dt;
+            min.y += (targetY - min.y) * 5 * dt;
+          }
+        });
+
+        // Update Player Projectiles
         playerProjectiles.forEach(p => {
           p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
           monsters.forEach(m => {
-            if (m.hp > 0 && Math.hypot(m.x - p.x, m.y - p.y) < m.size + (p.r || 5)) {
-              if (p.type === 'arrow') { hitMonster(m, p.dmg, p.angle); p.life = 0; }
-              else if (p.type === 'void' && !p.hitList.includes(m)) { p.hitList.push(m); hitMonster(m, p.dmg, p.angle, true); }
+            if (m.hp > 0 && Math.hypot(m.x - p.x, m.y - p.y) < m.size + (p.r || 6)) {
+              if (p.type === 'arrow') { hitMonster(m, p.dmg, p.angle, false, 12); p.life = 0; }
+              else if (p.type === 'void' && !p.hitList.includes(m)) { p.hitList.push(m); hitMonster(m, p.dmg, p.angle, true, 10); }
             }
           });
         });
         playerProjectiles = playerProjectiles.filter(p => p.life > 0 && p.x > WALL_PAD && p.x < W - WALL_PAD && p.y > WALL_PAD && p.y < H - WALL_PAD);
         cleanupMonsters();
 
+        // Update Monsters AI
         monsters.forEach(m => {
           m.anim += dt * 4;
           if (m.hitFlash > 0) m.hitFlash -= dt;
+          if (m.stunTimer > 0) { m.stunTimer -= dt; return; } // Stunned by Warrior Knockback!
+
           const angle = Math.atan2(player.y - m.y, player.x - m.x);
           
           if (m.type === 'caster' || m.type === 'spider') {
@@ -1020,7 +1187,6 @@
             m.x += Math.cos(angle) * (m.spd * 90) * dt; m.y += Math.sin(angle) * (m.spd * 90) * dt;
           }
 
-          // Clamp monsters inside stone walls
           m.x = Math.max(WALL_PAD + m.size, Math.min(W - WALL_PAD - m.size, m.x));
           m.y = Math.max(WALL_PAD + m.size, Math.min(H - WALL_PAD - m.size, m.y));
 
@@ -1045,7 +1211,7 @@
         });
         enemyProjectiles = enemyProjectiles.filter(p => p.life > 0 && p.x > WALL_PAD && p.x < W - WALL_PAD && p.y > WALL_PAD && p.y < H - WALL_PAD);
 
-        // Loot Vacuum & Pickup Effects
+        // Loot Vacuum & Pickup
         lootItems.forEach(item => {
           if (item.vx || item.vy) { item.x += item.vx * dt; item.y += item.vy * dt; item.vx *= 0.88; item.vy *= 0.88; }
           item.x = Math.max(WALL_PAD + 15, Math.min(W - WALL_PAD - 15, item.x));
@@ -1062,7 +1228,6 @@
             if (item.type === 'obsidian') { playSound('loot'); matObsidian++; }
             else if (item.type === 'rune') { playSound('loot'); matRunes++; }
             else if (item.type === 'scale') { playSound('loot'); matScales++; }
-            // Temporary Buffs
             else if (item.type === 'buff_berserk') {
               playSound('powerup'); player.buffBerserk = 10;
               damageNumbers.push({ x: player.x, y: player.y - 25, text: "🧪 BERSERK (10s)!", color: '#f87171', life: 1.1, vy: -45 });
@@ -1075,9 +1240,7 @@
             } else if (item.type === 'heal_heart') {
               playSound('powerup'); player.hp = Math.min(player.maxHp, player.hp + 20);
               damageNumbers.push({ x: player.x, y: player.y - 25, text: "❤️ +20 HP!", color: '#34d399', life: 1.0, vy: -45 });
-            }
-            // Rare Permanent Relics!
-            else if (item.type === 'relic_hp') {
+            } else if (item.type === 'relic_hp') {
               playSound('relic'); player.permBonusHp += 10; recalcStats(); player.hp = Math.min(player.maxHp, player.hp + 10);
               damageNumbers.push({ x: player.x, y: player.y - 30, text: "👑 RELIC: +10 MAX HP!", color: '#fde047', life: 1.5, vy: -35 });
             } else if (item.type === 'relic_dmg') {
@@ -1128,7 +1291,6 @@
       const biome = getBiome(floorNum);
       ctx.fillStyle = biome.bg; ctx.fillRect(0, 0, W, H);
 
-      // 1. Checkered Dungeon Floor Stones with Bevel Borders
       const gridSize = 64;
       for (let gx = WALL_PAD; gx < W - WALL_PAD; gx += gridSize) {
         for (let gy = WALL_PAD; gy < H - WALL_PAD; gy += gridSize) {
@@ -1141,7 +1303,6 @@
         }
       }
 
-      // 2. Floor Cracks & Pebbles Details
       ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1.5;
       floorProps.forEach(fp => {
         ctx.save(); ctx.translate(fp.x, fp.y); ctx.rotate(fp.rot);
@@ -1153,20 +1314,17 @@
         ctx.restore();
       });
 
-      // 3. 3D Dungeon Stone Perimeter Walls
       ctx.fillStyle = biome.wall;
-      ctx.fillRect(0, 0, W, WALL_PAD); // Top wall
-      ctx.fillRect(0, H - WALL_PAD, W, WALL_PAD); // Bottom wall
-      ctx.fillRect(0, 0, WALL_PAD, H); // Left wall
-      ctx.fillRect(W - WALL_PAD, 0, WALL_PAD, H); // Right wall
+      ctx.fillRect(0, 0, W, WALL_PAD);
+      ctx.fillRect(0, H - WALL_PAD, W, WALL_PAD);
+      ctx.fillRect(0, 0, WALL_PAD, H);
+      ctx.fillRect(W - WALL_PAD, 0, WALL_PAD, H);
 
-      // Stone Wall Bricks & Inner Shadow Bevel
       ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = 4;
       ctx.strokeRect(WALL_PAD, WALL_PAD, W - WALL_PAD * 2, H - WALL_PAD * 2);
       ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 2;
       ctx.strokeRect(WALL_PAD - 2, WALL_PAD - 2, W - WALL_PAD * 2 + 4, H - WALL_PAD * 2 + 4);
 
-      // 4. Flickering Wall Torches & Warm Light Pools
       wallTorches.forEach((t, idx) => {
         const flicker = Math.sin(timeGlobal * 14 + idx * 2) * 8;
         const tGrad = ctx.createRadialGradient(t.x, t.y, 4, t.x, t.y, 110 + flicker);
@@ -1175,12 +1333,10 @@
         ctx.fillStyle = tGrad;
         ctx.beginPath(); ctx.arc(t.x, t.y, 110 + flicker, 0, Math.PI * 2); ctx.fill();
 
-        // Torch sconce & flame
         ctx.fillStyle = '#78350f'; ctx.fillRect(t.x - 3, t.y - 3, 6, 6);
         ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(t.x, t.y, 4 + Math.sin(timeGlobal*18 + idx)*1.5, 0, Math.PI*2); ctx.fill();
       });
 
-      // 5. Ambient Biome Particles
       ctx.fillStyle = biome.pColor;
       ambientParticles.forEach(ap => {
         ctx.globalAlpha = (Math.sin(timeGlobal * 2 + ap.offset) + 1) * 0.3 + 0.1;
@@ -1188,7 +1344,6 @@
       });
       ctx.globalAlpha = 1.0;
 
-      // 6. Exit Portal
       if (exitPortal) {
         ctx.save(); ctx.translate(exitPortal.x, exitPortal.y); ctx.rotate(exitPortal.rot);
         ctx.shadowBlur = 18; ctx.shadowColor = '#c084fc';
@@ -1199,7 +1354,6 @@
         ctx.fillText(`NEXT FLOOR IN ${Math.ceil(transitionTimer)}s`, exitPortal.x, exitPortal.y - exitPortal.r - 12);
       }
 
-      // 7. Loot Items, Potions & Rare Relics
       lootItems.forEach(item => {
         ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.beginPath(); ctx.ellipse(item.x, item.y + 11, 10, 4, 0, 0, Math.PI * 2); ctx.fill();
         const hoverY = item.y + Math.sin(timeGlobal * 4.5 + item.hoverOffset) * 5;
@@ -1227,15 +1381,16 @@
         ctx.shadowBlur = 0;
       });
 
-      // 8. Projectiles
       playerProjectiles.forEach(p => {
-        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
+        ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle || 0);
         if (p.type === 'arrow') {
           ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(10, 0); ctx.stroke();
-          ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.moveTo(10, -4.5); ctx.lineTo(19, 0); ctx.lineTo(10, 4.5); ctx.fill();
+          ctx.fillStyle = '#38bdf8'; ctx.beginPath(); ctx.moveTo(10, -4.5); ctx.lineTo(19, 0); ctx.lineTo(10, 4.5); ctx.fill();
         } else {
           ctx.fillStyle = '#9333ea'; ctx.shadowBlur = 15; ctx.shadowColor = '#d8b4fe';
-          ctx.beginPath(); ctx.arc(0, 0, p.r + Math.sin(timeGlobal*10)*3, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
+          ctx.beginPath(); ctx.arc(0, 0, p.r + Math.sin(timeGlobal*10)*3, 0, Math.PI*2); ctx.fill();
+          ctx.fillStyle = '#34d399'; ctx.beginPath(); ctx.arc(0, 0, p.r * 0.45, 0, Math.PI*2); ctx.fill();
+          ctx.shadowBlur = 0;
         }
         ctx.restore();
       });
@@ -1245,11 +1400,9 @@
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
       });
 
-      // 9. Monsters
       monsters.forEach(m => {
         ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.78, m.size * 0.9, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
         if (m.isBoss) {
-          // Boss Menacing Ground Ring
           ctx.strokeStyle = 'rgba(244, 63, 94, 0.45)'; ctx.lineWidth = 3;
           ctx.beginPath(); ctx.arc(m.x, m.y, m.size * 1.25 + Math.sin(timeGlobal*5)*4, 0, Math.PI*2); ctx.stroke();
 
@@ -1286,7 +1439,6 @@
         ctx.fillStyle = m.isBoss ? '#f59e0b' : '#ef4444'; ctx.fillRect(m.x - barW / 2, m.y - m.size - 15, (m.hp / m.maxHp) * barW, 6);
       });
 
-      // 10. Sword Slash Arc
       if (swordSlash && player.classType === 'warrior') {
         const sweepAngle = Math.PI * 0.85;
         ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(swordSlash.angle);
@@ -1298,15 +1450,16 @@
         ctx.strokeStyle = player.buffBerserk > 0 ? '#fca5a5' : '#fef08a'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2); ctx.stroke(); ctx.restore();
       }
 
-      if (player.classType) drawPlayer();
+      if (player.classType) {
+        drawMinions();
+        drawPlayer();
+      }
 
-      // 11. Subtle Torch Vignette around Player
       const torchGrad = ctx.createRadialGradient(player.x, player.y, 60, player.x, player.y, Math.max(W, H) * 0.65);
       torchGrad.addColorStop(0, "rgba(0, 0, 0, 0.0)");
       torchGrad.addColorStop(1, "rgba(0, 0, 0, 0.55)");
       ctx.fillStyle = torchGrad; ctx.fillRect(0, 0, W, H);
 
-      // 12. Particles & Damage Floaters
       particles.forEach(p => { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); });
       damageNumbers.forEach(d => {
         ctx.font = '900 18px system-ui'; ctx.fillStyle = d.color; ctx.textAlign = 'center';
