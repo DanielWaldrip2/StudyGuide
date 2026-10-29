@@ -201,12 +201,16 @@
     const canvas = document.getElementById('canvasGame');
     const ctx = canvas.getContext('2d');
 
-    let W = 0, H = 0;
+    let W = window.innerWidth || 1024;
+    let H = window.innerHeight || 768;
     function resize() {
-      W = canvas.width = window.innerWidth || document.documentElement.clientWidth || 1024;
-      H = canvas.height = window.innerHeight || document.documentElement.clientHeight || 768;
+      W = canvas.width = window.innerWidth || 1024;
+      H = canvas.height = window.innerHeight || 768;
     }
+    window.addEventListener('resize', resize);
+    resize();
 
+    // GAMEPLAY VARIABLES (DELTA-TIME NORMALIZED)
     let distance = 0;
     let shield = 100;
     let timerVal = 10;
@@ -220,7 +224,9 @@
     const lanes = [-1, 0, 1];
     let currentLane = 0;
     let playerX = 0;
-    let speed = 2.4;
+    
+    // HUMAN-CALIBRATED SPEED: 320 units per second
+    const SPEED_Z = 320; 
 
     let obstacles = [];
     let crystals = [];
@@ -228,11 +234,11 @@
 
     function initStars() {
       stars = [];
-      for (let i = 0; i < 110; i++) {
+      for (let i = 0; i < 90; i++) {
         stars.push({
-          x: (Math.random() - 0.5) * 2200,
-          y: (Math.random() - 0.5) * 1200,
-          z: Math.random() * 1200 + 50
+          x: (Math.random() - 0.5) * 2000,
+          y: (Math.random() - 0.5) * 1000,
+          z: Math.random() * 1000 + 50
         });
       }
     }
@@ -240,14 +246,15 @@
     function spawnGameElements() {
       obstacles = [];
       crystals = [];
-      for (let z = 350; z < 2800; z += 240) {
+      // Spaced generously: obstacles every 550 units instead of 240
+      for (let z = 550; z < 3200; z += 550) {
         obstacles.push({
           lane: lanes[Math.floor(Math.random() * lanes.length)],
           z: z,
           rot: Math.random() * Math.PI
         });
       }
-      for (let z = 220; z < 2800; z += 180) {
+      for (let z = 300; z < 3200; z += 350) {
         crystals.push({
           lane: lanes[Math.floor(Math.random() * lanes.length)],
           z: z,
@@ -257,7 +264,7 @@
     }
 
     function project(x, y, z) {
-      const fov = 320;
+      const fov = 340;
       const safeZ = Math.max(1, z);
       const scale = fov / (fov + safeZ);
       const projX = (x * scale) + (W / 2);
@@ -331,13 +338,13 @@
       if (isCorrect) {
         correctAns++;
         shield = Math.min(100, shield + 25);
-        distance += 150;
+        distance += 100;
         updateHUD();
 
         fb.style.background = "rgba(6, 78, 59, 0.9)";
         fb.style.border = "1px solid #10b981";
         fb.style.color = "#6ee7b7";
-        fb.innerHTML = `✨ <b>BARRIER BREACHED!</b> Shield restored (+25%) & +150m Speed Boost!`;
+        fb.innerHTML = `✨ <b>BARRIER BREACHED!</b> Shield restored (+25%) & +100m Speed Boost!`;
       } else {
         btnEl.classList.add('wrong');
         shield = Math.max(0, shield - 30);
@@ -353,13 +360,15 @@
         document.getElementById('modalGate').classList.add('hidden');
         isAnsweringLocked = false;
 
+        // Push nearby obstacles forward so player gets a clear 3-second recovery runway
         obstacles.forEach(o => {
-          if (o.z < 280) o.z += 450;
+          if (o.z < 700) o.z += 900;
         });
 
         if (shield <= 0) {
           gameOver();
         } else {
+          lastFrameTime = performance.now();
           isPaused = false;
         }
       }, 950);
@@ -397,12 +406,18 @@
       spawnGameElements();
       clearInterval(timerInterval);
       timerInterval = setInterval(handleCountdown, 1000);
+      lastFrameTime = performance.now();
     }
 
-    function renderLoop() {
+    // DELTA-TIME ANIMATION LOOP
+    let lastFrameTime = performance.now();
+
+    function renderLoop(currentTime) {
       requestAnimationFrame(renderLoop);
 
-      if (!W || !H) resize();
+      // Compute Delta Time (capped to 0.1s so alt-tabbing doesn't teleport obstacles)
+      const dt = Math.min((currentTime - lastFrameTime) / 1000, 0.1);
+      lastFrameTime = currentTime;
 
       // Clear Screen with Space Gradient
       const grad = ctx.createLinearGradient(0, 0, 0, H);
@@ -415,8 +430,8 @@
       ctx.fillStyle = "#ffffff";
       stars.forEach(s => {
         if (!isPaused && !isOver) {
-          s.z -= speed * 1.5;
-          if (s.z <= 20) s.z += 1150;
+          s.z -= SPEED_Z * 0.15 * dt;
+          if (s.z <= 20) s.z += 980;
         }
         const sp = project(s.x, s.y, s.z);
         if (sp.scale > 0) {
@@ -441,7 +456,7 @@
       ctx.closePath();
       ctx.fill();
 
-      // Runway lines
+      // Runway lane boundary rails
       const laneCoords = [-320, -105, 105, 320];
       ctx.strokeStyle = "#4f46e5";
       ctx.lineWidth = 3;
@@ -455,15 +470,15 @@
       });
 
       if (!isPaused && !isOver) {
-        distance += speed * 0.45;
+        distance += SPEED_Z * 0.08 * dt;
         updateHUD();
       }
 
-      // Moving Grid Lines
-      const gridOffset = (distance * 22) % 160;
+      // Moving Grid cross-ties
+      const gridOffset = (distance * 25) % 180;
       ctx.strokeStyle = "#3730a3";
       ctx.lineWidth = 2;
-      for (let gz = 1800; gz >= 20; gz -= 160) {
+      for (let gz = 1800; gz >= 20; gz -= 180) {
         const effZ = gz - gridOffset;
         if (effZ > 0) {
           const pLeft = project(-320, 140, effZ);
@@ -475,14 +490,14 @@
         }
       }
 
-      // Smooth Lane Interpolation
+      // Smooth Lane Interpolation (frame-rate independent lerp)
       const targetScreenX = currentLane * 210;
-      playerX += (targetScreenX - playerX) * 0.22;
+      playerX += (targetScreenX - playerX) * Math.min(1, 14 * dt);
 
-      // Crystals
+      // Crystals (Green Collectible Gems)
       crystals.forEach(cry => {
         if (!isPaused && !isOver) {
-          cry.z -= speed * 12;
+          cry.z -= SPEED_Z * dt;
           if (cry.z <= 0) {
             cry.z = 2400;
             cry.lane = lanes[Math.floor(Math.random() * lanes.length)];
@@ -505,18 +520,18 @@
 
           if (cry.z < 75 && cry.z > 5 && cry.lane === currentLane) {
             cry.collected = true;
-            distance += 30;
+            distance += 25;
           }
         }
       });
 
-      // Obstacles
+      // Obstacles (Red Hazard Cubes)
       obstacles.forEach(obs => {
         if (!isPaused && !isOver) {
-          obs.z -= speed * 12;
-          obs.rot += 0.04;
+          obs.z -= SPEED_Z * dt;
+          obs.rot += 1.8 * dt;
           if (obs.z <= 0) {
-            obs.z = 2400;
+            obs.z = 2600;
             obs.lane = lanes[Math.floor(Math.random() * lanes.length)];
           }
         }
@@ -535,27 +550,27 @@
           ctx.strokeRect(-size / 2, -size / 2, size, size);
           ctx.restore();
 
-          if (obs.z < 65 && obs.z > 5 && obs.lane === currentLane) {
+          if (obs.z < 70 && obs.z > 5 && obs.lane === currentLane) {
             shield = Math.max(0, shield - 25);
-            obs.z = 2400;
+            obs.z = 2600;
             updateHUD();
             if (shield <= 0) gameOver();
           }
         }
       });
 
-      // Player Jet Craft
+      // Player Jet
       const pp = project(playerX, 105, 30);
       const shipW = 80;
       const shipH = 48;
 
-      // Thruster flame
+      // Thruster
       ctx.fillStyle = "#38bdf8";
       ctx.beginPath();
-      ctx.ellipse(pp.x, pp.y + 16, 14, 7, 0, 0, Math.PI * 2);
+      ctx.ellipse(pp.x, pp.y + 16, 12, 6, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Wing glow
+      // Wing Body
       ctx.fillStyle = "#06b6d4";
       ctx.strokeStyle = "#67e8f9";
       ctx.lineWidth = 3;
@@ -573,18 +588,19 @@
       // Cockpit
       ctx.fillStyle = "#c084fc";
       ctx.beginPath();
-      ctx.ellipse(pp.x, pp.y - 6, 11, 16, 0, 0, Math.PI * 2);
+      ctx.ellipse(pp.x, pp.y - 6, 10, 16, 0, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // Initialize & Start
-    window.addEventListener('DOMContentLoaded', () => {
+    // Launch immediately on page ready
+    window.addEventListener('load', () => {
       resize();
       initStars();
       spawnGameElements();
       updateHUD();
       clearInterval(timerInterval);
       timerInterval = setInterval(handleCountdown, 1000);
+      lastFrameTime = performance.now();
       requestAnimationFrame(renderLoop);
     });
   </script>
