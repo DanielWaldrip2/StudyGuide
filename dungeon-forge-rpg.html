@@ -3,35 +3,35 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Dungeon & Forge RPG • Action Roguelite</title>
+  <title>Dungeon & Forge RPG • Visual Remaster</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #020617; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
     #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; image-rendering: crisp-edges; }
     #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
     .interactive { pointer-events: auto; }
-    .hud-box { background: rgba(15, 23, 42, 0.94); border: 1px solid #334155; border-radius: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
+    .hud-box { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(51, 65, 85, 0.5); border-radius: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(12px); }
     .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.45rem 0.85rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
-    .btn:hover { background: #334155; color: #fff; }
-    .btn-forge { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; }
-    .btn-forge:hover { filter: brightness(1.15); transform: translateY(-1px); }
-    .bar-bg { width: 6.5rem; height: 0.65rem; background: #1e293b; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
-    .bar-fill { height: 100%; width: 100%; background: #10b981; transition: width 0.25s ease; }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.94); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
-    .modal-card { background: #0f172a; border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 36rem; width: 100%; padding: 1.6rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9); }
-    .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-top: 1rem; }
+    .btn:hover { background: #334155; color: #fff; transform: translateY(-1px); }
+    .btn-forge { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
+    .btn-forge:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
+    .bar-bg { width: 6.5rem; height: 0.65rem; background: rgba(15, 23, 42, 0.8); border-radius: 9999px; overflow: hidden; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+    .bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.85); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(12px); }
+    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 38rem; width: 100%; padding: 2rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-top: 1.2rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
-    .opt-btn { background: #1e293b; border: 1px solid #334155; color: #f1f5f9; padding: 0.8rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-align: left; transition: all 0.15s; }
-    .opt-btn:hover { background: #451a03; border-color: #f59e0b; color: #fff; }
-    .opt-btn.correct { background: #065f46 !important; border-color: #10b981 !important; color: #d1fae5 !important; }
-    .opt-btn.wrong { background: #881337 !important; border-color: #f43f5e !important; color: #ffe4e6 !important; }
-    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: #090d16; border: 1px solid #1e293b; padding: 0.8rem 1rem; border-radius: 0.85rem; margin-bottom: 0.6rem; text-align: left; }
-    .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
-    .dpad-row { display: flex; gap: 0.35rem; }
-    .touch-btn { width: 3.6rem; height: 3.6rem; background: rgba(15, 23, 42, 0.85); border: 2px solid #334155; border-radius: 0.85rem; font-size: 1.4rem; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .touch-btn:active { background: #f59e0b; }
-    .touch-atk { width: 4.8rem; height: 4.8rem; border-radius: 50%; background: rgba(239, 68, 68, 0.85); border: 2px solid #f87171; font-weight: 900; font-size: 1rem; }
-    .touch-atk:active { background: #dc2626; }
+    .opt-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #f1f5f9; padding: 0.85rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-align: left; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+    .opt-btn:hover { background: #451a03; border-color: #f59e0b; color: #fff; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(245, 158, 11, 0.2); }
+    .opt-btn.correct { background: linear-gradient(135deg, #065f46, #047857) !important; border-color: #10b981 !important; color: #fff !important; }
+    .opt-btn.wrong { background: linear-gradient(135deg, #881337, #be123c) !important; border-color: #f43f5e !important; color: #fff !important; }
+    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(51, 65, 85, 0.5); padding: 1rem; border-radius: 1rem; margin-bottom: 0.75rem; text-align: left; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+    .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+    .dpad-row { display: flex; gap: 0.4rem; }
+    .touch-btn { width: 3.8rem; height: 3.8rem; background: rgba(15, 23, 42, 0.7); border: 2px solid rgba(255,255,255,0.1); border-radius: 1rem; font-size: 1.5rem; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); transition: 0.1s; }
+    .touch-btn:active { background: rgba(245, 158, 11, 0.8); border-color: #f59e0b; transform: scale(0.95); }
+    .touch-atk { width: 5.2rem; height: 5.2rem; border-radius: 50%; background: rgba(239, 68, 68, 0.8); border: 2px solid #f87171; font-weight: 900; font-size: 1rem; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    .touch-atk:active { background: #dc2626; transform: scale(0.92); }
     @media (min-width: 768px) { .mobile-ui { display: none !important; } }
     .hidden { display: none !important; }
   </style>
@@ -40,25 +40,26 @@
 
   <canvas id="canvasGame"></canvas>
 
+  <!-- Heads Up Display -->
   <div id="hudLayer">
     <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:58rem; margin:0 auto;" class="interactive">
       <div class="hud-box">
         <a href="index.html" class="btn">← Hub</a>
         <div>
-          <span id="hudBiomeName" style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block;">CRYPT BIOME</span>
-          <span style="font-size:0.9rem; font-weight:900;">Floor <span id="hudFloor">1</span></span>
+          <span id="hudBiomeName" style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">CRYPT BIOME</span>
+          <span style="font-size:0.95rem; font-weight:900;">Floor <span id="hudFloor">1</span></span>
         </div>
       </div>
 
-      <div class="hud-box" style="font-family: monospace; font-size: 0.8rem;">
-        <div>💎 <span id="hudObsidian" style="color:#38bdf8; font-weight:bold;">0</span></div>
-        <div>📜 <span id="hudRunes" style="color:#c084fc; font-weight:bold;">0</span></div>
-        <div>🐉 <span id="hudScales" style="color:#fbbf24; font-weight:bold;">0</span></div>
+      <div class="hud-box" style="font-family: monospace; font-size: 0.85rem;">
+        <div style="display:flex; align-items:center; gap:0.3rem;"><span style="filter:drop-shadow(0 2px 4px rgba(56,189,248,0.4));">💎</span> <span id="hudObsidian" style="color:#38bdf8; font-weight:bold;">0</span></div>
+        <div style="display:flex; align-items:center; gap:0.3rem;"><span style="filter:drop-shadow(0 2px 4px rgba(192,132,252,0.4));">📜</span> <span id="hudRunes" style="color:#c084fc; font-weight:bold;">0</span></div>
+        <div style="display:flex; align-items:center; gap:0.3rem;"><span style="filter:drop-shadow(0 2px 4px rgba(251,191,36,0.4));">🐉</span> <span id="hudScales" style="color:#fbbf24; font-weight:bold;">0</span></div>
       </div>
 
       <div class="hud-box" style="font-family: monospace;">
         <div>
-          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#94a3b8; margin-bottom:0.15rem;">
+          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#cbd5e1; margin-bottom:0.15rem; font-weight:700;">
             <span>HP</span>
             <span id="hudHpText">100/100</span>
           </div>
@@ -66,17 +67,18 @@
             <div id="hudHpFill" class="bar-fill"></div>
           </div>
         </div>
-        <div style="width:1px; height:1.5rem; background:#334155;"></div>
+        <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
         <div style="text-align:center;">
-          <span style="font-size:0.65rem; color:#94a3b8; display:block;">TRIAL IN</span>
-          <span id="hudTrialTimer" style="font-size:1.05rem; font-weight:900; color:#fbbf24;">10s</span>
+          <span style="font-size:0.65rem; color:#cbd5e1; display:block; font-weight:700;">TRIAL IN</span>
+          <span id="hudTrialTimer" style="font-size:1.1rem; font-weight:900; color:#fbbf24; text-shadow: 0 0 8px rgba(251,191,36,0.4);">10s</span>
         </div>
-        <div style="width:1px; height:1.5rem; background:#334155;"></div>
+        <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
         <button onclick="openForge()" class="btn btn-forge">⚒️ Forge [F]</button>
       </div>
     </div>
 
-    <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:0.5rem;">
+    <!-- On-screen Mobile Controls -->
+    <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:1rem;">
       <div class="dpad-container">
         <button class="touch-btn" id="mUp">▲</button>
         <div class="dpad-row">
@@ -88,94 +90,95 @@
       <button class="touch-btn touch-atk" id="mAtk">SWORD<br>[SPACE]</button>
     </div>
 
-    <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem;" class="interactive">
-      Move: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD</kbd> or <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">Arrows</kbd> • Attack: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> • Forge: <kbd style="background:#1e293b; padding:0.15rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
+    <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem;" class="interactive mobile-ui hidden md:block">
+      Move: <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD</kbd> or <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">Arrows</kbd> &nbsp;•&nbsp; Attack: <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> &nbsp;•&nbsp; Forge: <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
     </div>
   </div>
 
   <!-- 10-SECOND ANVIL / TRIAL MODAL -->
   <div id="modalTrial" class="modal-backdrop hidden">
     <div class="modal-card">
-      <span style="font-size:0.7rem; font-weight:800; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.3rem 0.75rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.3); text-transform:uppercase;">
+      <span style="font-size:0.75rem; font-weight:900; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.4rem 1rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.4); text-transform:uppercase; letter-spacing:0.05em; box-shadow: 0 0 15px rgba(251,191,36,0.2);">
         ⚔️ Vocabulary Trial Challenge
       </span>
-      <h3 style="font-size:1.35rem; font-weight:900; margin:0.8rem 0 0.2rem; color:#fff;">Unit 4 Word Challenge</h3>
-      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Solve correctly to mine materials & heal your knight!</p>
+      <h3 style="font-size:1.5rem; font-weight:900; margin:1rem 0 0.3rem; color:#fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Unit 4 Word Challenge</h3>
+      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.2rem;">Solve correctly to mine materials & heal your knight!</p>
 
-      <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1.2rem; margin-bottom:1rem;">
-        <p id="trialQuestion" style="font-size:1rem; font-weight:700; line-height:1.4; color:#f8fafc;"></p>
-        <p id="trialHint" style="font-size:0.75rem; color:#94a3b8; font-style:italic; margin-top:0.4rem;"></p>
+      <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.5rem; margin-bottom:1rem; box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);">
+        <p id="trialQuestion" style="font-size:1.05rem; font-weight:700; line-height:1.5; color:#f8fafc;"></p>
+        <p id="trialHint" style="font-size:0.8rem; color:#94a3b8; font-style:italic; margin-top:0.6rem;"></p>
       </div>
 
       <div id="trialOptions" class="opt-grid"></div>
-      <div id="trialFeedback" style="margin-top:1rem; padding:0.6rem; border-radius:0.75rem; font-size:0.8rem; font-weight:700;" class="hidden"></div>
+      <div id="trialFeedback" style="margin-top:1.2rem; padding:0.8rem; border-radius:0.75rem; font-size:0.9rem; font-weight:800; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" class="hidden"></div>
     </div>
   </div>
 
   <!-- BLACKSMITH FORGE SHOP MODAL -->
   <div id="modalForge" class="modal-backdrop hidden">
-    <div class="modal-card" style="border-color:#f59e0b; max-width:32rem;">
-      <div style="font-size:2.4rem; margin-bottom:0.25rem;">⚒️</div>
-      <h3 style="font-size:1.4rem; font-weight:900;">The Blacksmith's Anvil</h3>
-      <p style="font-size:0.75rem; color:#94a3b8; margin-bottom:1rem;">Spend mined dungeon loot to forge upgrades. (Death resets all gear!)</p>
+    <div class="modal-card" style="border-color:#f59e0b; max-width:34rem;">
+      <div style="font-size:2.8rem; margin-bottom:0.25rem; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">⚒️</div>
+      <h3 style="font-size:1.6rem; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">The Blacksmith's Anvil</h3>
+      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.5rem;">Spend mined dungeon loot to forge upgrades. <br><span style="color:#ef4444; font-weight:bold;">(Warning: Death resets all gear!)</span></p>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:bold; font-size:0.85rem; color:#fff; display:block;">Circumference Blade (Tier <span id="uiBladeTier">1</span>)</span>
-          <span style="font-size:0.7rem; color:#94a3b8;">Damage: <b id="uiBladeDmg" style="color:#f87171;">25</b> • Cost: 4 💎 Obsidian, 2 📜 Runes</span>
+          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Circumference Blade (Tier <span id="uiBladeTier">1</span>)</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Damage: <b id="uiBladeDmg" style="color:#f87171;">25</b> &nbsp;•&nbsp; Cost: 4 💎, 2 📜</span>
         </div>
-        <button onclick="upgradeGear('blade')" class="btn btn-forge">Upgrade</button>
+        <button onclick="upgradeGear('blade')" class="btn btn-forge">Forge</button>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:bold; font-size:0.85rem; color:#fff; display:block;">Concentric Armor Plate (Tier <span id="uiArmorTier">1</span>)</span>
-          <span style="font-size:0.7rem; color:#94a3b8;">Max HP: <b id="uiArmorHp" style="color:#34d399;">100</b> • Cost: 5 💎 Obsidian, 3 🐉 Scales</span>
+          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Concentric Armor Plate (Tier <span id="uiArmorTier">1</span>)</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Max HP: <b id="uiArmorHp" style="color:#34d399;">100</b> &nbsp;•&nbsp; Cost: 5 💎, 3 🐉</span>
         </div>
-        <button onclick="upgradeGear('armor')" class="btn btn-forge">Upgrade</button>
+        <button onclick="upgradeGear('armor')" class="btn btn-forge">Forge</button>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:bold; font-size:0.85rem; color:#fff; display:block;">Swift Wind Boots (Tier <span id="uiBootsTier">1</span>)</span>
-          <span style="font-size:0.7rem; color:#94a3b8;">Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> • Cost: 4 📜 Runes, 3 🐉 Scales</span>
+          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Swift Wind Boots (Tier <span id="uiBootsTier">1</span>)</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> &nbsp;•&nbsp; Cost: 4 📜, 3 🐉</span>
         </div>
-        <button onclick="upgradeGear('boots')" class="btn btn-forge">Upgrade</button>
+        <button onclick="upgradeGear('boots')" class="btn btn-forge">Forge</button>
       </div>
 
-      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:0.6rem; padding:0.75rem;">Return to Dungeon [ESC / F]</button>
+      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:1rem; padding:0.85rem; font-size:0.9rem;">Return to Dungeon [ESC / F]</button>
     </div>
   </div>
 
   <!-- GAME OVER / RESTART MODAL (HARDCORE RESET) -->
   <div id="modalGameOver" class="modal-backdrop hidden">
-    <div class="modal-card" style="max-width:26rem; border-color:#ef4444;">
-      <div style="font-size:3rem; margin-bottom:0.5rem;">💀</div>
-      <h3 style="font-size:1.5rem; font-weight:900; color:#ef4444;">Knight Slain!</h3>
-      <p style="font-size:0.8rem; color:#94a3b8; margin:0.4rem 0 1rem;">
-        You died in the catacombs. All forged weapons, armor, boots, and gathered materials have been lost!
+    <div class="modal-card" style="max-width:28rem; border-color:#ef4444; background: linear-gradient(180deg, #1e0505 0%, #020617 100%);">
+      <div style="font-size:3.5rem; margin-bottom:0.5rem; filter:drop-shadow(0 4px 10px rgba(239,68,68,0.5));">💀</div>
+      <h3 style="font-size:1.8rem; font-weight:900; color:#ef4444; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Knight Slain!</h3>
+      <p style="font-size:0.85rem; color:#cbd5e1; margin:0.6rem 0 1.5rem; line-height:1.5;">
+        You died in the depths. All forged weapons, armor, boots, and gathered materials have been lost to the darkness!
       </p>
       
-      <div style="background:#090d16; border:1px solid #1e293b; border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
+      <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.2rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.8rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
         <div>
-          <span style="font-size:0.65rem; color:#94a3b8; display:block; text-transform:uppercase;">Floor Reached</span>
-          <span id="finalFloor" style="font-size:1.25rem; font-weight:900; color:#fbbf24;">1</span>
+          <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase; font-weight:700;">Floor Reached</span>
+          <span id="finalFloor" style="font-size:1.5rem; font-weight:900; color:#fbbf24;">1</span>
         </div>
-        <div style="width:1px; background:#1e293b;"></div>
+        <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
         <div>
-          <span style="font-size:0.65rem; color:#94a3b8; display:block; text-transform:uppercase;">Trial Acc</span>
-          <span id="finalAccuracy" style="font-size:1.25rem; font-weight:900; color:#34d399;">0%</span>
+          <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase; font-weight:700;">Trial Acc</span>
+          <span id="finalAccuracy" style="font-size:1.5rem; font-weight:900; color:#34d399;">0%</span>
         </div>
       </div>
 
-      <div style="display:flex; gap:0.75rem;">
-        <a href="index.html" class="btn" style="flex:1;">Exit to Hub</a>
-        <button onclick="hardcoreRestartGame()" class="btn btn-forge" style="flex:1;">Restart Floor 1</button>
+      <div style="display:flex; gap:1rem;">
+        <a href="index.html" class="btn" style="flex:1; padding:1rem;">Exit to Hub</a>
+        <button onclick="hardcoreRestartGame()" class="btn btn-forge" style="flex:1; padding:1rem; background:linear-gradient(135deg, #ef4444, #b91c1c);">Restart Floor 1</button>
       </div>
     </div>
   </div>
 
   <script>
+    // FULL UNIT 4 VOCABULARY QUESTION POOL: ALL 10 WORDS COVERED + Analogies & Grammar
     const QUESTIONS = [
       { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
       { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
@@ -218,43 +221,43 @@
 
         if (type === 'slash') {
           osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(360, now);
-          osc.frequency.exponentialRampToValueAtTime(70, now + 0.12);
+          osc.frequency.setValueAtTime(420, now);
+          osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
           gain.gain.setValueAtTime(0.2, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
-          osc.start(now); osc.stop(now + 0.12);
-        } else if (type === 'hit') {
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(140, now);
-          osc.frequency.setValueAtTime(60, now + 0.15);
-          gain.gain.setValueAtTime(0.25, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
           osc.start(now); osc.stop(now + 0.15);
-        } else if (type === 'fire') {
-          osc.type = 'sawtooth';
-          osc.frequency.setValueAtTime(240, now);
-          osc.frequency.linearRampToValueAtTime(120, now + 0.18);
-          gain.gain.setValueAtTime(0.15, now);
+        } else if (type === 'hit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(160, now);
+          osc.frequency.setValueAtTime(50, now + 0.18);
+          gain.gain.setValueAtTime(0.3, now);
           gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
           osc.start(now); osc.stop(now + 0.18);
+        } else if (type === 'fire') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(260, now);
+          osc.frequency.linearRampToValueAtTime(120, now + 0.2);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now); osc.stop(now + 0.2);
         } else if (type === 'loot') {
           osc.type = 'triangle';
-          osc.frequency.setValueAtTime(587, now);
-          osc.frequency.setValueAtTime(880, now + 0.08);
+          osc.frequency.setValueAtTime(659.25, now);
+          osc.frequency.setValueAtTime(1046.50, now + 0.1);
           gain.gain.setValueAtTime(0.15, now);
-          gain.gain.linearRampToValueAtTime(0.01, now + 0.16);
-          osc.start(now); osc.stop(now + 0.16);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now); osc.stop(now + 0.2);
         } else if (type === 'win') {
           osc.type = 'triangle';
-          [523, 659, 784, 1046].forEach((f, i) => {
+          [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
             const o = a.createOscillator();
             const g = a.createGain();
             o.connect(g); g.connect(a.destination);
             o.type = 'triangle';
             o.frequency.setValueAtTime(f, now + i * 0.08);
-            g.gain.setValueAtTime(0.18, now + i * 0.08);
-            g.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.2);
-            o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.2);
+            g.gain.setValueAtTime(0.2, now + i * 0.08);
+            g.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.25);
+            o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.25);
           });
         }
       } catch(e) {}
@@ -262,7 +265,7 @@
 
     // CANVAS SETUP
     const canvas = document.getElementById('canvasGame');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false }); // Optimization
     let W = window.innerWidth || 1024;
     let H = window.innerHeight || 768;
 
@@ -273,7 +276,7 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // FORGE GEAR TIERS
+    // FORGE GEAR TIERS (PERSISTENT)
     let bladeTier = parseInt(localStorage.getItem('df_bladeTier') || "1");
     let armorTier = parseInt(localStorage.getItem('df_armorTier') || "1");
     let bootsTier = parseInt(localStorage.getItem('df_bootsTier') || "1");
@@ -301,7 +304,7 @@
       localStorage.clear();
     }
 
-    // GAME STATE
+    // GAME STATE & MECHANICS
     let floorNum = 1;
     let maxHp = 100 + (armorTier - 1) * 35;
     let playerHp = maxHp;
@@ -314,23 +317,23 @@
     let totalTrials = 0;
     let correctTrials = 0;
 
-    // SCREEN SHAKE & PARTICLES
     let screenShake = 0;
     let particles = [];
     let damageNumbers = [];
+    let ambientParticles = [];
 
-    // EXIT PORTAL & LEVEL TRANSITION
     let exitPortal = null;
     let isTransitioningFloor = false;
     let transitionTimer = 0;
+    let timeGlobal = 0; // for continuous animations
 
-    // BIOMES
+    // PROCEDURAL BIOME THEMES
     const BIOMES = [
-      { name: "CATACOMB CRYPT", bg: "#030712", tile: "#111827", accent: "#38bdf8", floorType: "stone" },
-      { name: "MAGMA CAVERNS", bg: "#180606", tile: "#2b0a0a", accent: "#f97316", floorType: "magma" },
-      { name: "TOXIC MIRE", bg: "#04140d", tile: "#0a2618", accent: "#22c55e", floorType: "toxic" },
-      { name: "ANCIENT TEMPLE", bg: "#10091d", tile: "#1e1335", accent: "#a855f7", floorType: "runic" },
-      { name: "VOID RIFT", bg: "#02040a", tile: "#0f172a", accent: "#e2e8f0", floorType: "void" }
+      { name: "CATACOMB CRYPT", bg: "#040b16", tile1: "#0b1426", tile2: "#070e1c", accent: "#38bdf8", pColor: "#64748b", pType: "dust" },
+      { name: "MAGMA CAVERNS", bg: "#1a0808", tile1: "#2e0f0f", tile2: "#240a0a", accent: "#f97316", pColor: "#f59e0b", pType: "ember" },
+      { name: "TOXIC MIRE", bg: "#061810", tile1: "#0d2b1c", tile2: "#0a2115", accent: "#22c55e", pColor: "#34d399", pType: "bubble" },
+      { name: "ANCIENT TEMPLE", bg: "#130a24", tile1: "#231342", tile2: "#1c0f33", accent: "#a855f7", pColor: "#d8b4fe", pType: "sparkle" },
+      { name: "VOID RIFT", bg: "#02040a", tile1: "#0a1128", tile2: "#060a1c", accent: "#e2e8f0", pColor: "#ffffff", pType: "star" }
     ];
 
     function getBiome(f) {
@@ -342,12 +345,13 @@
     const player = {
       x: 200,
       y: 200,
-      size: 26,
+      size: 24,
       vx: 0,
       vy: 0,
       facing: 'down',
       atkTimer: 0,
-      invulnTimer: 0
+      invulnTimer: 0,
+      isMoving: false
     };
 
     let keys = {};
@@ -360,7 +364,6 @@
     });
     window.addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
 
-    // TOUCH CONTROLS
     function bindTouch(id, k) {
       const el = document.getElementById(id);
       el.onmousedown = el.ontouchstart = (e) => { e.preventDefault(); getAudio(); keys[k] = true; };
@@ -372,13 +375,13 @@
     bindTouch('mRight', 'd');
     document.getElementById('mAtk').onclick = () => { getAudio(); attack(); };
 
-    // MONSTERS, ENEMY PROJECTILES & LOOT
+    // ENTITIES
     let monsters = [];
     let enemyProjectiles = [];
     let lootItems = [];
     let swordSlash = null;
 
-    // PROGRESSIVE DIFFICULTY SCALING PER FLOOR
+    // SCALING & SPAWNING
     function spawnFloor(f) {
       floorNum = f;
       document.getElementById('hudFloor').textContent = floorNum;
@@ -392,62 +395,63 @@
       monsters = [];
       lootItems = [];
       enemyProjectiles = [];
+      particles = [];
+      ambientParticles = [];
       exitPortal = null;
       isTransitioningFloor = false;
 
-      // Scaling formulas:
-      // Density: Floor 1 = 4 monsters, Floor 5 = 12 monsters, Floor 10 = 22 monsters
-      const count = Math.min(22, 3 + Math.floor(f * 1.8));
-      
-      // Speed multiplier: 1.0 at floor 1 -> up to 1.7 at high floors
-      const speedScale = 1.0 + Math.min(0.7, (f - 1) * 0.08);
+      // Setup Ambient Environment Particles
+      for(let i=0; i<35; i++) {
+        ambientParticles.push({
+          x: Math.random() * W, y: Math.random() * H,
+          size: Math.random() * 3 + 1,
+          speed: Math.random() * 20 + 10,
+          offset: Math.random() * Math.PI * 2
+        });
+      }
+
+      const count = Math.min(24, 3 + Math.floor(f * 1.8));
+      const speedScale = 1.0 + Math.min(0.8, (f - 1) * 0.08);
 
       for (let i = 0; i < count; i++) {
         const isBoss = (f % 3 === 0 && i === 0);
-        
         let type = 'slime';
-        if (isBoss) {
-          type = 'boss';
-        } else if (f >= 5 && Math.random() < 0.35) {
-          type = 'caster'; // Void Caster that shoots projectiles!
-        } else if (Math.random() < 0.5) {
-          type = 'skeleton';
-        }
+        if (isBoss) type = 'boss';
+        else if (f >= 5 && Math.random() < 0.35) type = 'caster';
+        else if (Math.random() < 0.5) type = 'skeleton';
 
-        // Scaled HP based on floor depth
-        const baseHp = isBoss ? 220 : (type === 'slime' ? 35 : (type === 'caster' ? 45 : 40));
+        const baseHp = isBoss ? 240 : (type === 'slime' ? 35 : (type === 'caster' ? 45 : 40));
         const scaledHp = Math.round(baseHp * (1 + (f - 1) * 0.25));
 
         monsters.push({
           x: W * 0.35 + Math.random() * (W * 0.55),
           y: H * 0.15 + Math.random() * (H * 0.7),
-          size: isBoss ? 54 : (type === 'slime' ? 24 : (type === 'caster' ? 28 : 26)),
+          size: isBoss ? 56 : (type === 'slime' ? 24 : (type === 'caster' ? 28 : 26)),
           hp: scaledHp,
           maxHp: scaledHp,
           isBoss: isBoss,
           type: type,
-          spd: (isBoss ? 1.05 : (type === 'slime' ? 1.3 : (type === 'caster' ? 1.1 : 1.6))) * speedScale,
-          anim: Math.random() * Math.PI,
-          shootCooldown: Math.random() * 2 + 1.5
+          spd: (isBoss ? 1.05 : (type === 'slime' ? 1.35 : (type === 'caster' ? 1.15 : 1.65))) * speedScale,
+          anim: Math.random() * Math.PI * 2,
+          shootCooldown: Math.random() * 2 + 1.2
         });
       }
     }
 
     function attack() {
       if (isPaused || isOver || player.atkTimer > 0) return;
-      player.atkTimer = 0.2;
+      player.atkTimer = 0.25;
       playSound('slash');
 
-      const reach = 42;
-      let sx = player.x;
-      let sy = player.y;
-      if (player.facing === 'up') sy -= reach;
-      if (player.facing === 'down') sy += reach;
-      if (player.facing === 'left') sx -= reach;
-      if (player.facing === 'right') sx += reach;
+      const reach = 44;
+      let sx = player.x, sy = player.y;
+      let angle = 0;
+      if (player.facing === 'up') { sy -= reach; angle = -Math.PI/2; }
+      if (player.facing === 'down') { sy += reach; angle = Math.PI/2; }
+      if (player.facing === 'left') { sx -= reach; angle = Math.PI; }
+      if (player.facing === 'right') { sx += reach; angle = 0; }
 
-      swordSlash = { x: sx, y: sy, r: 44, life: 0.16, angle: player.facing };
-
+      swordSlash = { x: sx, y: sy, r: 48, life: 0.18, angle: angle };
       const dmg = 25 + (bladeTier - 1) * 15;
 
       monsters.forEach(m => {
@@ -457,38 +461,36 @@
           playSound('hit');
           screenShake = 6;
 
-          // Spawn blood/spark particles
+          // Directional Hit Particles
           for (let p = 0; p < 8; p++) {
+            const spread = angle + (Math.random() - 0.5) * 1.5;
+            const vel = Math.random() * 250 + 100;
             particles.push({
               x: m.x, y: m.y,
-              vx: (Math.random() - 0.5) * 220,
-              vy: (Math.random() - 0.5) * 220,
-              life: 0.3,
+              vx: Math.cos(spread) * vel,
+              vy: Math.sin(spread) * vel,
+              life: 0.35,
               color: m.isBoss ? '#f43f5e' : (m.type === 'slime' ? '#34d399' : '#e2e8f0'),
               size: Math.random() * 4 + 2
             });
           }
 
-          // Damage Floater
-          damageNumbers.push({ x: m.x, y: m.y - 15, text: `-${dmg}`, color: '#fbbf24', life: 0.6 });
+          damageNumbers.push({ x: m.x, y: m.y - 15, text: `-${dmg}`, color: '#fef08a', life: 0.7, vy: -40 });
 
           // Knockback
-          m.x += (m.x - player.x) * 0.35;
-          m.y += (m.y - player.y) * 0.35;
+          m.x += Math.cos(angle) * 15;
+          m.y += Math.sin(angle) * 15;
 
-          // Death check & loot drops
           if (m.hp <= 0) {
             const dropCount = m.isBoss ? 8 : (m.type === 'caster' ? 3 : 2);
             for (let d = 0; d < dropCount; d++) {
               const r = Math.random();
               const type = r < 0.45 ? 'obsidian' : (r < 0.8 ? 'rune' : 'scale');
               lootItems.push({
-                x: m.x + (Math.random() - 0.5) * 40,
-                y: m.y + (Math.random() - 0.5) * 40,
-                type: type,
-                vx: (Math.random() - 0.5) * 90,
-                vy: (Math.random() - 0.5) * 90,
-                autoVacuum: false
+                x: m.x + (Math.random() - 0.5) * 20, y: m.y + (Math.random() - 0.5) * 20,
+                type: type, hoverBaseY: m.y + (Math.random() - 0.5) * 20,
+                vx: (Math.random() - 0.5) * 120, vy: (Math.random() - 0.5) * 120,
+                autoVacuum: false, hoverOffset: Math.random() * Math.PI * 2
               });
             }
           }
@@ -506,27 +508,16 @@
     function triggerRoomCleared() {
       isTransitioningFloor = true;
       transitionTimer = 4.0;
-
-      exitPortal = {
-        x: W * 0.88,
-        y: H * 0.5,
-        r: 36,
-        rot: 0
-      };
-
-      lootItems.forEach(item => {
-        item.autoVacuum = true;
-      });
+      exitPortal = { x: W * 0.88, y: H * 0.5, r: 38, rot: 0 };
+      lootItems.forEach(item => { item.autoVacuum = true; });
     }
 
-    // 10-SECOND ANVIL TRIAL MODAL
+    // TRIAL SYSTEM
     function handleTrialTimer() {
       if (isPaused || isOver || isTransitioningFloor) return;
       trialTimer--;
       document.getElementById('hudTrialTimer').textContent = `${trialTimer}s`;
-      if (trialTimer <= 0) {
-        openTrialModal();
-      }
+      if (trialTimer <= 0) openTrialModal();
     }
 
     let activeTrialQ = null;
@@ -576,104 +567,75 @@
       if (isCorrect) {
         correctTrials++;
         playSound('win');
-        matObsidian += 3;
-        matRunes += 2;
-        matScales += 1;
+        matObsidian += 3; matRunes += 2; matScales += 1;
         playerHp = Math.min(maxHp, playerHp + 25);
         player.invulnTimer = 2.5;
         updateHUD();
 
-        fb.style.background = "rgba(6, 78, 59, 0.9)";
+        fb.style.background = "linear-gradient(135deg, rgba(6, 78, 59, 0.95), rgba(4, 120, 87, 0.95))";
         fb.style.border = "1px solid #10b981";
-        fb.style.color = "#6ee7b7";
+        fb.style.color = "#a7f3d0";
         fb.innerHTML = `✨ <b>TRIAL SOLVED!</b> Mined +3 💎, +2 📜, +1 🐉 & restored +25 HP!`;
       } else {
         btnEl.classList.add('wrong');
         playSound('hit');
-        screenShake = 12;
+        screenShake = 14;
         playerHp = Math.max(0, playerHp - 25);
         updateHUD();
 
-        fb.style.background = "rgba(136, 19, 55, 0.9)";
+        fb.style.background = "linear-gradient(135deg, rgba(136, 19, 55, 0.95), rgba(190, 18, 60, 0.95))";
         fb.style.border = "1px solid #f43f5e";
-        fb.style.color = "#fda4af";
+        fb.style.color = "#fecdd3";
         fb.innerHTML = `⚠️ <b>TRIAL FAILED!</b> Cave-in dealt -25 HP damage!`;
       }
 
       setTimeout(() => {
         document.getElementById('modalTrial').classList.add('hidden');
         trialLocked = false;
-        if (playerHp <= 0) {
-          triggerGameOver();
-        } else {
-          lastTime = performance.now();
-          isPaused = false;
-        }
-      }, 1000);
+        if (playerHp <= 0) triggerGameOver();
+        else { lastTime = performance.now(); isPaused = false; }
+      }, 1100);
     }
 
-    // FORGE UPGRADES
-    function toggleForge() {
-      if (isForgeOpen) closeForge(); else openForge();
-    }
-
+    // FORGE SYSTEM
+    function toggleForge() { if (isForgeOpen) closeForge(); else openForge(); }
     function openForge() {
       if (isPaused && !isForgeOpen) return;
-      isPaused = true;
-      isForgeOpen = true;
+      isPaused = true; isForgeOpen = true;
       updateForgeUI();
       document.getElementById('modalForge').classList.remove('hidden');
     }
-
     function closeForge() {
       document.getElementById('modalForge').classList.add('hidden');
       isForgeOpen = false;
       lastTime = performance.now();
       isPaused = false;
     }
-
     function updateForgeUI() {
       document.getElementById('uiBladeTier').textContent = bladeTier;
       document.getElementById('uiBladeDmg').textContent = 25 + (bladeTier - 1) * 15;
-
       document.getElementById('uiArmorTier').textContent = armorTier;
       document.getElementById('uiArmorHp').textContent = 100 + (armorTier - 1) * 35;
-
       document.getElementById('uiBootsTier').textContent = bootsTier;
       document.getElementById('uiBootsSpd').textContent = `${Math.round((1 + (bootsTier - 1) * 0.2) * 100)}%`;
-
       updateHUD();
     }
-
     function upgradeGear(type) {
       if (type === 'blade') {
-        const costObs = 4 * bladeTier;
-        const costRunes = 2 * bladeTier;
+        const costObs = 4 * bladeTier; const costRunes = 2 * bladeTier;
         if (matObsidian >= costObs && matRunes >= costRunes) {
-          matObsidian -= costObs; matRunes -= costRunes;
-          bladeTier++;
-          playSound('win');
-          saveGear();
-        } else alert(`Need ${costObs} Obsidian and ${costRunes} Runes! Solve trials to mine more.`);
+          matObsidian -= costObs; matRunes -= costRunes; bladeTier++; playSound('win'); saveGear();
+        } else alert(`Need ${costObs} Obsidian and ${costRunes} Runes!`);
       } else if (type === 'armor') {
-        const costObs = 5 * armorTier;
-        const costScales = 3 * armorTier;
+        const costObs = 5 * armorTier; const costScales = 3 * armorTier;
         if (matObsidian >= costObs && matScales >= costScales) {
-          matObsidian -= costObs; matScales -= costScales;
-          armorTier++;
-          maxHp = 100 + (armorTier - 1) * 35;
-          playerHp = maxHp;
-          playSound('win');
-          saveGear();
+          matObsidian -= costObs; matScales -= costScales; armorTier++;
+          maxHp = 100 + (armorTier - 1) * 35; playerHp = maxHp; playSound('win'); saveGear();
         } else alert(`Need ${costObs} Obsidian and ${costScales} Dragon Scales!`);
       } else if (type === 'boots') {
-        const costRunes = 4 * bootsTier;
-        const costScales = 3 * bootsTier;
+        const costRunes = 4 * bootsTier; const costScales = 3 * bootsTier;
         if (matRunes >= costRunes && matScales >= costScales) {
-          matRunes -= costRunes; matScales -= costScales;
-          bootsTier++;
-          playSound('win');
-          saveGear();
+          matRunes -= costRunes; matScales -= costScales; bootsTier++; playSound('win'); saveGear();
         } else alert(`Need ${costRunes} Runes and ${costScales} Dragon Scales!`);
       }
       updateForgeUI();
@@ -683,12 +645,11 @@
       document.getElementById('hudObsidian').textContent = matObsidian;
       document.getElementById('hudRunes').textContent = matRunes;
       document.getElementById('hudScales').textContent = matScales;
-
       document.getElementById('hudHpText').textContent = `${Math.round(playerHp)}/${maxHp}`;
       const fill = document.getElementById('hudHpFill');
       const pct = Math.max(0, (playerHp / maxHp) * 100);
       fill.style.width = `${pct}%`;
-      fill.style.background = pct < 35 ? '#ef4444' : '#10b981';
+      fill.style.background = pct < 35 ? 'linear-gradient(90deg, #ef4444, #f87171)' : 'linear-gradient(90deg, #10b981, #34d399)';
       saveGear();
     }
 
@@ -701,16 +662,12 @@
       document.getElementById('modalGameOver').classList.remove('hidden');
     }
 
-    // HARDCORE RESET ON DEATH: ALL GEAR AND INVENTORY LOST!
     function hardcoreRestartGame() {
       resetAllProgress();
       document.getElementById('modalGameOver').classList.add('hidden');
       document.getElementById('modalTrial').classList.add('hidden');
-      maxHp = 100;
-      playerHp = maxHp;
-      trialTimer = 10;
-      isPaused = false;
-      isOver = false;
+      maxHp = 100; playerHp = maxHp; trialTimer = 10;
+      isPaused = false; isOver = false;
       updateForgeUI();
       spawnFloor(1);
       clearInterval(trialInterval);
@@ -718,118 +675,98 @@
       lastTime = performance.now();
     }
 
-    // MONSTER PROCEDURAL SPRITE RENDERERS
+    // ==========================================
+    // PROCEDURAL RENDERING
+    // ==========================================
     function drawSlime(m) {
-      const squish = Math.sin(m.anim) * 0.15;
+      const squish = Math.sin(m.anim * 2) * 0.15;
       const rx = m.size * (1 + squish);
       const ry = m.size * (1 - squish);
 
-      // Outer Gelatinous Membrane with Transparency
       ctx.fillStyle = 'rgba(5, 150, 105, 0.85)';
-      ctx.beginPath();
-      ctx.ellipse(m.x, m.y, rx, ry, 0, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.ellipse(m.x, m.y, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
 
-      // Slime inner pulsating core
       ctx.fillStyle = '#34d399';
-      ctx.beginPath();
-      ctx.ellipse(m.x - rx * 0.2, m.y - ry * 0.25, rx * 0.45, ry * 0.35, 0, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.beginPath(); ctx.ellipse(m.x - rx * 0.15, m.y - ry * 0.25, rx * 0.4, ry * 0.35, 0, 0, Math.PI * 2); ctx.fill();
 
-      // Glowing Eyes
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.arc(m.x - 7, m.y - 2, 4.5, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(m.x + 7, m.y - 2, 4.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x - 7, m.y - 3, 4.5, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x + 7, m.y - 3, 4.5, 0, Math.PI * 2); ctx.fill();
 
       ctx.fillStyle = '#064e3b';
-      ctx.beginPath(); ctx.arc(m.x - 6, m.y - 2, 2.2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(m.x + 8, m.y - 2, 2.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x - 6, m.y - 3, 2.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x + 8, m.y - 3, 2.2, 0, Math.PI * 2); ctx.fill();
     }
 
     function drawSkeleton(m) {
-      ctx.fillStyle = '#e2e8f0';
-      ctx.strokeStyle = '#94a3b8';
-      ctx.lineWidth = 2;
-
-      ctx.beginPath();
-      ctx.arc(m.x, m.y - 4, m.size * 0.75, Math.PI, 0, false);
+      const bob = Math.abs(Math.sin(m.anim * 3)) * 4;
+      ctx.translate(0, -bob);
+      
+      ctx.fillStyle = '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(m.x, m.y - 4, m.size * 0.75, Math.PI, 0, false);
       ctx.lineTo(m.x + m.size * 0.45, m.y + m.size * 0.65);
       ctx.lineTo(m.x - m.size * 0.45, m.y + m.size * 0.65);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
+      ctx.closePath(); ctx.fill(); ctx.stroke();
 
-      // Glowing Eyes
       ctx.fillStyle = '#020617';
-      ctx.beginPath(); ctx.ellipse(m.x - 8, m.y - 3, 5, 6, -0.2, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.ellipse(m.x + 8, m.y - 3, 5, 6, 0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(m.x - 8, m.y - 3, 5, 7, -0.2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(m.x + 8, m.y - 3, 5, 7, 0.2, 0, Math.PI * 2); ctx.fill();
 
       ctx.fillStyle = '#ef4444';
-      ctx.beginPath(); ctx.arc(m.x - 8, m.y - 3, 1.8, 0, Math.PI * 2); ctx.fill();
-      ctx.beginPath(); ctx.arc(m.x + 8, m.y - 3, 1.8, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 8; ctx.shadowColor = '#ef4444';
+      ctx.beginPath(); ctx.arc(m.x - 8, m.y - 3, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(m.x + 8, m.y - 3, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
 
-      // Teeth
-      ctx.strokeStyle = '#64748b';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.5;
       for (let tx = -8; tx <= 8; tx += 4) {
         ctx.beginPath(); ctx.moveTo(m.x + tx, m.y + 11); ctx.lineTo(m.x + tx, m.y + 16); ctx.stroke();
       }
+      ctx.translate(0, bob);
     }
 
     function drawCaster(m) {
-      // Hooded Robe Void Cultist
+      const hover = Math.sin(m.anim * 2) * 5;
+      ctx.translate(0, hover);
+
       ctx.fillStyle = '#581c87';
-      ctx.beginPath();
-      ctx.moveTo(m.x, m.y - m.size);
-      ctx.lineTo(m.x + m.size * 0.9, m.y + m.size);
-      ctx.lineTo(m.x - m.size * 0.9, m.y + m.size);
-      ctx.closePath();
-      ctx.fill();
-
-      // Glowing Rune Mask
+      ctx.beginPath(); ctx.moveTo(m.x, m.y - m.size); ctx.lineTo(m.x + m.size, m.y + m.size); ctx.lineTo(m.x - m.size, m.y + m.size); ctx.closePath(); ctx.fill();
+      
       ctx.fillStyle = '#c084fc';
-      ctx.beginPath();
-      ctx.arc(m.x, m.y - 4, 8, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Floating Staff Crystal
-      const orbY = m.y + Math.sin(m.anim * 2) * 6;
+      ctx.shadowBlur = 10; ctx.shadowColor = '#c084fc';
+      ctx.beginPath(); ctx.arc(m.x, m.y - 4, 8, 0, Math.PI * 2); ctx.fill();
+      
+      const orbY = m.y + Math.sin(m.anim * 4) * 8;
       ctx.fillStyle = '#ec4899';
-      ctx.beginPath();
-      ctx.arc(m.x + m.size * 0.9, orbY, 6, 0, Math.PI * 2);
-      ctx.fill();
+      ctx.shadowColor = '#ec4899';
+      ctx.beginPath(); ctx.arc(m.x + m.size * 0.9, orbY, 7, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+      ctx.translate(0, -hover);
     }
 
     function drawBoss(m) {
-      const pulse = Math.sin(m.anim) * 4;
+      const pulse = Math.sin(m.anim * 2) * 4;
       const bSize = m.size + pulse;
 
-      // Heavy Demon Horns
+      ctx.fillStyle = '#881337';
+      ctx.beginPath(); ctx.arc(m.x, m.y + 8, bSize * 1.05, 0, Math.PI * 2); ctx.fill();
+
+      ctx.fillStyle = '#4c0519'; ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3.5;
+      ctx.beginPath(); ctx.arc(m.x, m.y, bSize * 0.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
       ctx.fillStyle = '#f59e0b';
       ctx.beginPath();
       ctx.moveTo(m.x - bSize * 0.5, m.y - bSize * 0.3);
       ctx.quadraticCurveTo(m.x - bSize * 1.2, m.y - bSize * 1.1, m.x - bSize * 0.2, m.y - bSize * 1.2);
       ctx.quadraticCurveTo(m.x - bSize * 0.7, m.y - bSize * 0.7, m.x - bSize * 0.3, m.y - bSize * 0.2);
-      ctx.closePath();
-      ctx.fill();
+      ctx.closePath(); ctx.fill();
 
       ctx.beginPath();
       ctx.moveTo(m.x + bSize * 0.5, m.y - bSize * 0.3);
       ctx.quadraticCurveTo(m.x + bSize * 1.2, m.y - bSize * 1.1, m.x + bSize * 0.2, m.y - bSize * 1.2);
       ctx.quadraticCurveTo(m.x + bSize * 0.7, m.y - bSize * 0.7, m.x + bSize * 0.3, m.y - bSize * 0.2);
-      ctx.closePath();
-      ctx.fill();
+      ctx.closePath(); ctx.fill();
 
-      // Armored Body
-      ctx.fillStyle = '#4c0519';
-      ctx.strokeStyle = '#f43f5e';
-      ctx.lineWidth = 3.5;
-      ctx.beginPath();
-      ctx.arc(m.x, m.y, bSize * 0.8, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.stroke();
-
-      // Spiky Crown
       ctx.fillStyle = '#fbbf24';
       ctx.beginPath();
       ctx.moveTo(m.x - 24, m.y - bSize * 0.6);
@@ -837,30 +774,27 @@
       ctx.lineTo(m.x, m.y - bSize * 0.65);
       ctx.lineTo(m.x + 14, m.y - bSize * 0.95);
       ctx.lineTo(m.x + 22, m.y - bSize * 0.6);
-      ctx.closePath();
-      ctx.fill();
+      ctx.closePath(); ctx.fill();
 
-      // Glowing Eyes
       ctx.fillStyle = '#fef08a';
       ctx.beginPath(); ctx.ellipse(m.x - 14, m.y - 2, 8, 4, -0.25, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.ellipse(m.x + 14, m.y - 2, 8, 4, 0.25, 0, Math.PI * 2); ctx.fill();
 
-      ctx.fillStyle = '#dc2626';
+      ctx.fillStyle = '#dc2626'; ctx.shadowBlur = 10; ctx.shadowColor = '#dc2626';
       ctx.beginPath(); ctx.arc(m.x - 14, m.y - 2, 3, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(m.x + 14, m.y - 2, 3, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
     }
 
-    // MAIN 2D PHYSICS & RENDER LOOP
-    let lastTime = performance.now();
-
+    // MAIN GAME LOOP
     function gameLoop(time) {
       requestAnimationFrame(gameLoop);
       const dt = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
+      timeGlobal += dt;
 
       // 1. UPDATE LOGIC
       if (!isPaused && !isOver) {
-        // Player Movement
         let mx = 0, my = 0;
         if (keys['w'] || keys['arrowup']) { my -= 1; player.facing = 'up'; }
         if (keys['s'] || keys['arrowdown']) { my += 1; player.facing = 'down'; }
@@ -868,8 +802,9 @@
         if (keys['d'] || keys['arrowright']) { mx += 1; player.facing = 'right'; }
 
         if (mx !== 0 && my !== 0) { mx *= 0.707; my *= 0.707; }
+        player.isMoving = (mx !== 0 || my !== 0);
 
-        const moveSpeed = (210 + (bootsTier - 1) * 45) * dt;
+        const moveSpeed = (215 + (bootsTier - 1) * 45) * dt;
         player.x += mx * moveSpeed;
         player.y += my * moveSpeed;
 
@@ -883,47 +818,31 @@
           if (swordSlash.life <= 0) swordSlash = null;
         }
 
-        // Monsters AI & Projectile Firing
         monsters.forEach(m => {
-          m.anim += dt * 4;
+          m.anim += dt;
           const angle = Math.atan2(player.y - m.y, player.x - m.x);
           
-          // Casters keep distance and cast spells
           if (m.type === 'caster') {
             const distToPlayer = Math.hypot(player.x - m.x, player.y - m.y);
-            if (distToPlayer < 240) {
-              m.x -= Math.cos(angle) * (m.spd * 80) * dt;
-              m.y -= Math.sin(angle) * (m.spd * 80) * dt;
-            } else if (distToPlayer > 360) {
-              m.x += Math.cos(angle) * (m.spd * 80) * dt;
-              m.y += Math.sin(angle) * (m.spd * 80) * dt;
-            }
+            if (distToPlayer < 260) { m.x -= Math.cos(angle) * (m.spd * 85) * dt; m.y -= Math.sin(angle) * (m.spd * 85) * dt; }
+            else if (distToPlayer > 380) { m.x += Math.cos(angle) * (m.spd * 85) * dt; m.y += Math.sin(angle) * (m.spd * 85) * dt; }
 
             m.shootCooldown -= dt;
             if (m.shootCooldown <= 0) {
-              m.shootCooldown = 2.2;
+              m.shootCooldown = 2.0;
               playSound('fire');
-              enemyProjectiles.push({
-                x: m.x, y: m.y,
-                vx: Math.cos(angle) * 220,
-                vy: Math.sin(angle) * 220,
-                r: 7,
-                life: 3.5,
-                color: '#ec4899'
-              });
+              enemyProjectiles.push({ x: m.x, y: m.y, vx: Math.cos(angle) * 250, vy: Math.sin(angle) * 250, r: 8, life: 3.5, color: '#ec4899' });
             }
           } else {
-            // Melee Chasers
             m.x += Math.cos(angle) * (m.spd * 90) * dt;
             m.y += Math.sin(angle) * (m.spd * 90) * dt;
           }
 
-          // Melee touch collision
           const dist = Math.hypot(player.x - m.x, player.y - m.y);
           if (dist < player.size + m.size * 0.75 && player.invulnTimer <= 0) {
             playSound('hit');
-            screenShake = 10;
-            const monsterDmg = m.isBoss ? 28 : (m.type === 'caster' ? 12 : 15);
+            screenShake = 12;
+            const monsterDmg = m.isBoss ? 28 : (m.type === 'caster' ? 12 : 16);
             playerHp = Math.max(0, playerHp - monsterDmg);
             player.invulnTimer = 0.8;
             updateHUD();
@@ -931,42 +850,33 @@
           }
         });
 
-        // Enemy Projectiles Physics
         enemyProjectiles.forEach(p => {
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          p.life -= dt;
-
+          p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
           const dist = Math.hypot(player.x - p.x, player.y - p.y);
           if (dist < player.size + p.r && player.invulnTimer <= 0) {
             playSound('hit');
-            screenShake = 8;
-            playerHp = Math.max(0, playerHp - 18);
+            screenShake = 10;
+            playerHp = Math.max(0, playerHp - 20);
             player.invulnTimer = 0.7;
-            p.life = 0; // Destroy projectile
+            p.life = 0;
             updateHUD();
             if (playerHp <= 0) triggerGameOver();
           }
         });
         enemyProjectiles = enemyProjectiles.filter(p => p.life > 0 && p.x > 0 && p.x < W && p.y > 0 && p.y < H);
 
-        // Loot Physics: Scatter velocity damping + Auto-Vacuum to player
         lootItems.forEach(item => {
           if (item.vx || item.vy) {
-            item.x += item.vx * dt;
-            item.y += item.vy * dt;
-            item.vx *= 0.88;
-            item.vy *= 0.88;
+            item.x += item.vx * dt; item.y += item.vy * dt;
+            item.vx *= 0.88; item.vy *= 0.88;
           }
-
           const distToPlayer = Math.hypot(player.x - item.x, player.y - item.y);
-          if (item.autoVacuum || distToPlayer < 95) {
+          if (item.autoVacuum || distToPlayer < 110) {
             const pullAngle = Math.atan2(player.y - item.y, player.x - item.x);
-            const pullSpeed = item.autoVacuum ? 620 : 320;
+            const pullSpeed = item.autoVacuum ? 680 : 360;
             item.x += Math.cos(pullAngle) * pullSpeed * dt;
             item.y += Math.sin(pullAngle) * pullSpeed * dt;
           }
-
           if (distToPlayer < player.size + 14) {
             playSound('loot');
             if (item.type === 'obsidian') matObsidian++;
@@ -978,22 +888,24 @@
         });
         lootItems = lootItems.filter(i => !i.collected);
 
-        // Update Damage Floaters
-        damageNumbers.forEach(d => {
-          d.y -= 25 * dt;
-          d.life -= dt;
-        });
+        damageNumbers.forEach(d => { d.y += d.vy * dt; d.life -= dt; });
         damageNumbers = damageNumbers.filter(d => d.life > 0);
 
-        // Update Blood/Sparks Particles
-        particles.forEach(p => {
-          p.x += p.vx * dt;
-          p.y += p.vy * dt;
-          p.life -= dt;
-        });
+        particles.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; p.vx *= 0.92; p.vy *= 0.92; });
         particles = particles.filter(p => p.life > 0);
 
-        // Floor Transition & Exit Portal countdown
+        // Ambient particles update
+        const b = getBiome(floorNum);
+        ambientParticles.forEach(ap => {
+          if(b.pType === 'bubble' || b.pType === 'ember' || b.pType === 'dust') {
+            ap.y -= ap.speed * dt;
+            ap.x += Math.sin(timeGlobal + ap.offset) * 0.5;
+            if(ap.y < -10) ap.y = H + 10;
+          } else {
+            ap.y += Math.sin(timeGlobal + ap.offset) * 0.2;
+          }
+        });
+
         if (isTransitioningFloor) {
           transitionTimer -= dt;
           if (exitPortal) {
@@ -1010,189 +922,220 @@
       ctx.save();
       if (screenShake > 0) {
         ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
-        screenShake = Math.max(0, screenShake - dt * 30);
+        screenShake = Math.max(0, screenShake - dt * 40);
       }
 
       const biome = getBiome(floorNum);
       ctx.fillStyle = biome.bg;
       ctx.fillRect(0, 0, W, H);
 
-      // Procedural Dungeon Floor Grid
-      ctx.strokeStyle = biome.tile;
-      ctx.lineWidth = 1;
-      const gridSize = 50;
+      // Procedural Checkerboard Grid Floor
+      const gridSize = 60;
       for (let gx = 0; gx < W; gx += gridSize) {
-        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, H); ctx.stroke();
-      }
-      for (let gy = 0; gy < H; gy += gridSize) {
-        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(W, gy); ctx.stroke();
+        for (let gy = 0; gy < H; gy += gridSize) {
+          const isDark = ((Math.floor(gx / gridSize) + Math.floor(gy / gridSize)) % 2 === 0);
+          ctx.fillStyle = isDark ? biome.tile1 : biome.tile2;
+          ctx.fillRect(gx, gy, gridSize, gridSize);
+        }
       }
 
-      // Ambient Torch Light (Radial Vignette centered on player)
-      const torchGrad = ctx.createRadialGradient(player.x, player.y, 40, player.x, player.y, 480);
-      torchGrad.addColorStop(0, "rgba(251, 191, 36, 0.08)");
-      torchGrad.addColorStop(0.5, "rgba(0, 0, 0, 0.15)");
-      torchGrad.addColorStop(1, "rgba(0, 0, 0, 0.85)");
+      // Ambient Atmosphere Particles
+      ctx.fillStyle = biome.pColor;
+      ambientParticles.forEach(ap => {
+        ctx.globalAlpha = (Math.sin(timeGlobal * 2 + ap.offset) + 1) * 0.3 + 0.1;
+        ctx.beginPath();
+        if(biome.pType === 'sparkle' || biome.pType === 'star') {
+          ctx.arc(ap.x, ap.y, ap.size * (Math.sin(timeGlobal * 5 + ap.offset)*0.5+1), 0, Math.PI*2);
+        } else {
+          ctx.arc(ap.x, ap.y, ap.size, 0, Math.PI*2);
+        }
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1.0;
+
+      // Ambient Torch Vignette
+      const torchGrad = ctx.createRadialGradient(player.x, player.y, 40, player.x, player.y, Math.max(W, H) * 0.55);
+      torchGrad.addColorStop(0, "rgba(251, 191, 36, 0.0)");
+      torchGrad.addColorStop(1, "rgba(0, 0, 0, 0.7)");
       ctx.fillStyle = torchGrad;
       ctx.fillRect(0, 0, W, H);
 
-      // Render Exit Portal if active
+      // Exit Portal
       if (exitPortal) {
         ctx.save();
         ctx.translate(exitPortal.x, exitPortal.y);
         ctx.rotate(exitPortal.rot);
 
-        ctx.strokeStyle = '#818cf8';
-        ctx.lineWidth = 5;
+        ctx.shadowBlur = 15; ctx.shadowColor = '#c084fc';
+        ctx.strokeStyle = '#818cf8'; ctx.lineWidth = 6;
         ctx.beginPath(); ctx.arc(0, 0, exitPortal.r, 0, Math.PI * 1.5); ctx.stroke();
 
-        ctx.strokeStyle = '#c084fc';
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 4;
         ctx.beginPath(); ctx.arc(0, 0, exitPortal.r * 0.65, 0, Math.PI * 1.3); ctx.stroke();
 
         ctx.fillStyle = '#4f46e5';
         ctx.beginPath(); ctx.arc(0, 0, exitPortal.r * 0.35, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
 
-        ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 12px system-ui';
-        ctx.textAlign = 'center';
+        ctx.fillStyle = '#fbbf24'; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
         ctx.fillText(`NEXT FLOOR IN ${Math.ceil(transitionTimer)}s`, exitPortal.x, exitPortal.y - exitPortal.r - 12);
         ctx.fillText('STEP TO ENTER 🌀', exitPortal.x, exitPortal.y + exitPortal.r + 18);
       }
 
-      // Render Loot Items
+      // Loot Items with Hover Animation & Halos
       lootItems.forEach(item => {
-        ctx.fillStyle = 'rgba(255,255,255,0.2)';
-        ctx.beginPath(); ctx.ellipse(item.x, item.y + 6, 9, 4, 0, 0, Math.PI * 2); ctx.fill();
+        // Shadow/Halo
+        ctx.fillStyle = 'rgba(0,0,0,0.4)';
+        ctx.beginPath(); ctx.ellipse(item.x, item.hoverBaseY || item.y + 12, 10, 4, 0, 0, Math.PI * 2); ctx.fill();
 
-        ctx.font = '18px system-ui';
+        // Hover math
+        const hoverY = item.y + Math.sin(timeGlobal * 4 + item.hoverOffset) * 6;
+        
+        ctx.font = '22px system-ui';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         let icon = '💎';
         if (item.type === 'rune') icon = '📜';
         if (item.type === 'scale') icon = '🐉';
-        ctx.fillText(icon, item.x, item.y);
-      });
-
-      // Render Enemy Projectiles
-      enemyProjectiles.forEach(p => {
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 12;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        
+        // Glow Effect
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = item.type === 'obsidian' ? '#38bdf8' : (item.type === 'rune' ? '#c084fc' : '#fbbf24');
+        ctx.fillText(icon, item.x, hoverY);
         ctx.shadowBlur = 0;
       });
 
-      // Render Monsters
-      monsters.forEach(m => {
-        ctx.fillStyle = 'rgba(0,0,0,0.45)';
-        ctx.beginPath();
-        ctx.ellipse(m.x, m.y + m.size * 0.7, m.size * 0.9, m.size * 0.35, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (m.isBoss) {
-          drawBoss(m);
-        } else if (m.type === 'slime') {
-          drawSlime(m);
-        } else if (m.type === 'caster') {
-          drawCaster(m);
-        } else {
-          drawSkeleton(m);
-        }
-
-        const barW = m.size * 2.2;
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
-        ctx.fillRect(m.x - barW / 2, m.y - m.size - 13, barW, 6);
-        ctx.fillStyle = m.isBoss ? '#f59e0b' : '#ef4444';
-        ctx.fillRect(m.x - barW / 2, m.y - m.size - 13, (m.hp / m.maxHp) * barW, 6);
+      // Enemy Projectiles
+      enemyProjectiles.forEach(p => {
+        ctx.fillStyle = p.color;
+        ctx.shadowBlur = 15; ctx.shadowColor = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
       });
 
-      // Render Sword Slash Arc & Glowing Blade Trail
+      // Monsters
+      monsters.forEach(m => {
+        // Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.75, m.size * 0.9, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+
+        if (m.isBoss) drawBoss(m);
+        else if (m.type === 'slime') drawSlime(m);
+        else if (m.type === 'caster') drawCaster(m);
+        else drawSkeleton(m);
+
+        // HP Bar
+        const barW = m.size * 2.2;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+        ctx.fillRect(m.x - barW / 2, m.y - m.size - 16, barW, 6);
+        ctx.fillStyle = m.isBoss ? '#f59e0b' : '#ef4444';
+        ctx.fillRect(m.x - barW / 2, m.y - m.size - 16, (m.hp / m.maxHp) * barW, 6);
+      });
+
+      // Sword Slash VFX (Smooth Gradient Sweep)
       if (swordSlash) {
-        ctx.fillStyle = 'rgba(245, 158, 11, 0.45)';
-        ctx.strokeStyle = '#fef08a';
-        ctx.lineWidth = 3.5;
+        const sweepAngle = Math.PI * 0.8;
+        const startAng = swordSlash.angle - sweepAngle/2;
+        const endAng = swordSlash.angle + sweepAngle/2;
+
+        ctx.save();
+        ctx.translate(player.x, player.y);
+        ctx.rotate(swordSlash.angle); // rotate to facing direction
+
+        const atkGrad = ctx.createRadialGradient(0, 0, swordSlash.r * 0.2, 0, 0, swordSlash.r);
+        atkGrad.addColorStop(0, "rgba(253, 230, 138, 0.0)");
+        atkGrad.addColorStop(0.7, "rgba(251, 191, 36, 0.6)");
+        atkGrad.addColorStop(1, "rgba(245, 158, 11, 0.0)");
+
+        ctx.fillStyle = atkGrad;
         ctx.beginPath();
-        ctx.arc(swordSlash.x, swordSlash.y, swordSlash.r, 0, Math.PI * 2);
+        ctx.moveTo(0, 0);
+        ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2);
+        ctx.closePath();
         ctx.fill();
+
+        ctx.strokeStyle = '#fef08a';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2);
         ctx.stroke();
+        ctx.restore();
       }
 
-      // Render Player Knight (Full Armored Sprite Detail)
+      // Player Knight
       if (player.invulnTimer <= 0 || Math.floor(time / 100) % 2 === 0) {
-        ctx.fillStyle = 'rgba(0,0,0,0.4)';
-        ctx.beginPath(); ctx.ellipse(player.x, player.y + 16, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
+        // Player Shadow
+        ctx.fillStyle = 'rgba(0,0,0,0.5)';
+        ctx.beginPath(); ctx.ellipse(player.x, player.y + 18, 18, 8, 0, 0, Math.PI * 2); ctx.fill();
 
-        // Armored Pauldrons (Shoulders)
+        const walkWobble = player.isMoving ? Math.sin(timeGlobal * 15) * 4 : 0;
+        ctx.translate(0, walkWobble);
+
+        // Pauldrons
         ctx.fillStyle = '#0284c7';
         ctx.beginPath();
         ctx.arc(player.x - 14, player.y - 2, 8, 0, Math.PI * 2);
         ctx.arc(player.x + 14, player.y - 2, 8, 0, Math.PI * 2);
         ctx.fill();
 
-        // Knight Cuirass (Steel Breastplate)
+        // Cuirass
         ctx.fillStyle = '#38bdf8';
         ctx.strokeStyle = '#7dd3fc';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
+        ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
 
-        // Golden Chest Insignia
+        // Gold Chest Insignia
         ctx.fillStyle = '#fbbf24';
         ctx.beginPath();
-        ctx.moveTo(player.x, player.y - 6);
-        ctx.lineTo(player.x + 6, player.y + 4);
-        ctx.lineTo(player.x - 6, player.y + 4);
-        ctx.closePath();
-        ctx.fill();
+        ctx.moveTo(player.x, player.y - 6); ctx.lineTo(player.x + 6, player.y + 4); ctx.lineTo(player.x - 6, player.y + 4);
+        ctx.closePath(); ctx.fill();
 
-        // Helmet & Directional Visor
+        // Helmet
         ctx.fillStyle = '#0f172a';
         ctx.beginPath();
         let vx = player.x, vy = player.y;
         if (player.facing === 'up') vy -= 7;
-        if (player.facing === 'down') vy += 4;
+        if (player.facing === 'down') vy += 5;
         if (player.facing === 'left') vx -= 7;
         if (player.facing === 'right') vx += 7;
-        ctx.ellipse(vx, vy, 11, 6, 0, 0, Math.PI * 2);
+        ctx.ellipse(vx, vy, 12, 7, 0, 0, Math.PI * 2);
         ctx.fill();
 
-        // Glowing Blue Slit Visor
+        // Visor Glow
+        ctx.shadowBlur = 8; ctx.shadowColor = '#38bdf8';
         ctx.fillStyle = '#38bdf8';
         ctx.fillRect(vx - 5, vy - 1, 10, 2);
+        ctx.shadowBlur = 0;
 
-        // Golden Plume Feather
+        // Plume
         ctx.fillStyle = '#f59e0b';
-        ctx.beginPath();
-        ctx.arc(player.x, player.y - player.size * 0.75, 5, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(player.x, player.y - player.size * 0.85, 5, 0, Math.PI * 2); ctx.fill();
+
+        ctx.translate(0, -walkWobble);
       }
 
-      // Render Blood / Spark Particles
+      // Particles (Blood/Sparks)
       particles.forEach(p => {
         ctx.fillStyle = p.color;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill();
       });
 
-      // Render Floating Damage Numbers
+      // Floating Damage Text
       damageNumbers.forEach(d => {
-        ctx.font = 'bold 16px system-ui';
+        ctx.font = '900 18px system-ui';
         ctx.fillStyle = d.color;
         ctx.textAlign = 'center';
+        ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+        ctx.globalAlpha = Math.max(0, d.life / 0.7);
         ctx.fillText(d.text, d.x, d.y);
+        ctx.globalAlpha = 1.0;
+        ctx.shadowBlur = 0;
       });
 
       ctx.restore();
     }
 
-    // START ENGINE
+    // BOOTSTRAP
     window.addEventListener('load', () => {
       resize();
       updateForgeUI();
