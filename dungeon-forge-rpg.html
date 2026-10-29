@@ -1,38 +1,56 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Dungeon & Forge RPG • Fantasy Classes</title>
+  <title>Dungeon & Forge RPG • Relics & Powerups</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #020617; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
-    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; image-rendering: crisp-edges; }
-    #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 1rem; }
+    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; }
+    #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 0.85rem 1.2rem; }
     .interactive { pointer-events: auto; }
-    .hud-box { background: rgba(15, 23, 42, 0.94); border: 1px solid #334155; border-radius: 1rem; padding: 0.5rem 1rem; display: flex; align-items: center; gap: 0.8rem; box-shadow: 0 10px 30px rgba(0,0,0,0.8); backdrop-filter: blur(10px); }
-    .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #334155; padding: 0.45rem 0.85rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
-    .btn:hover { background: #334155; color: #fff; }
-    .btn-forge { background: linear-gradient(135deg, #f59e0b, #d97706); border: none; color: #fff; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3); }
-    .btn-forge:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.5); }
-    .bar-bg { width: 6.5rem; height: 0.65rem; background: #1e293b; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+    
+    /* Top HUD Styling */
+    .hud-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; max-width: 64rem; margin: 0 auto; gap: 0.5rem; flex-wrap: wrap; }
+    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(71, 85, 105, 0.7); border-radius: 1rem; padding: 0.5rem 0.95rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.08); backdrop-filter: blur(10px); }
+    
+    /* Active Buffs & Relics Row */
+    .buff-row { display: flex; gap: 0.5rem; justify-content: center; margin-top: 0.4rem; flex-wrap: wrap; }
+    .buff-pill { background: rgba(15, 23, 42, 0.9); border: 1px solid #475569; padding: 0.25rem 0.65rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 800; display: flex; align-items: center; gap: 0.35rem; box-shadow: 0 4px 12px rgba(0,0,0,0.5); animation: popIn 0.2s ease-out; }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #475569; padding: 0.45rem 0.85rem; border-radius: 0.75rem; font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn:hover { background: #334155; color: #fff; transform: translateY(-1px); }
+    .btn-forge { background: linear-gradient(135deg, #f59e0b, #d97706); border: 1px solid #fbbf24; color: #fff; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35); }
+    .btn-forge:hover { filter: brightness(1.15); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245, 158, 11, 0.55); }
+    .btn-forge:disabled { background: #1e293b !important; border-color: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; transform: none; filter: none; }
+
+    .bar-bg { width: 7rem; height: 0.7rem; background: #090d16; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; box-shadow: inset 0 2px 4px rgba(0,0,0,0.6); }
     .bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-    .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.94); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
-    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 40rem; width: 100%; padding: 2rem; text-align: center; box-shadow: 0 25px 50px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.1); }
-    .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.75rem; margin-top: 1.2rem; }
+    
+    /* Modals */
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
+    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #f59e0b; border-radius: 1.5rem; max-width: 40rem; width: 100%; padding: 1.75rem; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.95), inset 0 1px 0 rgba(255,255,255,0.1); }
+    .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.7rem; margin-top: 1rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
-    .class-card { background: rgba(30, 41, 59, 0.6); border: 2px solid #334155; border-radius: 1rem; padding: 1rem; cursor: pointer; transition: 0.2s; text-align: left; }
-    .class-card:hover { background: rgba(51, 65, 85, 0.8); border-color: #38bdf8; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.4); }
-    .opt-btn { background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #f1f5f9; padding: 0.85rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-align: left; transition: all 0.15s; }
-    .opt-btn:hover { background: #451a03; border-color: #f59e0b; color: #fff; transform: translateY(-3px); }
+    
+    .class-card { background: rgba(30, 41, 59, 0.65); border: 2px solid #334155; border-radius: 1rem; padding: 1rem; cursor: pointer; transition: 0.2s; text-align: left; }
+    .class-card:hover { background: rgba(51, 65, 85, 0.85); border-color: #38bdf8; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2); }
+    
+    .opt-btn { background: rgba(30, 41, 59, 0.85); border: 1px solid #475569; color: #f1f5f9; padding: 0.85rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; text-align: left; transition: all 0.15s; }
+    .opt-btn:hover { background: #451a03; border-color: #f59e0b; color: #fff; transform: translateY(-2px); }
     .opt-btn.correct { background: linear-gradient(135deg, #065f46, #047857) !important; border-color: #10b981 !important; color: #fff !important; }
     .opt-btn.wrong { background: linear-gradient(135deg, #881337, #be123c) !important; border-color: #f43f5e !important; color: #fff !important; }
-    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(51, 65, 85, 0.5); padding: 1rem; border-radius: 1rem; margin-bottom: 0.75rem; text-align: left; }
-    .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
-    .dpad-row { display: flex; gap: 0.4rem; }
-    .touch-btn { width: 3.8rem; height: 3.8rem; background: rgba(15, 23, 42, 0.7); border: 2px solid rgba(255,255,255,0.1); border-radius: 1rem; font-size: 1.5rem; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); transition: 0.1s; }
+    
+    .forge-wallet { display: flex; justify-content: space-around; align-items: center; background: #090d16; border: 1px solid #334155; border-radius: 1rem; padding: 0.75rem 1rem; margin-bottom: 1rem; font-family: monospace; font-size: 1rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.6); }
+    .forge-item-row { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.75); border: 1px solid rgba(71, 85, 105, 0.6); padding: 0.9rem 1rem; border-radius: 1rem; margin-bottom: 0.65rem; text-align: left; }
+    
+    .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .dpad-row { display: flex; gap: 0.35rem; }
+    .touch-btn { width: 3.6rem; height: 3.6rem; background: rgba(15, 23, 42, 0.75); border: 2px solid rgba(255,255,255,0.15); border-radius: 1rem; font-size: 1.4rem; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(4px); }
     .touch-btn:active { background: rgba(245, 158, 11, 0.8); border-color: #f59e0b; transform: scale(0.95); }
-    .touch-atk { width: 5.2rem; height: 5.2rem; border-radius: 50%; background: rgba(239, 68, 68, 0.8); border: 2px solid #f87171; font-weight: 900; font-size: 1rem; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    .touch-atk { width: 5rem; height: 5rem; border-radius: 50%; background: rgba(239, 68, 68, 0.85); border: 2px solid #f87171; font-weight: 900; font-size: 0.95rem; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
     .touch-atk:active { background: #dc2626; transform: scale(0.92); }
     @media (min-width: 768px) { .mobile-ui { display: none !important; } }
     .hidden { display: none !important; }
@@ -43,42 +61,54 @@
   <canvas id="canvasGame"></canvas>
 
   <div id="hudLayer">
-    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; max-width:58rem; margin:0 auto;" class="interactive">
-      <div class="hud-box">
-        <a href="index.html" class="btn">← Hub</a>
-        <div>
-          <span id="hudBiomeName" style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">CRYPT BIOME</span>
-          <span style="font-size:0.95rem; font-weight:900;">Floor <span id="hudFloor">1</span></span>
+    <div>
+      <div class="hud-top interactive">
+        <div class="hud-box">
+          <a href="index.html" class="btn">← Hub</a>
+          <div>
+            <span id="hudBiomeName" style="font-size:0.65rem; color:#f59e0b; font-weight:800; letter-spacing:0.05em; display:block;">CRYPT BIOME</span>
+            <span style="font-size:0.95rem; font-weight:900;">Floor <span id="hudFloor">1</span></span>
+          </div>
+        </div>
+
+        <!-- Materials & Relics Counter -->
+        <div class="hud-box" style="font-family: monospace; font-size: 0.85rem;">
+          <div title="Obsidian Shards">💎 <span id="hudObsidian" style="color:#38bdf8; font-weight:bold;">0</span></div>
+          <div title="Ancient Runes">📜 <span id="hudRunes" style="color:#c084fc; font-weight:bold;">0</span></div>
+          <div title="Dragon Scales">🐉 <span id="hudScales" style="color:#fbbf24; font-weight:bold;">0</span></div>
+          <div style="width:1px; height:1.2rem; background:#334155;"></div>
+          <div title="Permanent Relics Found" style="font-size:0.75rem; color:#fde047;">
+            👑 +<span id="hudBonusHp">0</span>HP | 🗡️ +<span id="hudBonusDmg">0</span>DMG | 🪶 +<span id="hudBonusSpd">0</span>%
+          </div>
+        </div>
+
+        <!-- Player HP, Timer & Forge Button -->
+        <div class="hud-box" style="font-family: monospace;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#cbd5e1; margin-bottom:0.15rem; font-weight:700;">
+              <span id="hudClassType">HERO</span>
+              <span id="hudHpText">100/100</span>
+            </div>
+            <div class="bar-bg">
+              <div id="hudHpFill" class="bar-fill"></div>
+            </div>
+          </div>
+          <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
+          <div style="text-align:center;">
+            <span style="font-size:0.65rem; color:#cbd5e1; display:block; font-weight:700;">TRIAL IN</span>
+            <span id="hudTrialTimer" style="font-size:1.1rem; font-weight:900; color:#fbbf24;">10s</span>
+          </div>
+          <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
+          <button onclick="openForge()" class="btn btn-forge">⚒️ Forge [F]</button>
         </div>
       </div>
 
-      <div class="hud-box" style="font-family: monospace; font-size: 0.85rem;">
-        <div style="display:flex; align-items:center; gap:0.3rem;">💎 <span id="hudObsidian" style="color:#38bdf8; font-weight:bold;">0</span></div>
-        <div style="display:flex; align-items:center; gap:0.3rem;">📜 <span id="hudRunes" style="color:#c084fc; font-weight:bold;">0</span></div>
-        <div style="display:flex; align-items:center; gap:0.3rem;">🐉 <span id="hudScales" style="color:#fbbf24; font-weight:bold;">0</span></div>
-      </div>
-
-      <div class="hud-box" style="font-family: monospace;">
-        <div>
-          <div style="display:flex; justify-content:space-between; font-size:0.65rem; color:#cbd5e1; margin-bottom:0.15rem; font-weight:700;">
-            <span id="hudClassType">HERO</span>
-            <span id="hudHpText">100/100</span>
-          </div>
-          <div class="bar-bg">
-            <div id="hudHpFill" class="bar-fill"></div>
-          </div>
-        </div>
-        <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
-        <div style="text-align:center;">
-          <span style="font-size:0.65rem; color:#cbd5e1; display:block; font-weight:700;">TRIAL IN</span>
-          <span id="hudTrialTimer" style="font-size:1.1rem; font-weight:900; color:#fbbf24; text-shadow: 0 0 8px rgba(251,191,36,0.4);">10s</span>
-        </div>
-        <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
-        <button onclick="openForge()" class="btn btn-forge">⚒️ Forge [F]</button>
-      </div>
+      <!-- Active Temporary Power-up Timers -->
+      <div id="hudBuffRow" class="buff-row"></div>
     </div>
 
-    <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:1rem;">
+    <!-- Mobile Touch UI -->
+    <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:0.5rem;">
       <div class="dpad-container">
         <button class="touch-btn" id="mUp">▲</button>
         <div class="dpad-row">
@@ -90,42 +120,45 @@
       <button class="touch-btn touch-atk" id="mAtk">ATTACK<br>[SPACE]</button>
     </div>
 
-    <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.3rem;" class="interactive mobile-ui hidden md:block">
-      Move: <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD</kbd> or <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">Arrows</kbd> &nbsp;•&nbsp; Attack: <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> &nbsp;•&nbsp; Forge: <kbd style="background:#1e293b; padding:0.15rem 0.4rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
+    <div style="text-align:center; font-size:0.75rem; color:#94a3b8; margin-bottom:0.2rem;" class="interactive">
+      Move: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD / Arrows</kbd> &nbsp;•&nbsp; Attack: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">SPACE</kbd> &nbsp;•&nbsp; Forge: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">F</kbd>
     </div>
   </div>
 
   <!-- CLASS SELECTION MODAL -->
   <div id="modalClassSelect" class="modal-backdrop hidden">
     <div class="modal-card">
-      <h3 style="font-size:1.8rem; font-weight:900; margin-bottom:0.5rem; color:#fff;">Choose Your Hero</h3>
-      <p style="font-size:0.85rem; color:#cbd5e1; margin-bottom:1.5rem;">Select a class to enter the dungeon. Your choice alters your combat style.</p>
+      <span style="font-size:0.7rem; font-weight:900; color:#38bdf8; background:rgba(56,189,248,0.15); padding:0.35rem 0.85rem; border-radius:9999px; border:1px solid rgba(56,189,248,0.4); text-transform:uppercase;">
+        🏰 Enter The Catacombs
+      </span>
+      <h3 style="font-size:1.75rem; font-weight:900; margin:0.75rem 0 0.35rem; color:#fff;">Choose Your Hero Class</h3>
+      <p style="font-size:0.82rem; color:#cbd5e1; margin-bottom:1.25rem;">Collect materials, drink temporary battle elixirs, and discover rare permanent relics!</p>
       
-      <div style="display:grid; grid-template-columns:1fr; gap:1rem; text-align:left;">
+      <div style="display:grid; grid-template-columns:1fr; gap:0.85rem; text-align:left;">
         <div class="class-card" onclick="selectClass('warrior')">
           <div style="display:flex; align-items:center; gap:1rem;">
-            <div style="font-size:2.5rem;">⚔️</div>
+            <div style="font-size:2.4rem; background:#0f172a; width:3.8rem; height:3.8rem; border-radius:0.85rem; display:flex; align-items:center; justify-content:center; border:1px solid #38bdf8;">⚔️</div>
             <div>
-              <h4 style="font-size:1.2rem; font-weight:bold; color:#38bdf8;">Knight Warrior</h4>
-              <p style="font-size:0.8rem; color:#94a3b8;">High HP, Normal Speed. Swings a broadsword hitting multiple enemies in a sweeping arc.</p>
+              <h4 style="font-size:1.1rem; font-weight:900; color:#38bdf8;">Paladin Knight (Warrior)</h4>
+              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>120 HP • Normal Speed.</b> Armored knight with a crimson cape & shield. Cleaves multiple enemies in a wide broadsword arc.</p>
             </div>
           </div>
         </div>
         <div class="class-card" onclick="selectClass('archer')">
           <div style="display:flex; align-items:center; gap:1rem;">
-            <div style="font-size:2.5rem;">🏹</div>
+            <div style="font-size:2.4rem; background:#0f172a; width:3.8rem; height:3.8rem; border-radius:0.85rem; display:flex; align-items:center; justify-content:center; border:1px solid #10b981;">🏹</div>
             <div>
-              <h4 style="font-size:1.2rem; font-weight:bold; color:#10b981;">Ranger Archer</h4>
-              <p style="font-size:0.8rem; color:#94a3b8;">Low HP, Fast Speed. Fires high-speed piercing arrows that travel across the room.</p>
+              <h4 style="font-size:1.1rem; font-weight:900; color:#10b981;">Forest Ranger (Archer)</h4>
+              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>85 HP • Fast Speed.</b> Agile hooded marksman. Fires rapid high-velocity arrows across the room from safety.</p>
             </div>
           </div>
         </div>
         <div class="class-card" onclick="selectClass('necromancer')">
           <div style="display:flex; align-items:center; gap:1rem;">
-            <div style="font-size:2.5rem;">💀</div>
+            <div style="font-size:2.4rem; background:#0f172a; width:3.8rem; height:3.8rem; border-radius:0.85rem; display:flex; align-items:center; justify-content:center; border:1px solid #c084fc;">💀</div>
             <div>
-              <h4 style="font-size:1.2rem; font-weight:bold; color:#c084fc;">Void Necromancer</h4>
-              <p style="font-size:0.8rem; color:#94a3b8;">Med HP, Slow Speed. Fires shadow orbs. <span style="color:#a7f3d0;">Lifesteal: Heals +3 HP per monster killed!</span></p>
+              <h4 style="font-size:1.1rem; font-weight:900; color:#c084fc;">Void Warlock (Necromancer)</h4>
+              <p style="font-size:0.78rem; color:#94a3b8; line-height:1.4;"><b>100 HP • Slow Speed.</b> Casts piercing shadow orbs. <span style="color:#a7f3d0; font-weight:bold;">Soul Siphon: Heals +3 HP per monster slain!</span></p>
             </div>
           </div>
         </div>
@@ -136,87 +169,103 @@
   <!-- 10-SECOND ANVIL / TRIAL MODAL -->
   <div id="modalTrial" class="modal-backdrop hidden">
     <div class="modal-card">
-      <span style="font-size:0.75rem; font-weight:900; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.4rem 1rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.4); text-transform:uppercase; letter-spacing:0.05em; box-shadow: 0 0 15px rgba(251,191,36,0.2);">
+      <span style="font-size:0.75rem; font-weight:900; color:#fbbf24; background:rgba(251,191,36,0.15); padding:0.4rem 1rem; border-radius:9999px; border:1px solid rgba(251,191,36,0.4); text-transform:uppercase;">
         ⚔️ Vocabulary Trial Challenge
       </span>
-      <h3 style="font-size:1.5rem; font-weight:900; margin:1rem 0 0.3rem; color:#fff; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Unit 4 Word Challenge</h3>
-      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.2rem;">Solve correctly to mine materials & heal your knight!</p>
+      <h3 style="font-size:1.45rem; font-weight:900; margin:0.85rem 0 0.25rem; color:#fff;">Unit 4 Word Challenge</h3>
+      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1rem;">Solve correctly to mine bonus materials & restore +25 HP!</p>
 
-      <div style="background:rgba(0,0,0,0.4); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.5rem; margin-bottom:1rem; box-shadow: inset 0 4px 10px rgba(0,0,0,0.5);">
-        <p id="trialQuestion" style="font-size:1.05rem; font-weight:700; line-height:1.5; color:#f8fafc;"></p>
-        <p id="trialHint" style="font-size:0.8rem; color:#94a3b8; font-style:italic; margin-top:0.6rem;"></p>
+      <div style="background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.12); border-radius:1rem; padding:1.3rem; margin-bottom:1rem;">
+        <p id="trialQuestion" style="font-size:1.05rem; font-weight:700; line-height:1.45; color:#f8fafc;"></p>
+        <p id="trialHint" style="font-size:0.78rem; color:#94a3b8; font-style:italic; margin-top:0.5rem;"></p>
       </div>
 
       <div id="trialOptions" class="opt-grid"></div>
-      <div id="trialFeedback" style="margin-top:1.2rem; padding:0.8rem; border-radius:0.75rem; font-size:0.9rem; font-weight:800; box-shadow: 0 4px 15px rgba(0,0,0,0.3);" class="hidden"></div>
+      <div id="trialFeedback" style="margin-top:1rem; padding:0.75rem; border-radius:0.75rem; font-size:0.85rem; font-weight:800;" class="hidden"></div>
     </div>
   </div>
 
-  <!-- BLACKSMITH FORGE SHOP MODAL -->
+  <!-- BLACKSMITH FORGE SHOP MODAL (WITH LIVE RESOURCES DISPLAY) -->
   <div id="modalForge" class="modal-backdrop hidden">
-    <div class="modal-card" style="border-color:#f59e0b; max-width:34rem;">
-      <div style="font-size:2.8rem; margin-bottom:0.25rem; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.5));">⚒️</div>
-      <h3 style="font-size:1.6rem; font-weight:900; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">The Blacksmith's Anvil</h3>
-      <p style="font-size:0.8rem; color:#cbd5e1; margin-bottom:1.5rem;">Spend mined dungeon loot to forge upgrades. <br><span style="color:#ef4444; font-weight:bold;">(Warning: Death resets all gear!)</span></p>
+    <div class="modal-card" style="border-color:#f59e0b; max-width:35rem;">
+      <div style="font-size:2.4rem; margin-bottom:0.1rem;">⚒️</div>
+      <h3 style="font-size:1.5rem; font-weight:900;">The Blacksmith's Anvil</h3>
+      <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:0.85rem;">Upgrade your gear using mined resources. <span style="color:#f87171; font-weight:bold;">(Death resets all gear!)</span></p>
 
-      <div class="forge-item-row">
-        <div>
-          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Weapon Damage (Tier <span id="uiBladeTier">1</span>)</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Damage: <b id="uiBladeDmg" style="color:#f87171;">25</b> &nbsp;•&nbsp; Cost: <span id="costBladeObs">4</span> 💎, <span id="costBladeRunes">2</span> 📜</span>
-        </div>
-        <button onclick="upgradeGear('blade')" class="btn btn-forge">Forge</button>
+      <!-- Live Resources Wallet inside Forge -->
+      <div class="forge-wallet">
+        <div>💎 Obsidian: <b id="forgeMatObsidian" style="color:#38bdf8;">0</b></div>
+        <div style="width:1px; height:1.4rem; background:#334155;"></div>
+        <div>📜 Runes: <b id="forgeMatRunes" style="color:#c084fc;">0</b></div>
+        <div style="width:1px; height:1.4rem; background:#334155;"></div>
+        <div>🐉 Scales: <b id="forgeMatScales" style="color:#fbbf24;">0</b></div>
+      </div>
+
+      <!-- Permanent Relic Bonuses Banner inside Forge -->
+      <div style="font-size:0.75rem; color:#fde047; background:rgba(250,204,21,0.08); border:1px solid rgba(250,204,21,0.25); border-radius:0.75rem; padding:0.45rem; margin-bottom:1rem; font-family:monospace;">
+        ✨ Relic Bonuses Active: <b>+<span id="forgeRelicHp">0</span> Max HP</b> &nbsp;•&nbsp; <b>+<span id="forgeRelicDmg">0</span> Base DMG</b> &nbsp;•&nbsp; <b>+<span id="forgeRelicSpd">0</span>% Speed</b>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Armor Plate (Tier <span id="uiArmorTier">1</span>)</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Max HP: <b id="uiArmorHp" style="color:#34d399;">100</b> &nbsp;•&nbsp; Cost: <span id="costArmorObs">5</span> 💎, <span id="costArmorScales">3</span> 🐉</span>
+          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Weapon Mastery (Tier <span id="uiBladeTier">1</span>)</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Attack Power: <b id="uiBladeDmg" style="color:#f87171;">25</b> &nbsp;•&nbsp; Cost: <b style="color:#38bdf8;"><span id="costBladeObs">4</span> 💎</b>, <b style="color:#c084fc;"><span id="costBladeRunes">2</span> 📜</b></span>
         </div>
-        <button onclick="upgradeGear('armor')" class="btn btn-forge">Forge</button>
+        <button id="btnUpgradeBlade" onclick="upgradeGear('blade')" class="btn btn-forge">Forge</button>
       </div>
 
       <div class="forge-item-row">
         <div>
-          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Swift Boots (Tier <span id="uiBootsTier">1</span>)</span>
-          <span style="font-size:0.75rem; color:#94a3b8;">Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> &nbsp;•&nbsp; Cost: <span id="costBootsRunes">4</span> 📜, <span id="costBootsScales">3</span> 🐉</span>
+          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Concentric Armor (Tier <span id="uiArmorTier">1</span>)</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Max Health: <b id="uiArmorHp" style="color:#34d399;">100</b> &nbsp;•&nbsp; Cost: <b style="color:#38bdf8;"><span id="costArmorObs">5</span> 💎</b>, <b style="color:#fbbf24;"><span id="costArmorScales">3</span> 🐉</b></span>
         </div>
-        <button onclick="upgradeGear('boots')" class="btn btn-forge">Forge</button>
+        <button id="btnUpgradeArmor" onclick="upgradeGear('armor')" class="btn btn-forge">Forge</button>
       </div>
 
-      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:1rem; padding:0.85rem; font-size:0.9rem;">Return to Dungeon [ESC / F]</button>
+      <div class="forge-item-row">
+        <div>
+          <span style="font-weight:900; font-size:0.95rem; color:#fff; display:block;">Cyclone Greaves (Tier <span id="uiBootsTier">1</span>)</span>
+          <span style="font-size:0.75rem; color:#94a3b8;">Move Speed: <b id="uiBootsSpd" style="color:#38bdf8;">100%</b> &nbsp;•&nbsp; Cost: <b style="color:#c084fc;"><span id="costBootsRunes">4</span> 📜</b>, <b style="color:#fbbf24;"><span id="costBootsScales">3</span> 🐉</b></span>
+        </div>
+        <button id="btnUpgradeBoots" onclick="upgradeGear('boots')" class="btn btn-forge">Forge</button>
+      </div>
+
+      <div id="forgeMsg" style="font-size:0.78rem; font-weight:bold; min-height:1.2rem; margin-top:0.3rem; color:#34d399;"></div>
+
+      <button onclick="closeForge()" class="btn" style="width:100%; margin-top:0.5rem; padding:0.8rem; font-size:0.9rem;">Return to Dungeon [ESC / F]</button>
     </div>
   </div>
 
-  <!-- GAME OVER / RESTART MODAL -->
+  <!-- GAME OVER MODAL -->
   <div id="modalGameOver" class="modal-backdrop hidden">
     <div class="modal-card" style="max-width:28rem; border-color:#ef4444; background: linear-gradient(180deg, #1e0505 0%, #020617 100%);">
-      <div style="font-size:3.5rem; margin-bottom:0.5rem; filter:drop-shadow(0 4px 10px rgba(239,68,68,0.5));">💀</div>
-      <h3 style="font-size:1.8rem; font-weight:900; color:#ef4444; text-shadow: 0 2px 4px rgba(0,0,0,0.8);">Hero Slain!</h3>
-      <p style="font-size:0.85rem; color:#cbd5e1; margin:0.6rem 0 1.5rem; line-height:1.5;">
-        You died in the depths. All forged weapons, armor, and gathered materials have been lost to the darkness!
+      <div style="font-size:3.2rem; margin-bottom:0.4rem;">💀</div>
+      <h3 style="font-size:1.75rem; font-weight:900; color:#ef4444;">Hero Slain!</h3>
+      <p style="font-size:0.82rem; color:#cbd5e1; margin:0.5rem 0 1.4rem; line-height:1.5;">
+        You fell in battle. All forged tiers, relics, and gathered materials have been claimed by the catacombs!
       </p>
       
-      <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1.2rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.8rem; box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);">
+      <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
         <div>
-          <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase; font-weight:700;">Floor</span>
+          <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase;">Floor</span>
           <span id="finalFloor" style="font-size:1.5rem; font-weight:900; color:#fbbf24;">1</span>
         </div>
         <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
         <div>
-          <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase; font-weight:700;">Accuracy</span>
+          <span style="font-size:0.7rem; color:#94a3b8; display:block; text-transform:uppercase;">Accuracy</span>
           <span id="finalAccuracy" style="font-size:1.5rem; font-weight:900; color:#34d399;">0%</span>
         </div>
       </div>
 
       <div style="display:flex; gap:1rem;">
-        <a href="index.html" class="btn" style="flex:1; padding:1rem;">Exit Hub</a>
-        <button onclick="showClassSelect()" class="btn btn-forge" style="flex:1; padding:1rem; background:linear-gradient(135deg, #ef4444, #b91c1c);">New Run</button>
+        <a href="index.html" class="btn" style="flex:1; padding:0.9rem;">Exit Hub</a>
+        <button onclick="showClassSelect()" class="btn btn-forge" style="flex:1; padding:0.9rem; background:linear-gradient(135deg, #ef4444, #b91c1c); border-color:#f87171;">New Run</button>
       </div>
     </div>
   </div>
 
   <script>
-    // VOCABULARY QUESTION POOL
+    // UNIT 4 VOCABULARY QUESTION POOL
     const QUESTIONS = [
       { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
       { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
@@ -238,7 +287,7 @@
       { q: "A nonrestrictive (nonessential) element in a sentence must be set off with:", ans: "Commas, dashes, or parentheses", dist: ["Periods or semicolons", "No punctuation at all", "Quotation marks"], hint: "It can be removed without changing the sentence's core meaning." }
     ];
 
-    // AUDIO
+    // AUDIO ENGINE
     let audioCtx = null;
     function getAudio() {
       if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
@@ -252,27 +301,37 @@
         osc.connect(gain); gain.connect(a.destination);
 
         if (type === 'slash') {
-          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(420, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.15);
-          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
-          osc.start(now); osc.stop(now + 0.15);
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(420, now); osc.frequency.exponentialRampToValueAtTime(90, now + 0.14);
+          gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.14);
+          osc.start(now); osc.stop(now + 0.14);
         } else if (type === 'shoot') {
-          osc.type = 'triangle'; osc.frequency.setValueAtTime(800, now); osc.frequency.exponentialRampToValueAtTime(300, now + 0.1);
-          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(760, now); osc.frequency.exponentialRampToValueAtTime(280, now + 0.1);
+          gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
           osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'hit') {
-          osc.type = 'square'; osc.frequency.setValueAtTime(160, now); osc.frequency.setValueAtTime(50, now + 0.18);
-          gain.gain.setValueAtTime(0.25, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
-          osc.start(now); osc.stop(now + 0.18);
+          osc.type = 'square'; osc.frequency.setValueAtTime(160, now); osc.frequency.setValueAtTime(55, now + 0.15);
+          gain.gain.setValueAtTime(0.22, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+          osc.start(now); osc.stop(now + 0.15);
         } else if (type === 'fire') {
-          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(260, now); osc.frequency.linearRampToValueAtTime(120, now + 0.2);
-          gain.gain.setValueAtTime(0.18, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
-          osc.start(now); osc.stop(now + 0.2);
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(260, now); osc.frequency.linearRampToValueAtTime(120, now + 0.18);
+          gain.gain.setValueAtTime(0.14, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+          osc.start(now); osc.stop(now + 0.18);
         } else if (type === 'loot') {
-          osc.type = 'triangle'; osc.frequency.setValueAtTime(659.25, now); osc.frequency.setValueAtTime(1046.50, now + 0.1);
-          gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
-          osc.start(now); osc.stop(now + 0.2);
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(659.25, now); osc.frequency.setValueAtTime(1046.50, now + 0.09);
+          gain.gain.setValueAtTime(0.14, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.18);
+          osc.start(now); osc.stop(now + 0.18);
+        } else if (type === 'powerup') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(440, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.22);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now); osc.stop(now + 0.25);
+        } else if (type === 'relic') {
+          [587.33, 783.99, 987.77, 1174.66].forEach((f, i) => {
+            const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination);
+            o.type = 'triangle'; o.frequency.setValueAtTime(f, now + i * 0.07);
+            g.gain.setValueAtTime(0.22, now + i * 0.07); g.gain.linearRampToValueAtTime(0.01, now + i * 0.07 + 0.3);
+            o.start(now + i * 0.07); o.stop(now + i * 0.07 + 0.3);
+          });
         } else if (type === 'win') {
-          osc.type = 'triangle';
           [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
             const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination);
             o.type = 'triangle'; o.frequency.setValueAtTime(f, now + i * 0.08);
@@ -283,11 +342,12 @@
       } catch(e) {}
     }
 
-    // CANVAS & GLOBALS
+    // CANVAS & DUNGEON BOUNDS
     const canvas = document.getElementById('canvasGame');
     const ctx = canvas.getContext('2d', { alpha: false });
     let W = window.innerWidth;
     let H = window.innerHeight;
+    const WALL_PAD = 42; // 3D Dungeon stone border thickness
 
     function resize() {
       W = canvas.width = window.innerWidth;
@@ -296,46 +356,52 @@
     window.addEventListener('resize', resize);
     resize();
 
-    // PLAYER ENTITY (ClassType initialized as null to force selection)
+    // PLAYER & BUFFS/RELICS STATE
     const player = {
       classType: null,
-      x: 200, y: 200, size: 24,
+      x: 200, y: 200, size: 22,
       facing: 'right',
       atkTimer: 0, invulnTimer: 0, isMoving: false,
       baseHp: 120, baseSpd: 210,
-      hp: 120, maxHp: 120
+      hp: 120, maxHp: 120,
+      // Permanent Relic Bonuses (Persist until death)
+      permBonusHp: 0,
+      permBonusDmg: 0,
+      permBonusSpd: 0,
+      // Temporary Buff Timers (in seconds)
+      buffBerserk: 0, // +35% Damage
+      buffHaste: 0,   // +30% Speed & Attack Rate
+      buffShield: 0   // 50% Damage Reduction
     };
 
     // PROGRESSION
     let bladeTier = 1, armorTier = 1, bootsTier = 1;
     let matObsidian = 0, matRunes = 0, matScales = 0;
     let floorNum = 1;
-    let isPaused = true;
-    let isOver = false;
-    let isForgeOpen = false;
-    let trialTimer = 10;
-    let trialInterval = null;
+    let isPaused = true, isOver = false, isForgeOpen = false;
+    let trialTimer = 10, trialInterval = null;
     let totalTrials = 0, correctTrials = 0;
     let screenShake = 0, timeGlobal = 0;
 
     let particles = [];
     let damageNumbers = [];
     let ambientParticles = [];
+    let floorProps = []; // Cracks, moss, pebbles
+    let wallTorches = [];
     let monsters = [];
     let enemyProjectiles = [];
     let playerProjectiles = [];
     let lootItems = [];
     let swordSlash = null;
     let exitPortal = null;
-    let isTransitioningFloor = false;
-    let transitionTimer = 0;
+    let isTransitioningFloor = false, transitionTimer = 0;
 
     const BIOMES = [
-      { name: "CATACOMB CRYPT", bg: "#040b16", tile1: "#0b1426", tile2: "#070e1c", accent: "#38bdf8", pColor: "#64748b", pType: "dust" },
-      { name: "MAGMA CAVERNS", bg: "#1a0808", tile1: "#2e0f0f", tile2: "#240a0a", accent: "#f97316", pColor: "#f59e0b", pType: "ember" },
-      { name: "TOXIC MIRE", bg: "#061810", tile1: "#0d2b1c", tile2: "#0a2115", accent: "#22c55e", pColor: "#34d399", pType: "bubble" },
-      { name: "ANCIENT TEMPLE", bg: "#130a24", tile1: "#231342", tile2: "#1c0f33", accent: "#a855f7", pColor: "#d8b4fe", pType: "sparkle" },
-      { name: "VOID RIFT", bg: "#02040a", tile1: "#0a1128", tile2: "#060a1c", accent: "#e2e8f0", pColor: "#ffffff", pType: "star" }
+      { name: "CATACOMB CRYPT", bg: "#050b14", tile1: "#0f172a", tile2: "#0b1120", wall: "#1e293b", accent: "#38bdf8", pColor: "#94a3b8", pType: "dust" },
+      { name: "MAGMA CAVERNS", bg: "#180606", tile1: "#2b0d0d", tile2: "#210909", wall: "#3f1313", accent: "#f97316", pColor: "#fb923c", pType: "ember" },
+      { name: "TOXIC MIRE", bg: "#04140d", tile1: "#0c291b", tile2: "#081f14", wall: "#143d29", accent: "#22c55e", pColor: "#4ade80", pType: "bubble" },
+      { name: "ANCIENT TEMPLE", bg: "#120921", tile1: "#21123d", tile2: "#180c2e", wall: "#341c5c", accent: "#a855f7", pColor: "#d8b4fe", pType: "sparkle" },
+      { name: "VOID RIFT", bg: "#02040a", tile1: "#0d1326", tile2: "#070b17", wall: "#1e1b4b", accent: "#e2e8f0", pColor: "#ffffff", pType: "star" }
     ];
 
     function getBiome(f) { return BIOMES[Math.floor((f - 1) / 2) % BIOMES.length]; }
@@ -367,12 +433,12 @@
     function selectClass(c) {
       player.classType = c;
       if (c === 'warrior') { player.baseHp = 120; player.baseSpd = 215; document.getElementById('hudClassType').textContent = 'KNIGHT'; }
-      if (c === 'archer') { player.baseHp = 80; player.baseSpd = 265; document.getElementById('hudClassType').textContent = 'RANGER'; }
-      if (c === 'necromancer') { player.baseHp = 100; player.baseSpd = 185; document.getElementById('hudClassType').textContent = 'NECRO'; }
+      if (c === 'archer') { player.baseHp = 85; player.baseSpd = 265; document.getElementById('hudClassType').textContent = 'RANGER'; }
+      if (c === 'necromancer') { player.baseHp = 100; player.baseSpd = 190; document.getElementById('hudClassType').textContent = 'NECRO'; }
       
       document.getElementById('modalClassSelect').classList.add('hidden');
       resetAllProgress();
-      player.maxHp = player.baseHp + (armorTier - 1) * 35;
+      recalcStats();
       player.hp = player.maxHp;
       trialTimer = 10;
       isPaused = false;
@@ -387,10 +453,24 @@
     function resetAllProgress() {
       bladeTier = 1; armorTier = 1; bootsTier = 1;
       matObsidian = 0; matRunes = 0; matScales = 0;
+      player.permBonusHp = 0; player.permBonusDmg = 0; player.permBonusSpd = 0;
+      player.buffBerserk = 0; player.buffHaste = 0; player.buffShield = 0;
       totalTrials = 0; correctTrials = 0;
     }
 
-    // SPAWNING
+    function recalcStats() {
+      player.maxHp = player.baseHp + (armorTier - 1) * 35 + player.permBonusHp;
+      if (player.hp > player.maxHp) player.hp = player.maxHp;
+    }
+
+    function getPlayerAttackDamage() {
+      const base = player.classType === 'archer' ? 20 : (player.classType === 'warrior' ? 30 : 18);
+      let dmg = base + (bladeTier - 1) * 15 + player.permBonusDmg;
+      if (player.buffBerserk > 0) dmg = Math.round(dmg * 1.35);
+      return dmg;
+    }
+
+    // SPAWN FLOOR & DECORATIONS
     function spawnFloor(f) {
       floorNum = f;
       document.getElementById('hudFloor').textContent = floorNum;
@@ -398,11 +478,33 @@
       document.getElementById('hudBiomeName').textContent = b.name;
       document.getElementById('hudBiomeName').style.color = b.accent;
 
-      player.x = W * 0.15; player.y = H * 0.5;
+      player.x = WALL_PAD + 90;
+      player.y = H * 0.5;
       monsters = []; lootItems = []; enemyProjectiles = []; playerProjectiles = []; particles = []; ambientParticles = [];
       exitPortal = null; isTransitioningFloor = false;
 
-      for(let i=0; i<35; i++) {
+      // Generate Wall Torches around room perimeter
+      wallTorches = [
+        { x: W * 0.25, y: WALL_PAD - 6 },
+        { x: W * 0.50, y: WALL_PAD - 6 },
+        { x: W * 0.75, y: WALL_PAD - 6 },
+        { x: W * 0.25, y: H - WALL_PAD + 6 },
+        { x: W * 0.50, y: H - WALL_PAD + 6 },
+        { x: W * 0.75, y: H - WALL_PAD + 6 }
+      ];
+
+      // Generate Floor Cracks & Pebbles
+      floorProps = [];
+      for (let i = 0; i < 24; i++) {
+        floorProps.push({
+          x: WALL_PAD + 40 + Math.random() * (W - WALL_PAD * 2 - 80),
+          y: WALL_PAD + 40 + Math.random() * (H - WALL_PAD * 2 - 80),
+          type: Math.random() < 0.5 ? 'crack' : 'pebbles',
+          rot: Math.random() * Math.PI * 2
+        });
+      }
+
+      for (let i = 0; i < 35; i++) {
         ambientParticles.push({
           x: Math.random() * W, y: Math.random() * H,
           size: Math.random() * 3 + 1, speed: Math.random() * 20 + 10, offset: Math.random() * Math.PI * 2
@@ -416,28 +518,32 @@
         const isBoss = (f % 3 === 0 && i === 0);
         let type = 'slime';
         if (isBoss) type = 'boss';
-        else if (f >= 4 && Math.random() < 0.3) type = 'caster'; // Void Caster
-        else if (f >= 2 && Math.random() < 0.35) type = 'spider'; // Spitting Spider
+        else if (f >= 4 && Math.random() < 0.3) type = 'caster';
+        else if (f >= 2 && Math.random() < 0.35) type = 'spider';
         else if (Math.random() < 0.5) type = 'skeleton';
 
         const baseHp = isBoss ? 280 : (type === 'slime' ? 35 : (type === 'caster' ? 45 : (type === 'spider' ? 30 : 40)));
         const scaledHp = Math.round(baseHp * (1 + (f - 1) * 0.28));
 
         monsters.push({
-          x: W * 0.35 + Math.random() * (W * 0.6), y: H * 0.15 + Math.random() * (H * 0.7),
-          size: isBoss ? 56 : (type === 'slime' ? 24 : (type === 'spider' ? 20 : 26)),
+          x: W * 0.35 + Math.random() * (W * 0.55 - WALL_PAD),
+          y: WALL_PAD + 50 + Math.random() * (H - WALL_PAD * 2 - 100),
+          size: isBoss ? 54 : (type === 'slime' ? 22 : (type === 'spider' ? 20 : 25)),
           hp: scaledHp, maxHp: scaledHp, isBoss: isBoss, type: type,
           spd: (isBoss ? 1.05 : (type === 'slime' ? 1.35 : (type === 'spider' ? 1.55 : 1.25))) * speedScale,
           anim: Math.random() * Math.PI * 2,
-          shootCooldown: Math.random() * 2 + 1.2
+          shootCooldown: Math.random() * 2 + 1.2,
+          hitFlash: 0
         });
       }
     }
 
-    // COMBAT
+    // COMBAT & LOOT DROPS
     function attack() {
       if (isPaused || isOver || player.atkTimer > 0) return;
-      player.atkTimer = player.classType === 'archer' ? 0.2 : (player.classType === 'warrior' ? 0.25 : 0.35);
+      let baseCd = player.classType === 'archer' ? 0.2 : (player.classType === 'warrior' ? 0.24 : 0.32);
+      if (player.buffHaste > 0) baseCd *= 0.72;
+      player.atkTimer = baseCd;
       
       let sx = player.x, sy = player.y;
       let angle = 0;
@@ -446,24 +552,25 @@
       if (player.facing === 'left') { sx -= 15; angle = Math.PI; }
       if (player.facing === 'right') { sx += 15; angle = 0; }
 
+      const dmg = getPlayerAttackDamage();
+
       if (player.classType === 'warrior') {
         playSound('slash');
-        swordSlash = { x: sx + Math.cos(angle)*30, y: sy + Math.sin(angle)*30, r: 48, life: 0.18, angle: angle };
-        const dmg = 30 + (bladeTier - 1) * 15;
+        swordSlash = { x: sx + Math.cos(angle)*28, y: sy + Math.sin(angle)*28, r: 52, life: 0.18, angle: angle };
         monsters.forEach(m => {
           if (Math.hypot(m.x - swordSlash.x, m.y - swordSlash.y) < swordSlash.r + m.size) hitMonster(m, dmg, angle);
         });
       } else if (player.classType === 'archer') {
         playSound('shoot');
         playerProjectiles.push({
-          x: sx, y: sy, vx: Math.cos(angle) * 700, vy: Math.sin(angle) * 700, 
-          type: 'arrow', life: 1.0, dmg: 20 + (bladeTier - 1) * 12, angle: angle
+          x: sx, y: sy, vx: Math.cos(angle) * 720, vy: Math.sin(angle) * 720, 
+          type: 'arrow', life: 1.0, dmg: dmg, angle: angle
         });
       } else if (player.classType === 'necromancer') {
         playSound('shoot');
         playerProjectiles.push({
-          x: sx, y: sy, vx: Math.cos(angle) * 280, vy: Math.sin(angle) * 280, 
-          type: 'void', life: 2.0, dmg: 18 + (bladeTier - 1) * 10, r: 18, hitList: []
+          x: sx, y: sy, vx: Math.cos(angle) * 300, vy: Math.sin(angle) * 300, 
+          type: 'void', life: 2.0, dmg: dmg, r: 18, hitList: []
         });
       }
 
@@ -473,35 +580,61 @@
     function hitMonster(m, dmg, angle, isNecroHit = false) {
       if (m.hp <= 0) return;
       m.hp -= dmg;
+      m.hitFlash = 0.12;
       playSound('hit');
       screenShake = 4;
-      for (let p = 0; p < 6; p++) {
+
+      for (let p = 0; p < 7; p++) {
         const spread = angle + (Math.random() - 0.5) * 1.5;
-        const vel = Math.random() * 200 + 50;
+        const vel = Math.random() * 220 + 60;
         particles.push({
           x: m.x, y: m.y, vx: Math.cos(spread) * vel, vy: Math.sin(spread) * vel,
-          life: 0.35, color: m.isBoss ? '#f43f5e' : '#cbd5e1', size: Math.random() * 4 + 2
+          life: 0.35, color: m.isBoss ? '#f43f5e' : (m.type === 'slime' ? '#34d399' : '#e2e8f0'), size: Math.random() * 4 + 2
         });
       }
-      damageNumbers.push({ x: m.x, y: m.y - 15, text: `-${Math.floor(dmg)}`, color: '#fef08a', life: 0.6, vy: -40 });
-      m.x += Math.cos(angle) * 12; m.y += Math.sin(angle) * 12;
+      damageNumbers.push({ x: m.x, y: m.y - 18, text: `-${Math.floor(dmg)}`, color: player.buffBerserk > 0 ? '#f87171' : '#fef08a', life: 0.65, vy: -45 });
+      m.x += Math.cos(angle) * 14; m.y += Math.sin(angle) * 14;
 
       if (m.hp <= 0) {
         if (isNecroHit && player.classType === 'necromancer') {
-          player.hp = Math.min(player.maxHp, player.hp + 3); // LIFESTEAL
+          player.hp = Math.min(player.maxHp, player.hp + 3);
           damageNumbers.push({ x: player.x, y: player.y - 25, text: "+3 HP", color: '#34d399', life: 0.8, vy: -50 });
           updateHUD();
         }
-        const dropCount = m.isBoss ? 8 : (m.type === 'caster' ? 3 : 2);
+
+        // Standard Material Drops
+        const dropCount = m.isBoss ? 7 : (m.type === 'caster' ? 3 : 2);
         for (let d = 0; d < dropCount; d++) {
           const type = Math.random() < 0.45 ? 'obsidian' : (Math.random() < 0.8 ? 'rune' : 'scale');
-          lootItems.push({
-            x: m.x + (Math.random() - 0.5) * 40, y: m.y + (Math.random() - 0.5) * 40,
-            type: type, hoverBaseY: m.y + (Math.random() - 0.5) * 40,
-            vx: (Math.random() - 0.5) * 120, vy: (Math.random() - 0.5) * 120, autoVacuum: false, hoverOffset: Math.random() * Math.PI * 2
-          });
+          spawnLootDrop(m.x, m.y, type);
+        }
+
+        // Temporary Power-Up Roll (18% chance on normal, 100% on boss)
+        if (m.isBoss || Math.random() < 0.18) {
+          const bRoll = Math.random();
+          const bType = bRoll < 0.28 ? 'buff_berserk' : (bRoll < 0.56 ? 'buff_haste' : (bRoll < 0.82 ? 'buff_shield' : 'heal_heart'));
+          spawnLootDrop(m.x, m.y, bType);
+        }
+
+        // Rare Permanent Relic Roll (3.5% on normal, 45% on Boss!)
+        if ((m.isBoss && Math.random() < 0.45) || (!m.isBoss && Math.random() < 0.035)) {
+          const rRoll = Math.random();
+          const rType = rRoll < 0.34 ? 'relic_hp' : (rRoll < 0.67 ? 'relic_dmg' : 'relic_spd');
+          spawnLootDrop(m.x, m.y, rType);
         }
       }
+    }
+
+    function spawnLootDrop(x, y, type) {
+      lootItems.push({
+        x: x + (Math.random() - 0.5) * 35,
+        y: y + (Math.random() - 0.5) * 35,
+        type: type,
+        vx: (Math.random() - 0.5) * 130,
+        vy: (Math.random() - 0.5) * 130,
+        autoVacuum: false,
+        hoverOffset: Math.random() * Math.PI * 2
+      });
     }
 
     function cleanupMonsters() {
@@ -509,7 +642,7 @@
       if (monsters.length === 0 && !exitPortal && !isTransitioningFloor) {
         playSound('win');
         isTransitioningFloor = true; transitionTimer = 4.0;
-        exitPortal = { x: W * 0.88, y: H * 0.5, r: 38, rot: 0 };
+        exitPortal = { x: W - WALL_PAD - 80, y: H * 0.5, r: 38, rot: 0 };
         lootItems.forEach(item => { item.autoVacuum = true; });
       }
     }
@@ -565,11 +698,13 @@
       }, 1100);
     }
 
-    // FORGE SYSTEM
+    // FORGE SYSTEM (WITH LIVE RESOURCE WALLET)
     function toggleForge() { if (isForgeOpen) closeForge(); else openForge(); }
     function openForge() {
       if (isPaused && !isForgeOpen) return;
-      isPaused = true; isForgeOpen = true; updateForgeUI();
+      isPaused = true; isForgeOpen = true;
+      document.getElementById('forgeMsg').textContent = '';
+      updateForgeUI();
       document.getElementById('modalForge').classList.remove('hidden');
     }
     function closeForge() {
@@ -577,52 +712,94 @@
       isForgeOpen = false; lastTime = performance.now(); isPaused = false;
     }
     function updateForgeUI() {
+      recalcStats();
+      // Sync live wallet inside Forge modal
+      document.getElementById('forgeMatObsidian').textContent = matObsidian;
+      document.getElementById('forgeMatRunes').textContent = matRunes;
+      document.getElementById('forgeMatScales').textContent = matScales;
+
+      document.getElementById('forgeRelicHp').textContent = player.permBonusHp;
+      document.getElementById('forgeRelicDmg').textContent = player.permBonusDmg;
+      document.getElementById('forgeRelicSpd').textContent = player.permBonusSpd;
+
+      const cBladeObs = 4 * bladeTier, cBladeRunes = 2 * bladeTier;
       document.getElementById('uiBladeTier').textContent = bladeTier;
-      document.getElementById('uiBladeDmg').textContent = (player.classType==='archer'?20:(player.classType==='warrior'?30:18)) + (bladeTier - 1) * 15;
-      document.getElementById('costBladeObs').textContent = 4 * bladeTier;
-      document.getElementById('costBladeRunes').textContent = 2 * bladeTier;
+      document.getElementById('uiBladeDmg').textContent = getPlayerAttackDamage();
+      document.getElementById('costBladeObs').textContent = cBladeObs;
+      document.getElementById('costBladeRunes').textContent = cBladeRunes;
+      document.getElementById('btnUpgradeBlade').disabled = !(matObsidian >= cBladeObs && matRunes >= cBladeRunes);
 
+      const cArmorObs = 5 * armorTier, cArmorScales = 3 * armorTier;
       document.getElementById('uiArmorTier').textContent = armorTier;
-      document.getElementById('uiArmorHp').textContent = player.baseHp + (armorTier - 1) * 35;
-      document.getElementById('costArmorObs').textContent = 5 * armorTier;
-      document.getElementById('costArmorScales').textContent = 3 * armorTier;
+      document.getElementById('uiArmorHp').textContent = player.maxHp;
+      document.getElementById('costArmorObs').textContent = cArmorObs;
+      document.getElementById('costArmorScales').textContent = cArmorScales;
+      document.getElementById('btnUpgradeArmor').disabled = !(matObsidian >= cArmorObs && matScales >= cArmorScales);
 
+      const cBootsRunes = 4 * bootsTier, cBootsScales = 3 * bootsTier;
       document.getElementById('uiBootsTier').textContent = bootsTier;
-      document.getElementById('uiBootsSpd').textContent = `${Math.round((1 + (bootsTier - 1) * 0.2) * 100)}%`;
-      document.getElementById('costBootsRunes').textContent = 4 * bootsTier;
-      document.getElementById('costBootsScales').textContent = 3 * bootsTier;
+      document.getElementById('uiBootsSpd').textContent = `${Math.round((1 + (bootsTier - 1) * 0.2) * 100 + player.permBonusSpd)}%`;
+      document.getElementById('costBootsRunes').textContent = cBootsRunes;
+      document.getElementById('costBootsScales').textContent = cBootsScales;
+      document.getElementById('btnUpgradeBoots').disabled = !(matRunes >= cBootsRunes && matScales >= cBootsScales);
 
       updateHUD();
     }
+
     function upgradeGear(type) {
+      const msg = document.getElementById('forgeMsg');
       if (type === 'blade') {
-        const costObs = 4 * bladeTier; const costRunes = 2 * bladeTier;
+        const costObs = 4 * bladeTier, costRunes = 2 * bladeTier;
         if (matObsidian >= costObs && matRunes >= costRunes) {
           matObsidian -= costObs; matRunes -= costRunes; bladeTier++; playSound('win');
-        } else alert(`Need ${costObs} Obsidian and ${costRunes} Runes!`);
+          msg.textContent = `⚔️ Weapon upgraded to Tier ${bladeTier}!`;
+        }
       } else if (type === 'armor') {
-        const costObs = 5 * armorTier; const costScales = 3 * armorTier;
+        const costObs = 5 * armorTier, costScales = 3 * armorTier;
         if (matObsidian >= costObs && matScales >= costScales) {
           matObsidian -= costObs; matScales -= costScales; armorTier++;
-          player.maxHp = player.baseHp + (armorTier - 1) * 35; player.hp = player.maxHp; playSound('win');
-        } else alert(`Need ${costObs} Obsidian and ${costScales} Dragon Scales!`);
+          recalcStats(); player.hp = player.maxHp; playSound('win');
+          msg.textContent = `🛡️ Armor upgraded to Tier ${armorTier} & HP fully restored!`;
+        }
       } else if (type === 'boots') {
-        const costRunes = 4 * bootsTier; const costScales = 3 * bootsTier;
+        const costRunes = 4 * bootsTier, costScales = 3 * bootsTier;
         if (matRunes >= costRunes && matScales >= costScales) {
           matRunes -= costRunes; matScales -= costScales; bootsTier++; playSound('win');
-        } else alert(`Need ${costRunes} Runes and ${costScales} Dragon Scales!`);
+          msg.textContent = `🥾 Greaves upgraded to Tier ${bootsTier}!`;
+        }
       }
       updateForgeUI();
     }
+
     function updateHUD() {
       document.getElementById('hudObsidian').textContent = matObsidian;
       document.getElementById('hudRunes').textContent = matRunes;
       document.getElementById('hudScales').textContent = matScales;
+
+      document.getElementById('hudBonusHp').textContent = player.permBonusHp;
+      document.getElementById('hudBonusDmg').textContent = player.permBonusDmg;
+      document.getElementById('hudBonusSpd').textContent = player.permBonusSpd;
+
       document.getElementById('hudHpText').textContent = `${Math.round(player.hp)}/${player.maxHp}`;
       const fill = document.getElementById('hudHpFill');
       const pct = Math.max(0, (player.hp / player.maxHp) * 100);
       fill.style.width = `${pct}%`;
       fill.style.background = pct < 35 ? 'linear-gradient(90deg, #ef4444, #f87171)' : 'linear-gradient(90deg, #10b981, #34d399)';
+    }
+
+    function updateBuffBarUI() {
+      const row = document.getElementById('hudBuffRow');
+      let html = '';
+      if (player.buffBerserk > 0) {
+        html += `<div class="buff-pill" style="border-color:#f87171; color:#fca5a5;">🧪 BERSERK (+35% DMG) <span>${Math.ceil(player.buffBerserk)}s</span></div>`;
+      }
+      if (player.buffHaste > 0) {
+        html += `<div class="buff-pill" style="border-color:#38bdf8; color:#7dd3fc;">⚡ HASTE (+30% SPD) <span>${Math.ceil(player.buffHaste)}s</span></div>`;
+      }
+      if (player.buffShield > 0) {
+        html += `<div class="buff-pill" style="border-color:#fbbf24; color:#fde047;">🛡️ AEGIS WARD (50% DEF) <span>${Math.ceil(player.buffShield)}s</span></div>`;
+      }
+      if (row.innerHTML !== html) row.innerHTML = html;
     }
 
     function triggerGameOver() {
@@ -633,15 +810,32 @@
       document.getElementById('modalGameOver').classList.remove('hidden');
     }
 
-    // DRAWING HELPERS: TOP-DOWN SPRITES
+    // ==========================================
+    // SPRITE & WORLD RENDERING
+    // ==========================================
     function drawPlayer() {
-      if (player.invulnTimer > 0 && Math.floor(timeGlobal * 10) % 2 === 0) return;
+      if (player.invulnTimer > 0 && Math.floor(timeGlobal * 12) % 2 === 0) return;
       
       ctx.save();
       ctx.translate(player.x, player.y);
-      const wobble = player.isMoving ? Math.sin(timeGlobal * 15) * 3 : 0;
-      
-      // Determine rotation angle based on facing
+
+      // Active Power-Up Auras around Player
+      if (player.buffBerserk > 0) {
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.75)'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(0, 0, player.size + 8 + Math.sin(timeGlobal * 12) * 3, 0, Math.PI * 2); ctx.stroke();
+      }
+      if (player.buffHaste > 0) {
+        ctx.strokeStyle = 'rgba(56, 189, 248, 0.75)'; ctx.lineWidth = 2.5;
+        ctx.setLineDash([6, 6]);
+        ctx.beginPath(); ctx.arc(0, 0, player.size + 11, timeGlobal * 6, timeGlobal * 6 + Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+      if (player.buffShield > 0) {
+        ctx.fillStyle = 'rgba(251, 191, 36, 0.18)'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(0, 0, player.size + 14, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      }
+
+      const wobble = player.isMoving ? Math.sin(timeGlobal * 16) * 3.5 : 0;
       let angle = Math.PI/2;
       if (player.facing === 'up') angle = -Math.PI/2;
       if (player.facing === 'left') angle = Math.PI;
@@ -649,94 +843,88 @@
       
       ctx.rotate(angle);
       
-      // Player Shadow
-      ctx.fillStyle = 'rgba(0,0,0,0.5)';
-      ctx.beginPath(); ctx.ellipse(-wobble, 10, 16, 8, 0, 0, Math.PI * 2); ctx.fill();
+      // Ground Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.55)';
+      ctx.beginPath(); ctx.ellipse(-wobble, 8, 16, 10, 0, 0, Math.PI * 2); ctx.fill();
 
-      ctx.translate(wobble, 0); // Apply walk wobble forward/back
+      ctx.translate(wobble, 0);
 
       if (player.classType === 'warrior') {
-        // Red Cape (Trails behind)
+        // Billowing Crimson Cape
         ctx.fillStyle = '#991b1b';
-        ctx.beginPath(); ctx.moveTo(-6, -10); ctx.lineTo(-24, -16); ctx.lineTo(-24, 16); ctx.lineTo(-6, 10); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(-4, -11); ctx.lineTo(-24, -16 + Math.sin(timeGlobal*10)*2); ctx.lineTo(-24, 16 + Math.sin(timeGlobal*10)*2); ctx.lineTo(-4, 11); ctx.fill();
         
-        // Armor Body
-        ctx.fillStyle = '#94a3b8'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill(); ctx.stroke();
-        
-        // Pauldrons (Shoulders)
-        ctx.fillStyle = '#64748b'; 
-        ctx.beginPath(); ctx.arc(0, -11, 6, 0, Math.PI*2); ctx.arc(0, 11, 6, 0, Math.PI*2); ctx.fill();
-        
-        // Sword Hilt (Right hand)
-        ctx.fillStyle = '#b45309'; ctx.fillRect(10, 10, 18, 3);
-        ctx.fillStyle = '#e2e8f0'; ctx.fillRect(10, 8, 3, 7); // crossguard
+        // Broadsword Blade extending right
+        ctx.fillStyle = '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(10, 11); ctx.lineTo(32, 11); ctx.lineTo(36, 13); ctx.lineTo(32, 15); ctx.lineTo(10, 15); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#fbbf24'; ctx.fillRect(9, 8, 3, 10); // Golden Crossguard
 
-        // Helmet
-        ctx.fillStyle = '#e2e8f0';
-        ctx.beginPath(); ctx.arc(4, 0, 10, 0, Math.PI*2); ctx.fill();
+        // Heater Shield on Left Arm
+        ctx.fillStyle = '#1e3a8a'; ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.roundRect(2, -17, 10, 14, 3); ctx.fill(); ctx.stroke();
+
+        // Steel Pauldrons
+        ctx.fillStyle = '#64748b'; ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(0, -12, 6.5, 0, Math.PI*2); ctx.arc(0, 12, 6.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
         
-        // Visor
-        ctx.fillStyle = '#0f172a';
-        ctx.fillRect(8, -5, 3, 10); // vertical slit
-        ctx.fillRect(4, -1.5, 9, 3); // horizontal slit
+        // Great Helm
+        ctx.fillStyle = '#cbd5e1'; ctx.strokeStyle = '#475569'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(3, 0, 10.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
         
-        // Gold Plume
-        ctx.fillStyle = '#fbbf24';
-        ctx.beginPath(); ctx.arc(-2, 0, 4, 0, Math.PI*2); ctx.fill();
+        // T-Visor Slit
+        ctx.fillStyle = '#090d16';
+        ctx.fillRect(8, -5, 3, 10);
+        ctx.fillRect(4, -1.5, 9, 3);
+        
+        // Flowing Plume
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath(); ctx.ellipse(-4, 0, 6, 3.5, 0, 0, Math.PI*2); ctx.fill();
         
       } else if (player.classType === 'archer') {
-        // Green Cape
+        // Ranger Cloak
         ctx.fillStyle = '#064e3b';
-        ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(-20, -16); ctx.lineTo(-20, 16); ctx.lineTo(0, 12); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(0, -12); ctx.lineTo(-22, -15 + Math.sin(timeGlobal*12)*2); ctx.lineTo(-22, 15 + Math.sin(timeGlobal*12)*2); ctx.lineTo(0, 12); ctx.fill();
         
-        // Quiver & Arrows
-        ctx.fillStyle = '#451a03'; ctx.fillRect(-15, -8, 6, 16);
-        ctx.fillStyle = '#fef08a'; ctx.fillRect(-18, -6, 4, 2); ctx.fillRect(-18, 0, 4, 2); ctx.fillRect(-18, 6, 4, 2);
+        // Leather Quiver & Fletched Arrows
+        ctx.fillStyle = '#78350f'; ctx.fillRect(-15, -9, 6, 14);
+        ctx.fillStyle = '#fef08a'; ctx.fillRect(-18, -7, 4, 2); ctx.fillRect(-18, -2, 4, 2);
         
-        // Green Tunic
-        ctx.fillStyle = '#10b981';
-        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill();
+        // Emerald Tunic & Leather Shoulderpads
+        ctx.fillStyle = '#059669'; ctx.beginPath(); ctx.arc(0, 0, 12.5, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle = '#92400e'; ctx.beginPath(); ctx.arc(0, -11, 5, 0, Math.PI*2); ctx.arc(0, 11, 5, 0, Math.PI*2); ctx.fill();
         
-        // Head & Hood
-        ctx.fillStyle = '#fca5a5'; // Skin tone
-        ctx.beginPath(); ctx.arc(4, 0, 8, 0, Math.PI*2); ctx.fill();
-        ctx.fillStyle = '#047857'; // Hood covering back
-        ctx.beginPath(); ctx.arc(2, 0, 9, Math.PI/2, -Math.PI/2); ctx.fill();
-        
-        // Bow (Right Hand)
-        ctx.strokeStyle = '#78350f'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.arc(12, 12, 14, -Math.PI/2.5, Math.PI/2.5); ctx.stroke();
-        ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 1; // bowstring
-        ctx.beginPath(); ctx.moveTo(17, -1); ctx.lineTo(17, 25); ctx.stroke();
+        // Carved Recurve Bow
+        ctx.strokeStyle = '#b45309'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(10, 0, 14, -Math.PI*0.42, Math.PI*0.42); ctx.stroke();
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(13, -13); ctx.lineTo(13, 13); ctx.stroke();
+
+        // Hooded Head
+        ctx.fillStyle = '#047857'; ctx.strokeStyle = '#34d399'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(3, 0, 9.5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
         
       } else if (player.classType === 'necromancer') {
-        // Shadow Aura
-        ctx.shadowBlur = 15; ctx.shadowColor = '#c084fc';
-        // Purple Robes
-        ctx.fillStyle = '#3b0764';
-        ctx.beginPath(); ctx.moveTo(5, -12); ctx.lineTo(-24, -16); ctx.lineTo(-24, 16); ctx.lineTo(5, 12); ctx.fill();
+        // Tattered Cultist Mantle
+        ctx.fillStyle = '#2e1065';
+        ctx.beginPath(); ctx.moveTo(4, -12); ctx.lineTo(-24, -17 + Math.sin(timeGlobal*8)*2); ctx.lineTo(-24, 17 + Math.sin(timeGlobal*8)*2); ctx.lineTo(4, 12); ctx.fill();
         
-        ctx.fillStyle = '#581c87';
-        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill();
-        ctx.shadowBlur = 0;
+        // Runic Robes
+        ctx.fillStyle = '#4c1d95'; ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(0, 0, 13, 0, Math.PI*2); ctx.fill(); ctx.stroke();
         
-        // Void Face
-        ctx.fillStyle = '#020617';
+        // Shadow Cowled Head
+        ctx.fillStyle = '#090d16';
         ctx.beginPath(); ctx.arc(4, 0, 9, 0, Math.PI*2); ctx.fill();
         
-        // Glowing Eyes
-        ctx.fillStyle = '#a855f7'; ctx.shadowBlur = 8; ctx.shadowColor = '#a855f7';
-        ctx.beginPath(); ctx.arc(7, -3, 2.5, 0, Math.PI*2); ctx.arc(7, 3, 2.5, 0, Math.PI*2); ctx.fill();
+        // Glowing Violet Eyes
+        ctx.fillStyle = '#e879f9'; ctx.shadowBlur = 8; ctx.shadowColor = '#e879f9';
+        ctx.beginPath(); ctx.arc(7, -3.5, 2.2, 0, Math.PI*2); ctx.arc(7, 3.5, 2.2, 0, Math.PI*2); ctx.fill();
         ctx.shadowBlur = 0;
         
-        // Staff
-        ctx.fillStyle = '#451a03';
-        ctx.fillRect(-6, 12, 28, 3);
-        
-        // Necrotic Gem
-        ctx.fillStyle = '#10b981'; ctx.shadowBlur = 10; ctx.shadowColor = '#10b981';
-        ctx.beginPath(); ctx.moveTo(26, 13.5); ctx.lineTo(22, 9); ctx.lineTo(29, 13.5); ctx.lineTo(22, 18); ctx.fill();
+        // Bone Staff & Floating Soul Gem
+        ctx.fillStyle = '#cbd5e1'; ctx.fillRect(-6, 12, 28, 3);
+        ctx.fillStyle = '#34d399'; ctx.shadowBlur = 12; ctx.shadowColor = '#34d399';
+        ctx.beginPath(); ctx.arc(25, 13.5, 4.5 + Math.sin(timeGlobal*8)*1.5, 0, Math.PI*2); ctx.fill();
         ctx.shadowBlur = 0;
       }
       ctx.restore();
@@ -744,25 +932,40 @@
 
     function drawSpider(m) {
       const wobble = Math.sin(m.anim * 8) * 2;
-      ctx.translate(0, wobble);
-      ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 3;
+      ctx.save(); ctx.translate(m.x, m.y + wobble);
+      ctx.strokeStyle = m.hitFlash > 0 ? '#ffffff' : '#1e293b'; ctx.lineWidth = 3;
       for(let i=0; i<4; i++) {
-        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - 15 - i*2, m.y - 10 + i*8); ctx.stroke();
-        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x + 15 + i*2, m.y - 10 + i*8); ctx.stroke();
+        const legSwing = Math.sin(m.anim * 10 + i) * 3;
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(-16 - i*2, -11 + i*7 + legSwing); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(16 + i*2, -11 + i*7 - legSwing); ctx.stroke();
       }
-      ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(m.x, m.y + 4, m.size * 0.8, 0, Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(m.x, m.y - 6, m.size * 0.5, 0, Math.PI*2); ctx.fill();
-      ctx.fillStyle = '#a3e635'; ctx.beginPath(); ctx.arc(m.x - 3, m.y - 8, 2, 0, Math.PI*2); ctx.arc(m.x + 3, m.y - 8, 2, 0, Math.PI*2); ctx.fill();
-      ctx.translate(0, -wobble);
+      ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#0f172a';
+      ctx.strokeStyle = '#475569'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(0, 4, m.size * 0.78, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+      // Red hourglass marking on spider back
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath(); ctx.moveTo(-3, 1); ctx.lineTo(3, 1); ctx.lineTo(-3, 7); ctx.lineTo(3, 7); ctx.closePath(); ctx.fill();
+      ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#0f172a';
+      ctx.beginPath(); ctx.arc(0, -6, m.size * 0.48, 0, Math.PI*2); ctx.fill();
+      ctx.fillStyle = '#84cc16'; ctx.beginPath(); ctx.arc(-3.5, -8, 2.2, 0, Math.PI*2); ctx.arc(3.5, -8, 2.2, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
     }
 
-    // MAIN LOOP
+    // MAIN GAME LOOP
+    let lastTime = performance.now();
+
     function gameLoop(time) {
       requestAnimationFrame(gameLoop);
       const dt = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time; timeGlobal += dt;
 
       if (!isPaused && !isOver && player.classType) {
+        // Tick Temporary Buffs
+        if (player.buffBerserk > 0) player.buffBerserk = Math.max(0, player.buffBerserk - dt);
+        if (player.buffHaste > 0) player.buffHaste = Math.max(0, player.buffHaste - dt);
+        if (player.buffShield > 0) player.buffShield = Math.max(0, player.buffShield - dt);
+        updateBuffBarUI();
+
         let mx = 0, my = 0;
         if (keys['w'] || keys['arrowup']) { my -= 1; player.facing = 'up'; }
         if (keys['s'] || keys['arrowdown']) { my += 1; player.facing = 'down'; }
@@ -771,9 +974,16 @@
         if (mx !== 0 && my !== 0) { mx *= 0.707; my *= 0.707; }
         player.isMoving = (mx !== 0 || my !== 0);
 
-        const moveSpeed = (player.baseSpd + (bootsTier - 1) * 45) * dt;
-        player.x = Math.max(player.size, Math.min(W - player.size, player.x + mx * moveSpeed));
-        player.y = Math.max(player.size, Math.min(H - player.size, player.y + my * moveSpeed));
+        let spd = player.baseSpd + (bootsTier - 1) * 42 + (player.baseSpd * (player.permBonusSpd / 100));
+        if (player.buffHaste > 0) spd *= 1.3;
+
+        player.x = Math.max(WALL_PAD + player.size, Math.min(W - WALL_PAD - player.size, player.x + mx * spd * dt));
+        player.y = Math.max(WALL_PAD + player.size, Math.min(H - WALL_PAD - player.size, player.y + my * spd * dt));
+
+        // Haste trail particles
+        if (player.buffHaste > 0 && player.isMoving && Math.random() < 0.4) {
+          particles.push({ x: player.x, y: player.y, vx: 0, vy: 0, life: 0.2, color: '#38bdf8', size: 4 });
+        }
 
         if (player.atkTimer > 0) player.atkTimer -= dt;
         if (player.invulnTimer > 0) player.invulnTimer -= dt;
@@ -788,30 +998,37 @@
             }
           });
         });
-        playerProjectiles = playerProjectiles.filter(p => p.life > 0 && p.x>0 && p.x<W && p.y>0 && p.y<H);
+        playerProjectiles = playerProjectiles.filter(p => p.life > 0 && p.x > WALL_PAD && p.x < W - WALL_PAD && p.y > WALL_PAD && p.y < H - WALL_PAD);
         cleanupMonsters();
 
         monsters.forEach(m => {
           m.anim += dt * 4;
+          if (m.hitFlash > 0) m.hitFlash -= dt;
           const angle = Math.atan2(player.y - m.y, player.x - m.x);
           
           if (m.type === 'caster' || m.type === 'spider') {
             const distToPlayer = Math.hypot(player.x - m.x, player.y - m.y);
-            if (distToPlayer < 240) { m.x -= Math.cos(angle) * (m.spd * 85) * dt; m.y -= Math.sin(angle) * (m.spd * 85) * dt; }
-            else if (distToPlayer > 360) { m.x += Math.cos(angle) * (m.spd * 85) * dt; m.y += Math.sin(angle) * (m.spd * 85) * dt; }
+            if (distToPlayer < 230) { m.x -= Math.cos(angle) * (m.spd * 85) * dt; m.y -= Math.sin(angle) * (m.spd * 85) * dt; }
+            else if (distToPlayer > 350) { m.x += Math.cos(angle) * (m.spd * 85) * dt; m.y += Math.sin(angle) * (m.spd * 85) * dt; }
 
             m.shootCooldown -= dt;
             if (m.shootCooldown <= 0) {
-              m.shootCooldown = m.type==='spider' ? 1.8 : 2.2; playSound('fire');
-              enemyProjectiles.push({ x: m.x, y: m.y, vx: Math.cos(angle)*(m.type==='spider'?200:250), vy: Math.sin(angle)*(m.type==='spider'?200:250), r: m.type==='spider'?6:8, life: 4.0, color: m.type==='spider'?'#84cc16':'#ec4899' });
+              m.shootCooldown = m.type === 'spider' ? 1.8 : 2.2; playSound('fire');
+              enemyProjectiles.push({ x: m.x, y: m.y, vx: Math.cos(angle)*(m.type==='spider'?205:255), vy: Math.sin(angle)*(m.type==='spider'?205:255), r: m.type==='spider'?6:8, life: 4.0, color: m.type==='spider'?'#84cc16':'#ec4899' });
             }
           } else {
             m.x += Math.cos(angle) * (m.spd * 90) * dt; m.y += Math.sin(angle) * (m.spd * 90) * dt;
           }
 
+          // Clamp monsters inside stone walls
+          m.x = Math.max(WALL_PAD + m.size, Math.min(W - WALL_PAD - m.size, m.x));
+          m.y = Math.max(WALL_PAD + m.size, Math.min(H - WALL_PAD - m.size, m.y));
+
           if (Math.hypot(player.x - m.x, player.y - m.y) < player.size + m.size * 0.75 && player.invulnTimer <= 0) {
             playSound('hit'); screenShake = 12;
-            player.hp = Math.max(0, player.hp - (m.isBoss ? 28 : 15)); player.invulnTimer = 0.8; updateHUD();
+            let rawDmg = m.isBoss ? 28 : 15;
+            if (player.buffShield > 0) rawDmg = Math.round(rawDmg * 0.5);
+            player.hp = Math.max(0, player.hp - rawDmg); player.invulnTimer = 0.8; updateHUD();
             if (player.hp <= 0) triggerGameOver();
           }
         });
@@ -820,24 +1037,57 @@
           p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
           if (Math.hypot(player.x - p.x, player.y - p.y) < player.size + p.r && player.invulnTimer <= 0) {
             playSound('hit'); screenShake = 10;
-            player.hp = Math.max(0, player.hp - 18); player.invulnTimer = 0.7; p.life = 0; updateHUD();
+            let rawDmg = 18;
+            if (player.buffShield > 0) rawDmg = Math.round(rawDmg * 0.5);
+            player.hp = Math.max(0, player.hp - rawDmg); player.invulnTimer = 0.7; p.life = 0; updateHUD();
             if (player.hp <= 0) triggerGameOver();
           }
         });
-        enemyProjectiles = enemyProjectiles.filter(p => p.life > 0 && p.x>0 && p.x<W && p.y>0 && p.y<H);
+        enemyProjectiles = enemyProjectiles.filter(p => p.life > 0 && p.x > WALL_PAD && p.x < W - WALL_PAD && p.y > WALL_PAD && p.y < H - WALL_PAD);
 
+        // Loot Vacuum & Pickup Effects
         lootItems.forEach(item => {
           if (item.vx || item.vy) { item.x += item.vx * dt; item.y += item.vy * dt; item.vx *= 0.88; item.vy *= 0.88; }
+          item.x = Math.max(WALL_PAD + 15, Math.min(W - WALL_PAD - 15, item.x));
+          item.y = Math.max(WALL_PAD + 15, Math.min(H - WALL_PAD - 15, item.y));
+
           const distToPlayer = Math.hypot(player.x - item.x, player.y - item.y);
-          if (item.autoVacuum || distToPlayer < 95) {
+          if (item.autoVacuum || distToPlayer < 105) {
             const pullAngle = Math.atan2(player.y - item.y, player.x - item.x);
-            const pullSpeed = item.autoVacuum ? 620 : 320;
+            const pullSpeed = item.autoVacuum ? 640 : 340;
             item.x += Math.cos(pullAngle) * pullSpeed * dt; item.y += Math.sin(pullAngle) * pullSpeed * dt;
           }
-          if (distToPlayer < player.size + 14) {
-            playSound('loot');
-            if (item.type === 'obsidian') matObsidian++; if (item.type === 'rune') matRunes++; if (item.type === 'scale') matScales++;
-            item.collected = true; updateHUD();
+          if (distToPlayer < player.size + 15) {
+            item.collected = true;
+            if (item.type === 'obsidian') { playSound('loot'); matObsidian++; }
+            else if (item.type === 'rune') { playSound('loot'); matRunes++; }
+            else if (item.type === 'scale') { playSound('loot'); matScales++; }
+            // Temporary Buffs
+            else if (item.type === 'buff_berserk') {
+              playSound('powerup'); player.buffBerserk = 10;
+              damageNumbers.push({ x: player.x, y: player.y - 25, text: "🧪 BERSERK (10s)!", color: '#f87171', life: 1.1, vy: -45 });
+            } else if (item.type === 'buff_haste') {
+              playSound('powerup'); player.buffHaste = 10;
+              damageNumbers.push({ x: player.x, y: player.y - 25, text: "⚡ HASTE (10s)!", color: '#38bdf8', life: 1.1, vy: -45 });
+            } else if (item.type === 'buff_shield') {
+              playSound('powerup'); player.buffShield = 10;
+              damageNumbers.push({ x: player.x, y: player.y - 25, text: "🛡️ AEGIS WARD (10s)!", color: '#fbbf24', life: 1.1, vy: -45 });
+            } else if (item.type === 'heal_heart') {
+              playSound('powerup'); player.hp = Math.min(player.maxHp, player.hp + 20);
+              damageNumbers.push({ x: player.x, y: player.y - 25, text: "❤️ +20 HP!", color: '#34d399', life: 1.0, vy: -45 });
+            }
+            // Rare Permanent Relics!
+            else if (item.type === 'relic_hp') {
+              playSound('relic'); player.permBonusHp += 10; recalcStats(); player.hp = Math.min(player.maxHp, player.hp + 10);
+              damageNumbers.push({ x: player.x, y: player.y - 30, text: "👑 RELIC: +10 MAX HP!", color: '#fde047', life: 1.5, vy: -35 });
+            } else if (item.type === 'relic_dmg') {
+              playSound('relic'); player.permBonusDmg += 3;
+              damageNumbers.push({ x: player.x, y: player.y - 30, text: "🗡️ RELIC: +3 BASE DMG!", color: '#fde047', life: 1.5, vy: -35 });
+            } else if (item.type === 'relic_spd') {
+              playSound('relic'); player.permBonusSpd += 5;
+              damageNumbers.push({ x: player.x, y: player.y - 30, text: "🪶 RELIC: +5% SPEED!", color: '#fde047', life: 1.5, vy: -35 });
+            }
+            updateHUD();
           }
         });
         lootItems = lootItems.filter(i => !i.collected);
@@ -866,7 +1116,9 @@
         }
       }
 
-      // RENDER
+      // ==========================================
+      // RENDER PIPELINE
+      // ==========================================
       ctx.save();
       if (screenShake > 0) {
         ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
@@ -876,14 +1128,59 @@
       const biome = getBiome(floorNum);
       ctx.fillStyle = biome.bg; ctx.fillRect(0, 0, W, H);
 
-      const gridSize = 60;
-      for (let gx = 0; gx < W; gx += gridSize) {
-        for (let gy = 0; gy < H; gy += gridSize) {
-          ctx.fillStyle = ((Math.floor(gx / gridSize) + Math.floor(gy / gridSize)) % 2 === 0) ? biome.tile1 : biome.tile2;
+      // 1. Checkered Dungeon Floor Stones with Bevel Borders
+      const gridSize = 64;
+      for (let gx = WALL_PAD; gx < W - WALL_PAD; gx += gridSize) {
+        for (let gy = WALL_PAD; gy < H - WALL_PAD; gy += gridSize) {
+          const isEven = ((Math.floor(gx / gridSize) + Math.floor(gy / gridSize)) % 2 === 0);
+          ctx.fillStyle = isEven ? biome.tile1 : biome.tile2;
           ctx.fillRect(gx, gy, gridSize, gridSize);
+          ctx.strokeStyle = 'rgba(255,255,255,0.025)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(gx + 1, gy + 1, gridSize - 2, gridSize - 2);
         }
       }
 
+      // 2. Floor Cracks & Pebbles Details
+      ctx.strokeStyle = 'rgba(0,0,0,0.35)'; ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 1.5;
+      floorProps.forEach(fp => {
+        ctx.save(); ctx.translate(fp.x, fp.y); ctx.rotate(fp.rot);
+        if (fp.type === 'crack') {
+          ctx.beginPath(); ctx.moveTo(-12, -5); ctx.lineTo(0, 2); ctx.lineTo(14, -3); ctx.moveTo(0, 2); ctx.lineTo(4, 12); ctx.stroke();
+        } else {
+          ctx.beginPath(); ctx.arc(-6, -4, 3, 0, Math.PI*2); ctx.arc(5, 3, 2, 0, Math.PI*2); ctx.arc(-2, 6, 2.5, 0, Math.PI*2); ctx.fill();
+        }
+        ctx.restore();
+      });
+
+      // 3. 3D Dungeon Stone Perimeter Walls
+      ctx.fillStyle = biome.wall;
+      ctx.fillRect(0, 0, W, WALL_PAD); // Top wall
+      ctx.fillRect(0, H - WALL_PAD, W, WALL_PAD); // Bottom wall
+      ctx.fillRect(0, 0, WALL_PAD, H); // Left wall
+      ctx.fillRect(W - WALL_PAD, 0, WALL_PAD, H); // Right wall
+
+      // Stone Wall Bricks & Inner Shadow Bevel
+      ctx.strokeStyle = 'rgba(0,0,0,0.6)'; ctx.lineWidth = 4;
+      ctx.strokeRect(WALL_PAD, WALL_PAD, W - WALL_PAD * 2, H - WALL_PAD * 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 2;
+      ctx.strokeRect(WALL_PAD - 2, WALL_PAD - 2, W - WALL_PAD * 2 + 4, H - WALL_PAD * 2 + 4);
+
+      // 4. Flickering Wall Torches & Warm Light Pools
+      wallTorches.forEach((t, idx) => {
+        const flicker = Math.sin(timeGlobal * 14 + idx * 2) * 8;
+        const tGrad = ctx.createRadialGradient(t.x, t.y, 4, t.x, t.y, 110 + flicker);
+        tGrad.addColorStop(0, "rgba(251, 146, 60, 0.32)");
+        tGrad.addColorStop(1, "rgba(251, 146, 60, 0.0)");
+        ctx.fillStyle = tGrad;
+        ctx.beginPath(); ctx.arc(t.x, t.y, 110 + flicker, 0, Math.PI * 2); ctx.fill();
+
+        // Torch sconce & flame
+        ctx.fillStyle = '#78350f'; ctx.fillRect(t.x - 3, t.y - 3, 6, 6);
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(t.x, t.y, 4 + Math.sin(timeGlobal*18 + idx)*1.5, 0, Math.PI*2); ctx.fill();
+      });
+
+      // 5. Ambient Biome Particles
       ctx.fillStyle = biome.pColor;
       ambientParticles.forEach(ap => {
         ctx.globalAlpha = (Math.sin(timeGlobal * 2 + ap.offset) + 1) * 0.3 + 0.1;
@@ -891,13 +1188,10 @@
       });
       ctx.globalAlpha = 1.0;
 
-      const torchGrad = ctx.createRadialGradient(player.x, player.y, 40, player.x, player.y, Math.max(W, H) * 0.55);
-      torchGrad.addColorStop(0, "rgba(251, 191, 36, 0.0)"); torchGrad.addColorStop(1, "rgba(0, 0, 0, 0.75)");
-      ctx.fillStyle = torchGrad; ctx.fillRect(0, 0, W, H);
-
+      // 6. Exit Portal
       if (exitPortal) {
         ctx.save(); ctx.translate(exitPortal.x, exitPortal.y); ctx.rotate(exitPortal.rot);
-        ctx.shadowBlur = 15; ctx.shadowColor = '#c084fc';
+        ctx.shadowBlur = 18; ctx.shadowColor = '#c084fc';
         ctx.strokeStyle = '#818cf8'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(0, 0, exitPortal.r, 0, Math.PI * 1.5); ctx.stroke();
         ctx.strokeStyle = '#c084fc'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, exitPortal.r * 0.65, 0, Math.PI * 1.3); ctx.stroke();
         ctx.fillStyle = '#4f46e5'; ctx.beginPath(); ctx.arc(0, 0, exitPortal.r * 0.35, 0, Math.PI * 2); ctx.fill(); ctx.restore();
@@ -905,19 +1199,40 @@
         ctx.fillText(`NEXT FLOOR IN ${Math.ceil(transitionTimer)}s`, exitPortal.x, exitPortal.y - exitPortal.r - 12);
       }
 
+      // 7. Loot Items, Potions & Rare Relics
       lootItems.forEach(item => {
-        ctx.fillStyle = 'rgba(0,0,0,0.4)'; ctx.beginPath(); ctx.ellipse(item.x, item.hoverBaseY || item.y + 12, 10, 4, 0, 0, Math.PI * 2); ctx.fill();
-        ctx.font = '22px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        const hoverY = item.y + Math.sin(timeGlobal * 4 + item.hoverOffset) * 6;
-        ctx.shadowBlur = 10; ctx.shadowColor = item.type === 'obsidian' ? '#38bdf8' : (item.type === 'rune' ? '#c084fc' : '#fbbf24');
-        ctx.fillText(item.type === 'obsidian' ? '💎' : (item.type === 'rune' ? '📜' : '🐉'), item.x, hoverY); ctx.shadowBlur = 0;
+        ctx.fillStyle = 'rgba(0,0,0,0.45)'; ctx.beginPath(); ctx.ellipse(item.x, item.y + 11, 10, 4, 0, 0, Math.PI * 2); ctx.fill();
+        const hoverY = item.y + Math.sin(timeGlobal * 4.5 + item.hoverOffset) * 5;
+
+        let icon = '💎', glowColor = '#38bdf8', isSpecial = false;
+        if (item.type === 'rune') { icon = '📜'; glowColor = '#c084fc'; }
+        else if (item.type === 'scale') { icon = '🐉'; glowColor = '#fbbf24'; }
+        else if (item.type === 'buff_berserk') { icon = '🧪'; glowColor = '#ef4444'; isSpecial = true; }
+        else if (item.type === 'buff_haste') { icon = '⚡'; glowColor = '#38bdf8'; isSpecial = true; }
+        else if (item.type === 'buff_shield') { icon = '🛡️'; glowColor = '#fbbf24'; isSpecial = true; }
+        else if (item.type === 'heal_heart') { icon = '❤️'; glowColor = '#10b981'; isSpecial = true; }
+        else if (item.type === 'relic_hp') { icon = '👑'; glowColor = '#fde047'; isSpecial = true; }
+        else if (item.type === 'relic_dmg') { icon = '🗡️'; glowColor = '#fde047'; isSpecial = true; }
+        else if (item.type === 'relic_spd') { icon = '🪶'; glowColor = '#fde047'; isSpecial = true; }
+
+        if (isSpecial) {
+          ctx.strokeStyle = glowColor; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(item.x, hoverY, 15 + Math.sin(timeGlobal * 6) * 2, 0, Math.PI * 2); ctx.stroke();
+        }
+
+        ctx.font = isSpecial ? '24px system-ui' : '21px system-ui';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 12; ctx.shadowColor = glowColor;
+        ctx.fillText(icon, item.x, hoverY);
+        ctx.shadowBlur = 0;
       });
 
+      // 8. Projectiles
       playerProjectiles.forEach(p => {
         ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.angle);
         if (p.type === 'arrow') {
-          ctx.strokeStyle = '#78350f'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-15, 0); ctx.lineTo(10, 0); ctx.stroke();
-          ctx.fillStyle = '#94a3b8'; ctx.beginPath(); ctx.moveTo(10, -4); ctx.lineTo(18, 0); ctx.lineTo(10, 4); ctx.fill();
+          ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(10, 0); ctx.stroke();
+          ctx.fillStyle = '#e2e8f0'; ctx.beginPath(); ctx.moveTo(10, -4.5); ctx.lineTo(19, 0); ctx.lineTo(10, 4.5); ctx.fill();
         } else {
           ctx.fillStyle = '#9333ea'; ctx.shadowBlur = 15; ctx.shadowColor = '#d8b4fe';
           ctx.beginPath(); ctx.arc(0, 0, p.r + Math.sin(timeGlobal*10)*3, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
@@ -926,16 +1241,21 @@
       });
 
       enemyProjectiles.forEach(p => {
-        ctx.fillStyle = p.color; ctx.shadowBlur = 15; ctx.shadowColor = p.color;
+        ctx.fillStyle = p.color; ctx.shadowBlur = 14; ctx.shadowColor = p.color;
         ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
       });
 
+      // 9. Monsters
       monsters.forEach(m => {
-        ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.75, m.size * 0.9, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.78, m.size * 0.9, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
         if (m.isBoss) {
-          const pulse = Math.sin(m.anim * 2) * 4; const bSize = m.size + pulse;
-          ctx.fillStyle = '#881337'; ctx.beginPath(); ctx.arc(m.x, m.y + 8, bSize * 1.05, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#4c0519'; ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(m.x, m.y, bSize * 0.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          // Boss Menacing Ground Ring
+          ctx.strokeStyle = 'rgba(244, 63, 94, 0.45)'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(m.x, m.y, m.size * 1.25 + Math.sin(timeGlobal*5)*4, 0, Math.PI*2); ctx.stroke();
+
+          const pulse = Math.sin(m.anim * 2) * 3.5; const bSize = m.size + pulse;
+          ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#881337'; ctx.beginPath(); ctx.arc(m.x, m.y + 8, bSize * 1.05, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#4c0519'; ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(m.x, m.y, bSize * 0.8, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
           ctx.fillStyle = '#f59e0b'; ctx.beginPath(); ctx.moveTo(m.x - bSize * 0.5, m.y - bSize * 0.3); ctx.quadraticCurveTo(m.x - bSize * 1.2, m.y - bSize * 1.1, m.x - bSize * 0.2, m.y - bSize * 1.2); ctx.quadraticCurveTo(m.x - bSize * 0.7, m.y - bSize * 0.7, m.x - bSize * 0.3, m.y - bSize * 0.2); ctx.closePath(); ctx.fill();
           ctx.beginPath(); ctx.moveTo(m.x + bSize * 0.5, m.y - bSize * 0.3); ctx.quadraticCurveTo(m.x + bSize * 1.2, m.y - bSize * 1.1, m.x + bSize * 0.2, m.y - bSize * 1.2); ctx.quadraticCurveTo(m.x + bSize * 0.7, m.y - bSize * 0.7, m.x + bSize * 0.3, m.y - bSize * 0.2); ctx.closePath(); ctx.fill();
           ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.moveTo(m.x - 24, m.y - bSize * 0.6); ctx.lineTo(m.x - 14, m.y - bSize * 0.95); ctx.lineTo(m.x, m.y - bSize * 0.65); ctx.lineTo(m.x + 14, m.y - bSize * 0.95); ctx.lineTo(m.x + 22, m.y - bSize * 0.6); ctx.closePath(); ctx.fill();
@@ -943,43 +1263,55 @@
           ctx.fillStyle = '#dc2626'; ctx.beginPath(); ctx.arc(m.x - 14, m.y - 2, 3, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(m.x + 14, m.y - 2, 3, 0, Math.PI * 2); ctx.fill();
         } else if (m.type === 'spider') drawSpider(m);
         else if (m.type === 'caster') {
-          const hover = Math.sin(m.anim * 2) * 5; ctx.translate(0, hover);
-          ctx.fillStyle = '#581c87'; ctx.beginPath(); ctx.moveTo(m.x, m.y - m.size); ctx.lineTo(m.x + m.size, m.y + m.size); ctx.lineTo(m.x - m.size, m.y + m.size); ctx.closePath(); ctx.fill();
+          const hover = Math.sin(m.anim * 2) * 5; ctx.save(); ctx.translate(0, hover);
+          ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#581c87'; ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(m.x, m.y - m.size); ctx.lineTo(m.x + m.size, m.y + m.size); ctx.lineTo(m.x - m.size, m.y + m.size); ctx.closePath(); ctx.fill(); ctx.stroke();
           ctx.fillStyle = '#c084fc'; ctx.beginPath(); ctx.arc(m.x, m.y - 4, 8, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.arc(m.x + m.size * 0.9, m.y + Math.sin(m.anim * 4) * 8, 7, 0, Math.PI * 2); ctx.fill(); ctx.translate(0, -hover);
+          ctx.fillStyle = '#ec4899'; ctx.beginPath(); ctx.arc(m.x + m.size * 0.9, m.y + Math.sin(m.anim * 4) * 8, 7, 0, Math.PI * 2); ctx.fill(); ctx.restore();
         } else if (m.type === 'skeleton') {
-          const bob = Math.abs(Math.sin(m.anim * 3)) * 4; ctx.translate(0, -bob);
-          ctx.fillStyle = '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(m.x, m.y - 4, m.size * 0.75, Math.PI, 0, false); ctx.lineTo(m.x + m.size * 0.45, m.y + m.size * 0.65); ctx.lineTo(m.x - m.size * 0.45, m.y + m.size * 0.65); ctx.closePath(); ctx.fill(); ctx.stroke();
+          const bob = Math.abs(Math.sin(m.anim * 3)) * 4; ctx.save(); ctx.translate(0, -bob);
+          ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : '#e2e8f0'; ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(m.x, m.y - 4, m.size * 0.75, Math.PI, 0, false); ctx.lineTo(m.x + m.size * 0.45, m.y + m.size * 0.65); ctx.lineTo(m.x - m.size * 0.45, m.y + m.size * 0.65); ctx.closePath(); ctx.fill(); ctx.stroke();
           ctx.fillStyle = '#020617'; ctx.beginPath(); ctx.ellipse(m.x - 8, m.y - 3, 5, 7, -0.2, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.ellipse(m.x + 8, m.y - 3, 5, 7, 0.2, 0, Math.PI * 2); ctx.fill();
           ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(m.x - 8, m.y - 3, 2, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(m.x + 8, m.y - 3, 2, 0, Math.PI * 2); ctx.fill();
-          ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1.5; for (let tx = -8; tx <= 8; tx += 4) { ctx.beginPath(); ctx.moveTo(m.x + tx, m.y + 11); ctx.lineTo(m.x + tx, m.y + 16); ctx.stroke(); }
-          ctx.translate(0, bob);
+          ctx.restore();
         } else {
           const squish = Math.sin(m.anim * 2) * 0.15; const rx = m.size * (1 + squish); const ry = m.size * (1 - squish);
-          ctx.fillStyle = 'rgba(5, 150, 105, 0.85)'; ctx.beginPath(); ctx.ellipse(m.x, m.y, rx, ry, 0, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#34d399'; ctx.beginPath(); ctx.ellipse(m.x - rx * 0.15, m.y - ry * 0.25, rx * 0.4, ry * 0.35, 0, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(m.x - 7, m.y - 3, 4.5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(m.x + 7, m.y - 3, 4.5, 0, Math.PI * 2); ctx.fill();
-          ctx.fillStyle = '#064e3b'; ctx.beginPath(); ctx.arc(m.x - 6, m.y - 3, 2.2, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(m.x + 8, m.y - 3, 2.2, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = m.hitFlash > 0 ? '#ffffff' : 'rgba(16, 185, 129, 0.88)'; ctx.strokeStyle = '#6ee7b7'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.ellipse(m.x, m.y, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+          ctx.fillStyle = '#a7f3d0'; ctx.beginPath(); ctx.ellipse(m.x - rx * 0.18, m.y - ry * 0.25, rx * 0.35, ry * 0.3, 0, 0, Math.PI * 2); ctx.fill();
+          ctx.fillStyle = '#064e3b'; ctx.beginPath(); ctx.arc(m.x - 6, m.y - 2, 3, 0, Math.PI * 2); ctx.arc(m.x + 6, m.y - 2, 3, 0, Math.PI * 2); ctx.fill();
         }
-        const barW = m.size * 2.2; ctx.fillStyle = 'rgba(15, 23, 42, 0.85)'; ctx.fillRect(m.x - barW / 2, m.y - m.size - 16, barW, 6);
-        ctx.fillStyle = m.isBoss ? '#f59e0b' : '#ef4444'; ctx.fillRect(m.x - barW / 2, m.y - m.size - 16, (m.hp / m.maxHp) * barW, 6);
+        const barW = m.size * 2.2; ctx.fillStyle = 'rgba(15, 23, 42, 0.9)'; ctx.fillRect(m.x - barW / 2, m.y - m.size - 15, barW, 6);
+        ctx.fillStyle = m.isBoss ? '#f59e0b' : '#ef4444'; ctx.fillRect(m.x - barW / 2, m.y - m.size - 15, (m.hp / m.maxHp) * barW, 6);
       });
 
+      // 10. Sword Slash Arc
       if (swordSlash && player.classType === 'warrior') {
-        const sweepAngle = Math.PI * 0.8;
+        const sweepAngle = Math.PI * 0.85;
         ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(swordSlash.angle);
         const atkGrad = ctx.createRadialGradient(0, 0, swordSlash.r * 0.2, 0, 0, swordSlash.r);
-        atkGrad.addColorStop(0, "rgba(253, 230, 138, 0.0)"); atkGrad.addColorStop(0.7, "rgba(251, 191, 36, 0.6)"); atkGrad.addColorStop(1, "rgba(245, 158, 11, 0.0)");
+        atkGrad.addColorStop(0, "rgba(253, 230, 138, 0.0)");
+        atkGrad.addColorStop(0.7, player.buffBerserk > 0 ? "rgba(239, 68, 68, 0.7)" : "rgba(251, 191, 36, 0.65)");
+        atkGrad.addColorStop(1, "rgba(245, 158, 11, 0.0)");
         ctx.fillStyle = atkGrad; ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2); ctx.fill();
-        ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2); ctx.stroke(); ctx.restore();
+        ctx.strokeStyle = player.buffBerserk > 0 ? '#fca5a5' : '#fef08a'; ctx.lineWidth = 3.5; ctx.beginPath(); ctx.arc(0, 0, swordSlash.r, -sweepAngle/2, sweepAngle/2); ctx.stroke(); ctx.restore();
       }
 
       if (player.classType) drawPlayer();
 
+      // 11. Subtle Torch Vignette around Player
+      const torchGrad = ctx.createRadialGradient(player.x, player.y, 60, player.x, player.y, Math.max(W, H) * 0.65);
+      torchGrad.addColorStop(0, "rgba(0, 0, 0, 0.0)");
+      torchGrad.addColorStop(1, "rgba(0, 0, 0, 0.55)");
+      ctx.fillStyle = torchGrad; ctx.fillRect(0, 0, W, H);
+
+      // 12. Particles & Damage Floaters
       particles.forEach(p => { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); });
       damageNumbers.forEach(d => {
         ctx.font = '900 18px system-ui'; ctx.fillStyle = d.color; ctx.textAlign = 'center';
-        ctx.globalAlpha = Math.max(0, d.life / 0.7); ctx.fillText(d.text, d.x, d.y); ctx.globalAlpha = 1.0;
+        ctx.shadowColor = '#000'; ctx.shadowBlur = 4;
+        ctx.globalAlpha = Math.max(0, d.life / 0.7); ctx.fillText(d.text, d.x, d.y); ctx.globalAlpha = 1.0; ctx.shadowBlur = 0;
       });
 
       ctx.restore();
@@ -987,8 +1319,9 @@
 
     window.addEventListener('load', () => {
       resize();
-      if(player.classType) { updateForgeUI(); spawnFloor(1); lastTime = performance.now(); requestAnimationFrame(gameLoop); } 
-      else { showClassSelect(); requestAnimationFrame(gameLoop); }
+      showClassSelect();
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
     });
   </script>
 </body>
