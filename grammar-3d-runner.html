@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>3D Grammar Quest • Cyber Runner 3D</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Three.js from CDN (Runs native 3D WebGL in all browsers) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <style>
+    body, html { margin: 0; padding: 0; overflow: hidden; height: 100%; user-select: none; }
+    #canvas3d { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+    #uiLayer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; pointer-events: none; }
+    .interactive { pointer-events: auto; }
+  </style>
+</head>
+<body class="bg-slate-950 text-white font-sans">
+
+  <!-- 3D WebGL Canvas -->
+  <div id="canvas3d"></div>
+
+  <!-- HUD Overlay -->
+  <div id="uiLayer" class="flex flex-col justify-between p-4 md:p-6">
+    
+    <!-- Top Bar -->
+    <div class="flex items-center justify-between w-full max-w-4xl mx-auto interactive">
+      <div class="flex items-center gap-3 bg-slate-900/80 backdrop-blur border border-slate-700/80 px-4 py-2 rounded-2xl shadow-xl">
+        <a href="index.html" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition">← Hub</a>
+        <div>
+          <span class="text-[10px] text-indigo-400 font-bold uppercase tracking-wider block">Cyber Runner 3D</span>
+          <span class="text-sm font-black text-white">Grammar Trials</span>
+        </div>
+      </div>
+
+      <!-- Shield / HP Bar & Timer -->
+      <div class="flex items-center gap-4 bg-slate-900/80 backdrop-blur border border-slate-700/80 px-4 py-2 rounded-2xl shadow-xl font-mono text-xs">
+        <div>
+          <div class="flex justify-between gap-2 text-[10px] text-slate-400 mb-0.5">
+            <span>SHIELD HULL</span>
+            <span id="hudShieldText">100%</span>
+          </div>
+          <div class="w-24 md:w-32 bg-slate-800 h-2 rounded-full overflow-hidden">
+            <div id="hudShieldBar" class="bg-cyan-400 h-full transition-all duration-300" style="width: 100%;"></div>
+          </div>
+        </div>
+
+        <div class="border-r border-slate-700 h-6"></div>
+
+        <div class="text-center">
+          <span class="text-[10px] text-slate-400 uppercase block">Boss Gate In</span>
+          <span id="hudTrialTimer" class="font-black text-amber-400 text-base">30s</span>
+        </div>
+
+        <div class="border-r border-slate-700 h-6"></div>
+
+        <div class="text-center">
+          <span class="text-[10px] text-slate-400 uppercase block">Distance</span>
+          <span id="hudScore" class="font-black text-emerald-400 text-base">0m</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- On-screen touch/mobile controls -->
+    <div class="flex justify-between w-full max-w-lg mx-auto interactive md:hidden mb-4">
+      <button id="btnTouchLeft" class="w-20 h-20 bg-slate-900/80 border-2 border-indigo-500/60 active:bg-indigo-600/80 rounded-2xl flex items-center justify-center text-3xl font-black">←</button>
+      <button id="btnTouchRight" class="w-20 h-20 bg-slate-900/80 border-2 border-indigo-500/60 active:bg-indigo-600/80 rounded-2xl flex items-center justify-center text-3xl font-black">→</button>
+    </div>
+
+    <div class="text-center text-[11px] text-slate-400 hidden md:block">
+      Controls: <kbd class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 text-white font-mono">A</kbd> / <kbd class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 text-white font-mono">D</kbd> or <kbd class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 text-white font-mono">←</kbd> / <kbd class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 text-white font-mono">→</kbd> to steer
+    </div>
+
+  </div>
+
+  <!-- 30-SECOND GRAMMAR GATE MODAL (STOPS THE 3D WORLD) -->
+  <div id="grammarModal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border-2 border-indigo-500 rounded-3xl p-6 md:p-8 max-w-xl w-full text-center space-y-5 shadow-2xl relative animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-indigo-300 text-xs font-bold uppercase tracking-wider">
+        ⚠️ Boss Barrier Active • Solve to Breach!
+      </div>
+      <div>
+        <h3 class="text-xl md:text-2xl font-black text-white">Grammar Security Lock</h3>
+        <p class="text-slate-400 text-xs mt-1">Nonrestrictive & Parenthetical Punctuation</p>
+      </div>
+
+      <div class="bg-slate-950/80 p-4 rounded-2xl border border-slate-800">
+        <p id="gateQuestion" class="text-base md:text-lg font-bold text-slate-100 min-h-[3.5rem] flex items-center justify-center"></p>
+        <p id="gateHint" class="text-xs text-slate-400 italic mt-2"></p>
+      </div>
+
+      <div id="gateOptions" class="grid grid-cols-1 sm:grid-cols-2 gap-3"></div>
+      
+      <div id="gateFeedback" class="hidden text-center p-3 rounded-xl text-xs font-bold"></div>
+    </div>
+  </div>
+
+  <!-- GAME OVER / VICTORY MODAL -->
+  <div id="gameOverModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-slate-900 border border-slate-700 rounded-3xl p-6 md:p-8 max-w-md w-full text-center space-y-5 shadow-2xl">
+      <div id="overIcon" class="w-16 h-16 rounded-2xl bg-rose-500/20 text-rose-400 mx-auto flex items-center justify-center text-4xl">💥</div>
+      <div>
+        <h3 id="overTitle" class="text-2xl font-black text-white">Shield Depleted!</h3>
+        <p id="overDesc" class="text-slate-400 text-xs mt-1">Your 3D runner collided with too many obstacles.</p>
+      </div>
+      <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-around font-mono">
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase">Distance</span>
+          <span id="finalDistance" class="text-xl font-bold text-amber-400">0m</span>
+        </div>
+        <div class="border-r border-slate-800"></div>
+        <div>
+          <span class="text-[10px] text-slate-400 block uppercase">Grammar Acc</span>
+          <span id="finalAccuracy" class="text-xl font-bold text-emerald-400">0%</span>
+        </div>
+      </div>
+      <div class="flex gap-3">
+        <a href="index.html" class="w-1/2 py-3 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-xl transition flex items-center justify-center">Exit to Hub</a>
+        <button onclick="restart3DGame()" class="w-1/2 py-3 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white text-xs font-bold rounded-xl shadow-lg transition">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. GRAMMAR QUESTION POOL (TOPIC 3 WEDNESDAY TEST)
+    // ==========================================
+    const GATE_QUESTIONS = [
+      {
+        q: "Which sentence correctly punctuates the nonrestrictive element?",
+        ans: "My dog, a golden retriever, loves swimming.",
+        dist: [
+          "My dog a golden retriever, loves swimming.",
+          "My dog, a golden retriever loves swimming.",
+          "My dog a golden retriever loves swimming."
+        ],
+        hint: "When nonessential information is in the middle of a sentence, use commas on BOTH sides."
+      },
+      {
+        q: "A _____ element gives extra, nonessential details that can be removed without changing the core meaning.",
+        ans: "Nonrestrictive",
+        dist: ["Restrictive", "Prepositional", "Dependent"],
+        hint: "It does not restrict the noun's identity; it takes commas, dashes, or parentheses."
+      },
+      {
+        q: "A _____ element is essential to the sentence to identify WHICH person or thing is being talked about.",
+        ans: "Restrictive",
+        dist: ["Nonrestrictive", "Parenthetical", "Appositive"],
+        hint: "It restricts the noun; do NOT use commas around it!"
+      },
+      {
+        q: "Which relative pronoun introduces a restrictive (essential) clause with NO commas?",
+        ans: "That",
+        dist: ["Which", "Whom", "Where"],
+        hint: "'The cookies that had chocolate chips were eaten.' (No commas with 'that')."
+      },
+      {
+        q: "Which relative pronoun introduces a nonrestrictive (extra info) clause WITH commas?",
+        ans: "Which",
+        dist: ["That", "What", "Whose"],
+        hint: "'The car, which was red, went fast.'"
+      },
+      {
+        q: "What punctuation marks are best used for a sudden, dramatic pause or strong emphasis?",
+        ans: "Dashes (— —)",
+        dist: ["Parentheses ( )", "Hyphens (-)", "Semicolons (;)"],
+        hint: "Em-dashes draw the biggest visual interruption to the sentence."
+      },
+      {
+        q: "What punctuation marks are best used for a quiet aside, extra fact, or background detail?",
+        ans: "Parentheses ( )",
+        dist: ["Dashes (— —)", "Quotation marks", "Colons (:)"],
+        hint: "Think of whispering a minor bonus fact."
+      },
+      {
+        q: "Choose the correctly punctuated sentence using paired dashes:",
+        ans: "The treasure—filled with gold coins—was finally opened.",
+        dist: [
+          "The treasure, filled with gold coins—was finally opened.",
+          "The treasure—filled with gold coins, was finally opened.",
+          "The treasure (filled with gold coins—was finally opened."
+        ],
+        hint: "Never mix an opening dash with a closing comma! Punctuation must match in pairs."
+      },
+      {
+        q: "In 'The boy who won the spelling bee got a trophy,' the clause 'who won the spelling bee' is:",
+        ans: "Restrictive (essential, no commas)",
+        dist: ["Nonrestrictive (needs commas)", "A parenthetical dash", "A standalone sentence"],
+        hint: "If you remove it, you don't know WHICH boy got the trophy."
+      },
+      {
+        q: "In 'Abraham Lincoln, the 16th US president, was born in a log cabin,' 'the 16th US president' is:",
+        ans: "A nonrestrictive appositive",
+        dist: ["A restrictive clause", "A verb phrase", "An independent sentence"],
+        hint: "His name already tells us who he is; the title is bonus information."
+      }
+    ];
+
+    // ==========================================
+    // 2. THREE.JS 3D RUNNER ENGINE
+    // ==========================================
+    let scene, camera, renderer;
+    let player;
+    let obstacles = [];
+    let crystals = [];
+    let laneWidth = 2.4;
+    let currentLane = 0; // -1 = Left, 0 = Center, 1 = Right
+    let targetX = 0;
+    let gameSpeed = 0.55;
+    let distanceTraveled = 0;
+    let shieldHp = 100;
+    let isGamePaused = false;
+    let isGameOver = false;
+
+    // 30-Second Question Timer
+    let trialTimerVal = 30;
+    let timerInterval = null;
+
+    // Accuracy Tracking
+    let totalAttempts = 0;
+    let correctAttempts = 0;
+
+    function init3D() {
+      const container = document.getElementById('canvas3d');
+      container.innerHTML = '';
+
+      // Scene & Fog
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x020617);
+      scene.fog = new THREE.FogExp2(0x020617, 0.025);
+
+      // Camera
+      camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 3.8, 6.5);
+      camera.rotation.x = -0.32;
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      container.appendChild(renderer.domElement);
+
+      // Lighting
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0x818cf8, 1.2);
+      dirLight.position.set(5, 12, 10);
+      scene.add(dirLight);
+
+      // 3D Runway Grid Floor
+      const gridGeo = new THREE.PlaneGeometry(8, 200, 8, 50);
+      const gridMat = new THREE.MeshBasicMaterial({ color: 0x1e1b4b, wireframe: true });
+      const runwayFloor = new THREE.Mesh(gridGeo, gridMat);
+      runwayFloor.rotation.x = -Math.PI / 2;
+      runwayFloor.position.z = -80;
+      scene.add(runwayFloor);
+
+      // Neon Guide Rails
+      const railGeo = new THREE.BoxGeometry(0.15, 0.2, 200);
+      const railMat = new THREE.MeshBasicMaterial({ color: 0x6366f1 });
+      const leftRail = new THREE.Mesh(railGeo, railMat);
+      leftRail.position.set(-4, 0.1, -80);
+      scene.add(leftRail);
+
+      const rightRail = new THREE.Mesh(railGeo, railMat);
+      rightRail.position.set(4, 0.1, -80);
+      scene.add(rightRail);
+
+      // 3D Player Character (Robo Runner Craft)
+      const playerGroup = new THREE.Group();
+      
+      const bodyGeo = new THREE.ConeGeometry(0.55, 1.4, 4);
+      const bodyMat = new THREE.MeshStandardMaterial({ color: 0x06b6d4, roughness: 0.3, metalness: 0.8 });
+      const body = new THREE.Mesh(bodyGeo, bodyMat);
+      body.rotation.x = Math.PI / 2;
+      playerGroup.add(body);
+
+      // Jet Thruster Glow
+      const thrusterGeo = new THREE.SphereGeometry(0.2, 8, 8);
+      const thrusterMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+      const thruster = new THREE.Mesh(thrusterGeo, thrusterMat);
+      thruster.position.set(0, 0, 0.7);
+      playerGroup.add(thruster);
+
+      player = playerGroup;
+      player.position.set(0, 0.7, 0);
+      scene.add(player);
+
+      // Initial Obstacles & Collectibles
+      obstacles = [];
+      crystals = [];
+      for (let i = 0; i < 6; i++) {
+        spawnObstacle(-25 - (i * 22));
+      }
+      for (let i = 0; i < 8; i++) {
+        spawnCrystal(-15 - (i * 18));
+      }
+
+      window.addEventListener('resize', onWindowResize);
+      setupControls();
+
+      // Reset State
+      distanceTraveled = 0;
+      shieldHp = 100;
+      isGameOver = false;
+      isGamePaused = false;
+      trialTimerVal = 30;
+      updateHUD();
+
+      // Start 30s Countdown
+      clearInterval(timerInterval);
+      timerInterval = setInterval(handleTrialCountdown, 1000);
+
+      animate();
+    }
+
+    function spawnObstacle(zPos) {
+      const lane = Math.floor(Math.random() * 3) - 1; // -1, 0, or 1
+      const obsGeo = new THREE.BoxGeometry(1.2, 1.2, 1.2);
+      const obsMat = new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.6, roughness: 0.2 });
+      const obs = new THREE.Mesh(obsGeo, obsMat);
+      obs.position.set(lane * laneWidth, 0.6, zPos);
+      scene.add(obs);
+      obstacles.push(obs);
+    }
+
+    function spawnCrystal(zPos) {
+      const lane = Math.floor(Math.random() * 3) - 1;
+      const cryGeo = new THREE.OctahedronGeometry(0.35);
+      const cryMat = new THREE.MeshBasicMaterial({ color: 0x34d399, wireframe: true });
+      const cry = new THREE.Mesh(cryGeo, cryMat);
+      cry.position.set(lane * laneWidth, 0.8, zPos);
+      scene.add(cry);
+      crystals.push(cry);
+    }
+
+    function setupControls() {
+      window.addEventListener('keydown', (e) => {
+        if (isGamePaused || isGameOver) return;
+        if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') moveLane(-1);
+        if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') moveLane(1);
+      });
+
+      document.getElementById('btnTouchLeft').onclick = () => moveLane(-1);
+      document.getElementById('btnTouchRight').onclick = () => moveLane(1);
+    }
+
+    function moveLane(dir) {
+      currentLane = Math.max(-1, Math.min(1, currentLane + dir));
+      targetX = currentLane * laneWidth;
+    }
+
+    function handleTrialCountdown() {
+      if (isGamePaused || isGameOver) return;
+      trialTimerVal--;
+      document.getElementById('hudTrialTimer').textContent = `${trialTimerVal}s`;
+
+      if (trialTimerVal <= 0) {
+        triggerGrammarGate();
+      }
+    }
+
+    // ==========================================
+    // 3. 30-SECOND GRAMMAR GATE LOCK
+    // ==========================================
+    let currentGateQuestion = null;
+
+    function triggerGrammarGate() {
+      isGamePaused = true;
+      trialTimerVal = 30; // reset for next round
+
+      currentGateQuestion = GATE_QUESTIONS[Math.floor(Math.random() * GATE_QUESTIONS.length)];
+      document.getElementById('gateQuestion').textContent = currentGateQuestion.q;
+      document.getElementById('gateHint').textContent = `Rule hint: ${currentGateQuestion.hint}`;
+
+      const grid = document.getElementById('gateOptions');
+      grid.innerHTML = '';
+      const opts = [currentGateQuestion.ans, ...currentGateQuestion.dist].sort(() => Math.random() - 0.5);
+
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = "p-3.5 bg-slate-800 hover:bg-indigo-950 border border-slate-700 hover:border-indigo-400 rounded-xl font-bold text-xs md:text-sm text-slate-100 transition active:scale-95 text-left";
+        btn.textContent = opt;
+        btn.onclick = () => handleGateAnswer(opt, btn);
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('gateFeedback').className = "hidden";
+      document.getElementById('grammarModal').classList.remove('hidden');
+    }
+
+    function handleGateAnswer(selected, btnEl) {
+      totalAttempts++;
+      const isCorrect = selected === currentGateQuestion.ans;
+      const fb = document.getElementById('gateFeedback');
+      fb.classList.remove('hidden');
+
+      if (isCorrect) {
+        correctAttempts++;
+        playSound('win');
+        shieldHp = Math.min(100, shieldHp + 25); // restore shield
+        distanceTraveled += 200; // bonus distance
+        updateHUD();
+
+        fb.className = "p-3 rounded-xl text-xs font-bold bg-emerald-950/80 border border-emerald-500/50 text-emerald-300";
+        fb.innerHTML = `✨ <b>GATE BREACHED!</b> Hull restored (+25%) and +200m Speed Boost awarded!`;
+
+        setTimeout(() => {
+          document.getElementById('grammarModal').classList.add('hidden');
+          isGamePaused = false;
+        }, 1100);
+
+      } else {
+        playSound('wrong');
+        shieldHp = Math.max(0, shieldHp - 35); // punishment
+        updateHUD();
+
+        fb.className = "p-3 rounded-xl text-xs font-bold bg-rose-950/80 border border-rose-500/50 text-rose-300";
+        fb.innerHTML = `⚠️ <b>SECURITY LOCKOUT!</b> Barrier shocked runner for
