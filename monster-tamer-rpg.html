@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Monster Tamer RPG • Pet Shop & Arena</title>
+  <title>Monster Tamer RPG • Custom Sprites & Evolutions</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #06130e; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
@@ -23,10 +23,10 @@
     .bar-bg { width: 7rem; height: 0.7rem; background: #090d16; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
     .bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.2s ease; }
 
-    .pet-slot-pill { background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 0.25rem 0.65rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.35rem; }
+    .pet-slot-pill { background: rgba(15, 23, 42, 0.95); border: 1px solid #334155; padding: 0.25rem 0.65rem; border-radius: 0.75rem; font-size: 0.74rem; font-weight: 800; display: flex; align-items: center; gap: 0.35rem; }
 
     .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
-    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #eab308; border-radius: 1.5rem; max-width: 52rem; width: 100%; padding: 1.35rem 1.6rem; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.95); max-height: 94vh; overflow-y: auto; }
+    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #eab308; border-radius: 1.5rem; max-width: 54rem; width: 100%; padding: 1.35rem 1.6rem; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.95); max-height: 94vh; overflow-y: auto; }
 
     .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; margin-top: 0.9rem; }
     @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
@@ -39,6 +39,7 @@
     @media (min-width: 720px) { .shop-grid { grid-template-columns: 1fr 1fr; } }
     .shop-card { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 1rem; padding: 0.75rem 0.95rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
     .shop-card.equipped { border-color: #10b981; background: rgba(6, 78, 59, 0.25); }
+    .evo-badge { font-size: 0.65rem; padding: 0.1rem 0.45rem; border-radius: 9999px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.04em; display: inline-block; margin-left: 0.3rem; }
 
     .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
     .dpad-row { display: flex; gap: 0.35rem; }
@@ -147,8 +148,8 @@
     <div class="modal-card">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:0.75rem; margin-bottom:0.85rem; flex-wrap:wrap; gap:0.5rem;">
         <div style="text-align:left;">
-          <h3 style="font-size:1.45rem; font-weight:900; color:#fde047;">🐾 Tamer & Companion Sanctuary</h3>
-          <p style="font-size:0.76rem; color:#94a3b8;">Upgrade your Hero or buy, level up, and equip up to <b>3 active Pets</b>!</p>
+          <h3 style="font-size:1.45rem; font-weight:900; color:#fde047;">🐾 Tamer & Evolution Sanctuary</h3>
+          <p style="font-size:0.75rem; color:#94a3b8;">Pets evolve at <b>Lv. 5</b>, <b>Lv. 10</b>, and <b>Lv. 15</b>—gaining new forms, multi-shots, and stronger passives!</p>
         </div>
         <div style="display:flex; align-items:center; gap:1rem;">
           <div style="background:#090d16; border:1px solid #eab308; padding:0.45rem 1rem; border-radius:0.85rem; font-family:monospace; font-size:1rem; font-weight:900; color:#fde047;">
@@ -158,7 +159,7 @@
         </div>
       </div>
 
-      <div id="shopMsg" style="font-size:0.8rem; font-weight:800; color:#4ade80; min-height:1.2rem; margin-bottom:0.4rem;"></div>
+      <div id="shopMsg" style="font-size:0.82rem; font-weight:800; color:#fde047; min-height:1.3rem; margin-bottom:0.4rem;"></div>
 
       <!-- Hero Upgrades Section -->
       <div style="text-align:left; font-size:0.78rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.4rem;">
@@ -199,11 +200,11 @@
       </div>
 
       <!-- Pet Shop & Menagerie Section -->
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; flex-wrap:wrap;">
         <span style="font-size:0.78rem; font-weight:900; color:#fde047; text-transform:uppercase; letter-spacing:0.05em;">
           🐉 Companion Pets (<span id="shEquippedCount">0</span> / 3 Equipped)
         </span>
-        <span style="font-size:0.72rem; color:#94a3b8;">Pets auto-fire at monsters & grant passive auras while equipped!</span>
+        <span style="font-size:0.72rem; color:#cbd5e1;">✨ Evolution Milestones: <b>Lv. 5</b> (Stage 2) • <b>Lv. 10</b> (Stage 3) • <b>Lv. 15</b> (Apex Form)</span>
       </div>
       <div id="shopPetsGrid" class="shop-grid"></div>
     </div>
@@ -215,7 +216,7 @@
       <div style="font-size:3.2rem; margin-bottom:0.4rem;">💫</div>
       <h3 style="font-size:1.75rem; font-weight:900; color:#ef4444;">Tamer Fainted!</h3>
       <p style="font-size:0.82rem; color:#cbd5e1; margin:0.5rem 0 1.3rem; line-height:1.5;">
-        Wild creatures overwhelmed your team. Start a fresh expedition to tame new companions!
+        Wild creatures overwhelmed your team. Start a fresh expedition to tame and evolve new companions!
       </p>
       <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
         <div>
@@ -259,58 +260,105 @@
     ];
 
     // =====================================================
-    // 2. COMPANION PETS CATALOG (8 PETS WITH PASSIVES & ABILITIES)
+    // 2. COMPANION PETS CATALOG WITH 4 EVOLUTION STAGES
     // =====================================================
     const PET_CATALOG = [
       {
-        id: 'embereling', name: 'Embereling', icon: '🔥', color: '#f97316', projColor: '#fb923c',
+        id: 'embereling',
+        forms: ['Embereling', 'Pyroclaw', 'Infernohound', 'Solaris Rex'],
+        icons: ['🔥', '🦊', '🦁', '☀️'],
+        color: '#f97316', projColor: '#fb923c',
         baseCost: 45, baseDmg: 16, cd: 0.95,
-        passiveDesc: 'Aura: +15% Hero Attack Damage',
-        abilityDesc: 'Shoots blazing fireballs at wild creatures.'
+        passiveBase: 15, passiveUnit: '% Hero Attack DMG',
+        abilityDesc: 'Fire Fox that shoots blazing fireballs.'
       },
       {
-        id: 'aquafin', name: 'Aquafin', icon: '💧', color: '#38bdf8', projColor: '#7dd3fc',
+        id: 'aquafin',
+        forms: ['Aquafin', 'Tideglider', 'Hydrascale', 'Leviathan Prime'],
+        icons: ['💧', '🐬', '🌊', '🔱'],
+        color: '#38bdf8', projColor: '#7dd3fc',
         baseCost: 50, baseDmg: 12, cd: 1.0,
-        passiveDesc: 'Aura: Regenerates +4 Hero HP every second',
-        abilityDesc: 'Fires pressurized hydro-bolts.'
+        passiveBase: 4, passiveUnit: ' HP/sec Regeneration',
+        abilityDesc: 'Water Dolphin that fires hydro-bolts.'
       },
       {
-        id: 'voltkit', name: 'Voltkit', icon: '⚡', color: '#facc15', projColor: '#fef08a',
+        id: 'voltkit',
+        forms: ['Voltkit', 'Sparklynx', 'Thundermane', 'Tempest Raijin'],
+        icons: ['⚡', '⚡', '🌩️', '👑'],
+        color: '#facc15', projColor: '#fef08a',
         baseCost: 60, baseDmg: 14, cd: 0.75,
-        passiveDesc: 'Aura: +15% Hero Movement Speed',
-        abilityDesc: 'Zaps targets with rapid chain-sparks.'
+        passiveBase: 14, passiveUnit: '% Hero Move Speed',
+        abilityDesc: 'Electric Lynx that zaps targets with lightning.'
       },
       {
-        id: 'geohorn', name: 'Geohorn', icon: '🪨', color: '#a8a29e', projColor: '#d6d3d1',
+        id: 'geohorn',
+        forms: ['Geohorn', 'Cragstomper', 'Titanolith', 'Giga Behemoth'],
+        icons: ['🪨', '🦏', '🗿', '🏔️'],
+        color: '#a8a29e', projColor: '#d6d3d1',
         baseCost: 65, baseDmg: 22, cd: 1.35,
-        passiveDesc: 'Aura: Reduces all damage taken by 20%',
-        abilityDesc: 'Hurls heavy knockback boulders.'
+        passiveBase: 16, passiveUnit: '% Damage Reduction',
+        abilityDesc: 'Armored Rhino that hurls heavy boulders.'
       },
       {
-        id: 'sproutling', name: 'Sproutling', icon: '🌿', color: '#4ade80', projColor: '#86efac',
+        id: 'sproutling',
+        forms: ['Sproutling', 'Thornstalker', 'Elderwood', 'Yggdrasil Guardian'],
+        icons: ['🌿', '🌱', '🌳', '🌸'],
+        color: '#4ade80', projColor: '#86efac',
         baseCost: 70, baseDmg: 15, cd: 0.9,
-        passiveDesc: 'Aura: Heals +4 HP whenever you defeat a monster',
-        abilityDesc: 'Lashes enemies with razor leaf darts.'
+        passiveBase: 4, passiveUnit: ' HP Healed on Kill',
+        abilityDesc: 'Leaf Dino that lashes razor leaf darts.'
       },
       {
-        id: 'frostwing', name: 'Frostwing', icon: '❄️', color: '#67e8f9', projColor: '#a5f3fc',
+        id: 'frostwing',
+        forms: ['Frostwing', 'Cryohawk', 'Glaciergriff', 'Articuno Monarch'],
+        icons: ['❄️', '🦅', '🧊', '💎'],
+        color: '#67e8f9', projColor: '#a5f3fc',
         baseCost: 85, baseDmg: 17, cd: 0.95,
-        passiveDesc: 'Aura: Cryo-shots slow enemy speed by 45%',
-        abilityDesc: 'Fires freezing icicle spears.'
+        passiveBase: 40, passiveUnit: '% Cryo Slow on Hit',
+        abilityDesc: 'Ice Hawk that fires freezing icicle spears.'
       },
       {
-        id: 'shadewisp', name: 'Shadewisp', icon: '👻', color: '#c084fc', projColor: '#e879f9',
+        id: 'shadewisp',
+        forms: ['Shadewisp', 'Nightstalker', 'Voidreaper', 'Eclipsar Wraith'],
+        icons: ['👻', '🌑', '🔮', '🌌'],
+        color: '#c084fc', projColor: '#e879f9',
         baseCost: 100, baseDmg: 24, cd: 0.85,
-        passiveDesc: 'Aura: Grants Hero 25% Critical Hit Chance (2x DMG)',
-        abilityDesc: 'Shoots piercing phantom orbs.'
+        passiveBase: 20, passiveUnit: '% Hero Crit Chance (2x DMG)',
+        abilityDesc: 'Shadow Phantom that shoots dark orbs.'
       },
       {
-        id: 'auroradrake', name: 'Auroradrake', icon: '🐉', color: '#fbbf24', projColor: '#fde047',
+        id: 'auroradrake',
+        forms: ['Auroradrake', 'Starwyrm', 'Nebuladragon', 'Celestial Bahamut'],
+        icons: ['🐉', '🐲', '✨', '🪐'],
+        color: '#fbbf24', projColor: '#fde047',
         baseCost: 140, baseDmg: 35, cd: 0.7,
-        passiveDesc: 'Aura: +25% Bonus Coins from all drops & quizzes',
-        abilityDesc: 'Unleashes devastating cosmic dragon breath.'
+        passiveBase: 25, passiveUnit: '% Bonus Gold Coins',
+        abilityDesc: 'Mythic Dragon that breathes cosmic fire.'
       }
     ];
+
+    function getEvoStage(level) {
+      if (level >= 15) return 3;
+      if (level >= 10) return 2;
+      if (level >= 5)  return 1;
+      return 0;
+    }
+
+    function getEvoMultiplier(level) {
+      const st = getEvoStage(level);
+      if (st === 3) return 2.5;
+      if (st === 2) return 2.0;
+      if (st === 1) return 1.5;
+      return 1.0;
+    }
+
+    function getPetPassiveValue(petId) {
+      const cfg = PET_CATALOG.find(p => p.id === petId);
+      const owned = ownedPets[petId];
+      if (!cfg) return 0;
+      const mult = owned ? getEvoMultiplier(owned.level) : 1.0;
+      return Math.round(cfg.passiveBase * mult);
+    }
 
     // SOUND SYNTHESIZER
     let audioCtx = null;
@@ -336,6 +384,13 @@
           osc.type = 'square'; osc.frequency.setValueAtTime(150, now); osc.frequency.setValueAtTime(55, now + 0.12);
           gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
           osc.start(now); osc.stop(now + 0.12);
+        } else if (type === 'evolve') {
+          [440, 554.37, 659.25, 880, 1108.73, 1318.5].forEach((f, i) => {
+            const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination);
+            o.type = 'triangle'; o.frequency.setValueAtTime(f, now + i * 0.08);
+            g.gain.setValueAtTime(0.24, now + i * 0.08); g.gain.linearRampToValueAtTime(0.01, now + i * 0.08 + 0.35);
+            o.start(now + i * 0.08); o.stop(now + i * 0.08 + 0.35);
+          });
         } else if (type === 'win') {
           [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
             const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination);
@@ -368,13 +423,13 @@
     // HERO & PET STATE
     const hero = {
       x: 300, y: 300, size: 22,
-      facing: 'right', isMoving: false,
+      facing: 'right', aimAngle: 0, isMoving: false,
       hp: 120, maxHp: 120,
       atkLv: 1, hpLv: 1, spdLv: 1,
       atkTimer: 0, invulnTimer: 0, dashCooldown: 0, dashTimer: 0
     };
 
-    let coins = 50; // Start with 50 coins so player can buy a starter pet right away if desired!
+    let coins = 50;
     let waveNum = 1;
     let streak = 0;
     let trialTimer = 10;
@@ -384,10 +439,10 @@
     let screenShake = 0, timeGlobal = 0;
     let regenAccumulator = 0;
 
-    // Owned Pets Map: { id: { level: 1, equipped: true, x, y, cdTimer, orbitAngle } }
     let ownedPets = {};
     let equippedPetIds = [];
 
+    let terrainDetails = [];
     let wildMonsters = [];
     let heroProjectiles = [];
     let enemyProjectiles = [];
@@ -430,27 +485,26 @@
       hero.invulnTimer = 0.28;
     }
 
-    // PASSIVE HELPERS
     function hasPetEquipped(id) { return equippedPetIds.includes(id); }
 
     function getCoinMultiplier() {
-      return hasPetEquipped('auroradrake') ? 1.25 : 1.0;
+      return hasPetEquipped('auroradrake') ? (1 + getPetPassiveValue('auroradrake') / 100) : 1.0;
     }
 
     function getHeroDamage() {
       let d = 22 + (hero.atkLv - 1) * 10;
-      if (hasPetEquipped('embereling')) d *= 1.15;
+      if (hasPetEquipped('embereling')) d *= (1 + getPetPassiveValue('embereling') / 100);
       return Math.round(d);
     }
 
     function getHeroMoveSpeed() {
       let s = 235 + (hero.spdLv - 1) * 30;
-      if (hasPetEquipped('voltkit')) s *= 1.15;
+      if (hasPetEquipped('voltkit')) s *= (1 + getPetPassiveValue('voltkit') / 100);
       if (hero.dashTimer > 0) s *= 2.6;
       return s;
     }
 
-    // WAVE SPAWNER
+    // WAVE SPAWNER & TERRAIN DECORATIONS
     function spawnWave(w) {
       waveNum = w;
       document.getElementById('hudWave').textContent = waveNum;
@@ -466,7 +520,17 @@
       nextWavePortal = null;
       isWaveTransition = false;
 
-      // Sync pet positions around hero
+      // Generate procedural grass blades, flowers & pebbles on the ground
+      terrainDetails = [];
+      for (let i = 0; i < 32; i++) {
+        terrainDetails.push({
+          x: WALL_PAD + 35 + Math.random() * (W - WALL_PAD * 2 - 70),
+          y: WALL_PAD + 35 + Math.random() * (H - WALL_PAD * 2 - 70),
+          type: Math.random() < 0.6 ? 'tuft' : (Math.random() < 0.5 ? 'flower' : 'stone'),
+          color: z.accent
+        });
+      }
+
       equippedPetIds.forEach((id, idx) => {
         const p = ownedPets[id];
         p.x = hero.x; p.y = hero.y;
@@ -489,7 +553,7 @@
         wildMonsters.push({
           x: W * 0.35 + Math.random() * (W * 0.55 - WALL_PAD),
           y: WALL_PAD + 55 + Math.random() * (H - WALL_PAD * 2 - 110),
-          size: isAlpha ? 48 : (spec === 'treant' ? 30 : 22),
+          size: isAlpha ? 46 : (spec === 'treant' ? 28 : 22),
           hp: hp, maxHp: hp,
           isAlpha: isAlpha, species: spec,
           spd: (isAlpha ? 1.05 : (spec === 'bat' ? 1.65 : (spec === 'treant' ? 0.9 : 1.3))) * spdScale,
@@ -508,8 +572,7 @@
       hero.atkTimer = 0.23;
       playSound('shoot');
 
-      // Aim toward nearest wild monster, or facing direction if none
-      let angle = 0;
+      let angle = hero.aimAngle;
       let nearest = null, minDist = 9999;
       wildMonsters.forEach(m => {
         if (m.hp > 0) {
@@ -520,23 +583,21 @@
 
       if (nearest && minDist < 550) {
         angle = Math.atan2(nearest.y - hero.y, nearest.x - hero.x);
-      } else {
-        if (hero.facing === 'up') angle = -Math.PI/2;
-        if (hero.facing === 'down') angle = Math.PI/2;
-        if (hero.facing === 'left') angle = Math.PI;
-        if (hero.facing === 'right') angle = 0;
+        hero.aimAngle = angle;
       }
 
       let dmg = getHeroDamage();
-      let isCrit = hasPetEquipped('shadewisp') && Math.random() < 0.25;
+      const critChance = hasPetEquipped('shadewisp') ? (getPetPassiveValue('shadewisp') / 100) : 0;
+      let isCrit = Math.random() < critChance;
       if (isCrit) dmg *= 2;
 
       heroProjectiles.push({
-        x: hero.x, y: hero.y,
+        x: hero.x + Math.cos(angle) * 20,
+        y: hero.y + Math.sin(angle) * 20,
         vx: Math.cos(angle) * 650, vy: Math.sin(angle) * 650,
         r: isCrit ? 9 : 6,
         dmg: dmg, isCrit: isCrit,
-        color: isCrit ? '#e879f9' : '#fde047',
+        color: isCrit ? '#e879f9' : '#38bdf8',
         slowEffect: false,
         life: 1.1
       });
@@ -565,12 +626,10 @@
       }
 
       if (m.hp <= 0) {
-        // Sproutling Passive: Heal +4 HP on kill
         if (hasPetEquipped('sproutling')) {
-          hero.hp = Math.min(hero.maxHp, hero.hp + 4);
+          hero.hp = Math.min(hero.maxHp, hero.hp + getPetPassiveValue('sproutling'));
         }
 
-        // Drop Gold Coins
         const numCoins = m.isAlpha ? 8 : (m.species === 'treant' || m.species === 'drake' ? 3 : 2);
         const coinVal = Math.round((4 + Math.floor(waveNum * 0.8)) * getCoinMultiplier());
         for (let c = 0; c < numCoins; c++) {
@@ -661,11 +720,10 @@
         let coinReward = Math.round(35 * getCoinMultiplier());
         hero.hp = Math.min(hero.maxHp, hero.hp + 15);
 
-        // CHECK 5-IN-A-ROW STREAK -> 30 SECONDS NO QUESTIONS!
         if (streak >= 5) {
           streak = 0;
           isGracePeriod = true;
-          trialTimer = 30; // 30 seconds grace period!
+          trialTimer = 30;
           const bonusCoins = Math.round(100 * getCoinMultiplier());
           coins += coinReward + bonusCoins;
           fb.style.background = 'rgba(6, 78, 59, 0.95)';
@@ -674,7 +732,7 @@
           fb.innerHTML = `🌟 <b>5-STREAK JACKPOT!</b> +${coinReward + bonusCoins} Coins 🪙 & <b>30 SECONDS OF NO QUESTIONS!</b>`;
         } else {
           isGracePeriod = false;
-          trialTimer = 10; // Normal 10 seconds
+          trialTimer = 10;
           coins += coinReward;
           fb.style.background = 'rgba(6, 78, 59, 0.95)';
           fb.style.border = '1px solid #10b981';
@@ -705,7 +763,7 @@
     }
 
     // =====================================================
-    // 4. HERO & PET SHOP LOGIC (BUY, UPGRADE & EQUIP UP TO 3)
+    // 4. HERO & PET EVOLUTION SHOP LOGIC
     // =====================================================
     function toggleShop() { if (isShopOpen) closeShop(); else openShop(); }
     function openShop() {
@@ -725,7 +783,6 @@
     function renderShopUI() {
       document.getElementById('shopCoins').textContent = coins;
 
-      // Hero Upgrades
       const cAtk = 30 * hero.atkLv;
       document.getElementById('shHeroAtkLv').textContent = hero.atkLv;
       document.getElementById('shHeroAtkVal').textContent = getHeroDamage();
@@ -747,9 +804,11 @@
       document.getElementById('btnBuyHeal').disabled = (coins < 20 || hero.hp >= hero.maxHp);
       document.getElementById('shEquippedCount').textContent = equippedPetIds.length;
 
-      // Render 8 Companion Pets
       const grid = document.getElementById('shopPetsGrid');
       grid.innerHTML = '';
+
+      const stageNames = ['Stage 1 • Hatchling', 'Stage 2 • Evolved', 'Stage 3 • Elder', 'Stage 4 • APEX'];
+      const stageColors = ['#475569', '#0284c7', '#9333ea', '#eab308'];
 
       PET_CATALOG.forEach(pet => {
         const owned = ownedPets[pet.id];
@@ -760,9 +819,12 @@
         if (!owned) {
           card.innerHTML = `
             <div>
-              <div style="font-weight:900; font-size:0.92rem; color:${pet.color};">${pet.icon} ${pet.name}</div>
-              <div style="font-size:0.72rem; color:#fde047; font-weight:700;">${pet.passiveDesc}</div>
-              <div style="font-size:0.7rem; color:#94a3b8;">${pet.abilityDesc} (Base DMG: ${pet.baseDmg})</div>
+              <div style="font-weight:900; font-size:0.92rem; color:${pet.color};">
+                ${pet.icons[0]} ${pet.forms[0]}
+                <span class="evo-badge" style="background:#1e293b; color:#94a3b8;">Unowned</span>
+              </div>
+              <div style="font-size:0.72rem; color:#fde047; font-weight:700;">Aura: +${pet.passiveBase}${pet.passiveUnit}</div>
+              <div style="font-size:0.7rem; color:#94a3b8;">${pet.abilityDesc} (Evolves at Lv. 5, 10, 15!)</div>
             </div>
             <button class="btn btn-shop" ${coins < pet.baseCost ? 'disabled' : ''} onclick="buyPet('${pet.id}')">
               Buy 🪙 ${pet.baseCost}
@@ -770,19 +832,26 @@
           `;
         } else {
           const lv = owned.level;
-          const curDmg = Math.round(pet.baseDmg * (1 + (lv - 1) * 0.35));
-          const upgCost = Math.round(pet.baseCost * 0.75 * lv);
+          const st = getEvoStage(lv);
+          const formName = pet.forms[st];
+          const formIcon = pet.icons[st];
+          const evoMult = getEvoMultiplier(lv);
+          const curDmg = Math.round(pet.baseDmg * (1 + (lv - 1) * 0.3) * evoMult);
+          const upgCost = Math.round(pet.baseCost * 0.65 * lv);
+          const nextEvoHint = lv < 5 ? `Next Evolution at Lv. 5 (${pet.forms[1]})` : (lv < 10 ? `Next Evolution at Lv. 10 (${pet.forms[2]})` : (lv < 15 ? `Final Evolution at Lv. 15 (${pet.forms[3]})` : `★ MAX APEX EVOLUTION!`));
+
           card.innerHTML = `
             <div>
-              <div style="font-weight:900; font-size:0.92rem; color:${pet.color};">
-                ${pet.icon} ${pet.name} <span style="color:#fff; font-size:0.78rem;">(Lv. ${lv})</span>
+              <div style="font-weight:900; font-size:0.93rem; color:${pet.color};">
+                ${formIcon} ${formName} <span style="color:#fff; font-size:0.78rem;">(Lv. ${lv})</span>
+                <span class="evo-badge" style="background:${stageColors[st]}; color:#fff;">${stageNames[st]}</span>
               </div>
-              <div style="font-size:0.72rem; color:#fde047; font-weight:700;">${pet.passiveDesc}</div>
-              <div style="font-size:0.7rem; color:#cbd5e1;">Pet Shot DMG: <b>${curDmg}</b></div>
+              <div style="font-size:0.72rem; color:#fde047; font-weight:700;">Aura: +${getPetPassiveValue(pet.id)}${pet.passiveUnit}</div>
+              <div style="font-size:0.7rem; color:#cbd5e1;">Shot DMG: <b>${curDmg}</b> (${st === 0 ? 1 : (st === 3 ? 3 : 2)}x Volley) • <span style="color:#38bdf8;">${nextEvoHint}</span></div>
             </div>
-            <div style="display:flex; flex-direction:column; gap:0.35rem; min-width:6.8rem;">
+            <div style="display:flex; flex-direction:column; gap:0.35rem; min-width:7.2rem;">
               <button class="btn btn-shop" ${coins < upgCost ? 'disabled' : ''} onclick="levelUpPet('${pet.id}')">
-                Lv Up 🪙 ${upgCost}
+                ${(lv === 4 || lv === 9 || lv === 14) ? '🌟 EVOLVE' : 'Lv Up'} 🪙 ${upgCost}
               </button>
               <button class="btn" style="border-color:${isEquipped ? '#10b981' : '#475569'}; color:${isEquipped ? '#4ade80' : '#cbd5e1'};" onclick="toggleEquipPet('${pet.id}')">
                 ${isEquipped ? '✓ Equipped' : 'Equip'}
@@ -830,9 +899,9 @@
       const msg = document.getElementById('shopMsg');
       if (equippedPetIds.length < 3) {
         equippedPetIds.push(id);
-        msg.textContent = `🎉 Tamed ${pet.icon} ${pet.name} and added to your active team!`;
+        msg.textContent = `🎉 Tamed ${pet.icons[0]} ${pet.forms[0]} and added to your active team!`;
       } else {
-        msg.textContent = `🎉 Tamed ${pet.icon} ${pet.name}! Click 'Equip' to swap it into your 3 active slots.`;
+        msg.textContent = `🎉 Tamed ${pet.icons[0]} ${pet.forms[0]}! Click 'Equip' to swap it into your 3 active slots.`;
       }
       playSound('win');
       renderShopUI();
@@ -842,12 +911,22 @@
       const pet = PET_CATALOG.find(p => p.id === id);
       const owned = ownedPets[id];
       if (!pet || !owned) return;
-      const cost = Math.round(pet.baseCost * 0.75 * owned.level);
+      const cost = Math.round(pet.baseCost * 0.65 * owned.level);
       if (coins < cost) return;
+
+      const prevStage = getEvoStage(owned.level);
       coins -= cost;
       owned.level++;
-      playSound('win');
-      document.getElementById('shopMsg').textContent = `⬆️ ${pet.icon} ${pet.name} leveled up to Lv. ${owned.level}!`;
+      const newStage = getEvoStage(owned.level);
+
+      const msg = document.getElementById('shopMsg');
+      if (newStage > prevStage) {
+        playSound('evolve');
+        msg.innerHTML = `🌟 <b>EVOLUTION!</b> ${pet.forms[prevStage]} evolved into <b>${pet.icons[newStage]} ${pet.forms[newStage]}</b> (Stage ${newStage + 1})!`;
+      } else {
+        playSound('win');
+        msg.textContent = `⬆️ ${pet.icons[newStage]} ${pet.forms[newStage]} leveled up to Lv. ${owned.level}!`;
+      }
       renderShopUI();
     }
 
@@ -884,7 +963,8 @@
         petBox.innerHTML = equippedPetIds.map(id => {
           const cfg = PET_CATALOG.find(p => p.id === id);
           const st = ownedPets[id];
-          return `<div class="pet-slot-pill" style="border-color:${cfg.color};"><span>${cfg.icon}</span> <span>Lv.${st.level}</span></div>`;
+          const evo = getEvoStage(st.level);
+          return `<div class="pet-slot-pill" style="border-color:${cfg.color};"><span>${cfg.icons[evo]}</span> <span>${cfg.forms[evo]} Lv.${st.level}</span></div>`;
         }).join('');
       }
     }
@@ -914,7 +994,387 @@
     }
 
     // =====================================================
-    // 5. MAIN LOOP & RENDERING
+    // 5. CUSTOM PROCEDURAL SPRITE RENDERERS (HERO, PETS & MONSTERS)
+    // =====================================================
+
+    // A. HUMAN TAMER HERO SPRITE
+    function drawHeroSprite() {
+      if (hero.invulnTimer > 0 && Math.floor(timeGlobal * 14) % 2 === 0) return;
+
+      ctx.save();
+      ctx.translate(hero.x, hero.y);
+
+      // Ground Shadow
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.beginPath(); ctx.ellipse(0, 15, 16, 7, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Rotate character toward aiming/movement angle
+      let angle = hero.aimAngle;
+      if (!isHoldingFire) {
+        if (hero.facing === 'up') angle = -Math.PI/2;
+        if (hero.facing === 'down') angle = Math.PI/2;
+        if (hero.facing === 'left') angle = Math.PI;
+        if (hero.facing === 'right') angle = 0;
+        hero.aimAngle = angle;
+      }
+      ctx.rotate(angle);
+
+      const stride = hero.isMoving ? Math.sin(timeGlobal * 16) * 5 : 0;
+
+      // Animated Walking Boots
+      ctx.fillStyle = '#334155';
+      ctx.beginPath(); ctx.roundRect(-6 + stride, -11, 8, 5, 2); ctx.fill();
+      ctx.beginPath(); ctx.roundRect(-6 - stride, 6, 8, 5, 2); ctx.fill();
+
+      // Explorer Backpack (Behind Torso)
+      ctx.fillStyle = '#92400e';
+      ctx.strokeStyle = '#451a03';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.roundRect(-15, -9, 8, 18, 3); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#fbbf24';
+      ctx.fillRect(-13, -6, 3, 3); ctx.fillRect(-13, 3, 3, 3); // Gold buckles
+
+      // Tamer Jacket Torso & Shoulders
+      ctx.fillStyle = '#1d4ed8';
+      ctx.strokeStyle = '#60a5fa';
+      ctx.lineWidth = 1.8;
+      ctx.beginPath(); ctx.roundRect(-8, -12, 16, 24, 6); ctx.fill(); ctx.stroke();
+
+      // White/Gold Collar & Vest Stripe
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(2, -10, 4, 20);
+
+      // Left Hand & Right Blaster Arm
+      ctx.fillStyle = '#fdbcb4'; // Skin tone hands
+      ctx.beginPath(); ctx.arc(6, -12, 4, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(10, 10, 4, 0, Math.PI * 2); ctx.fill();
+
+      // Tamer Energy Blaster (Right Arm)
+      ctx.fillStyle = '#475569';
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.roundRect(8, 7, 16, 6, 2); ctx.fill(); ctx.stroke();
+      // Glowing Blaster Barrel Core
+      ctx.fillStyle = '#38bdf8';
+      ctx.shadowBlur = 8; ctx.shadowColor = '#38bdf8';
+      ctx.beginPath(); ctx.arc(24, 10, 3.5, 0, Math.PI * 2); ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Human Head & Hair
+      ctx.fillStyle = '#fdbcb4';
+      ctx.beginPath(); ctx.arc(2, 0, 8.5, 0, Math.PI * 2); ctx.fill();
+
+      // Iconic Red & White Monster Tamer Cap + Visor Brim
+      ctx.fillStyle = '#dc2626';
+      ctx.strokeStyle = '#7f1d1d';
+      ctx.lineWidth = 1.5;
+      // Cap Bill extending forward
+      ctx.beginPath(); ctx.ellipse(7, 0, 7, 7.5, 0, -Math.PI/2, Math.PI/2); ctx.fill(); ctx.stroke();
+      // Cap Crown
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath(); ctx.arc(0, 0, 8.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      // White Semi-Circle Emblem on front of Cap
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(5, 0, 3.5, -Math.PI/2, Math.PI/2); ctx.fill();
+
+      ctx.restore();
+    }
+
+    // B. 8 DISTINCT ANIMAL COMPANION SPRITES (SCALED BY EVOLUTION STAGE 0-3)
+    function drawPetAnimalSprite(id, pet, cfg) {
+      const evo = getEvoStage(pet.level);
+      const scale = 1.0 + evo * 0.22; // Grows larger at Lv 5, 10, 15
+      const hover = Math.sin(timeGlobal * 5 + pet.orbitAngle) * 3.5;
+
+      ctx.save();
+      ctx.translate(pet.x, pet.y + hover);
+
+      // Shadow under pet
+      ctx.fillStyle = 'rgba(0,0,0,0.4)';
+      ctx.beginPath(); ctx.ellipse(0, 14 * scale, 11 * scale, 4.5 * scale, 0, 0, Math.PI * 2); ctx.fill();
+
+      // Evolution Stage Aura Rings (Stage 1 = Ring, Stage 2 = Runic Halo, Stage 3 = Apex Crown Glow)
+      if (evo >= 1) {
+        ctx.strokeStyle = cfg.color;
+        ctx.lineWidth = 1.8;
+        ctx.beginPath(); ctx.arc(0, 0, 16 * scale, 0, Math.PI * 2); ctx.stroke();
+      }
+      if (evo >= 2) {
+        ctx.strokeStyle = '#fde047';
+        ctx.lineWidth = 1.8;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.arc(0, 0, 20 * scale, timeGlobal * 4, timeGlobal * 4 + Math.PI * 2); ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      ctx.scale(scale, scale);
+
+      if (id === 'embereling') {
+        // FIRE FOX / SOLAR WOLF: Bushy flame tail, pointed fox ears, snout
+        const tailWag = Math.sin(timeGlobal * 10) * 3;
+        // Flame Tail(s) - Multiple tails at higher evolutions!
+        const numTails = evo >= 2 ? 3 : (evo >= 1 ? 2 : 1);
+        for (let t = 0; t < numTails; t++) {
+          const offset = (t - (numTails - 1) / 2) * 5;
+          ctx.fillStyle = '#fbbf24';
+          ctx.beginPath(); ctx.moveTo(-6, offset); ctx.quadraticCurveTo(-20, -8 + tailWag + offset, -22, 4 + offset); ctx.quadraticCurveTo(-14, 10 + offset, -6, 2 + offset); ctx.fill();
+        }
+        // Fox Body & Head
+        ctx.fillStyle = '#ea580c'; ctx.strokeStyle = '#9a3412'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.ellipse(0, 2, 10, 8, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Pointed Fox Ears
+        ctx.fillStyle = '#f97316';
+        ctx.beginPath(); ctx.moveTo(-7, -3); ctx.lineTo(-11, -13); ctx.lineTo(-2, -7); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(7, -3); ctx.lineTo(11, -13); ctx.lineTo(2, -7); ctx.fill(); ctx.stroke();
+        // Snout & Eyes
+        ctx.fillStyle = '#ffedd5'; ctx.beginPath(); ctx.ellipse(0, 4, 5, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(-4, -1, 2, 0, Math.PI * 2); ctx.arc(4, -1, 2, 0, Math.PI * 2); ctx.fill();
+
+      } else if (id === 'aquafin') {
+        // WATER DOLPHIN / LEVIATHAN: Sleek body, dorsal fin, pectoral flippers, tail fluke
+        const swim = Math.sin(timeGlobal * 8) * 2.5;
+        ctx.fillStyle = '#0284c7'; ctx.strokeStyle = '#0369a1'; ctx.lineWidth = 1.5;
+        // Tail Fluke
+        ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(-18, -7 + swim); ctx.lineTo(-15, 0); ctx.lineTo(-18, 7 + swim); ctx.closePath(); ctx.fill(); ctx.stroke();
+        // Side Flippers
+        ctx.fillStyle = '#38bdf8';
+        ctx.beginPath(); ctx.moveTo(-2, -6); ctx.lineTo(-8, -14); ctx.lineTo(4, -6); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(-2, 6); ctx.lineTo(-8, 14); ctx.lineTo(4, 6); ctx.fill();
+        // Sleek Body
+        ctx.beginPath(); ctx.ellipse(0, 0, 12, 7.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // White Belly & Cute Eyes
+        ctx.fillStyle = '#e0f2fe'; ctx.beginPath(); ctx.ellipse(2, 2, 8, 4, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#0f172a'; ctx.beginPath(); ctx.arc(5, -2, 2, 0, Math.PI * 2); ctx.fill();
+
+      } else if (id === 'voltkit') {
+        // ELECTRIC LYNX: Jagged lightning tail, spiky ears, whisker sparks
+        ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(-14, -5); ctx.lineTo(-12, 1); ctx.lineTo(-19, -3); ctx.stroke();
+        ctx.fillStyle = '#eab308'; ctx.strokeStyle = '#a16207'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.arc(0, 1, 9.5, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Spiky Ears
+        ctx.fillStyle = '#facc15';
+        ctx.beginPath(); ctx.moveTo(-8, -4); ctx.lineTo(-12, -14); ctx.lineTo(-2, -8); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(8, -4); ctx.lineTo(12, -14); ctx.lineTo(2, -8); ctx.fill(); ctx.stroke();
+        // Red Electric Cheeks & Eyes
+        ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(-6, 3, 2.2, 0, Math.PI * 2); ctx.arc(6, 3, 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(-4, -1, 2, 0, Math.PI * 2); ctx.arc(4, -1, 2, 0, Math.PI * 2); ctx.fill();
+
+      } else if (id === 'geohorn') {
+        // ARMORED RHINO BEAST: Heavy stone plates, sturdy feet, ivory horn
+        ctx.fillStyle = '#57534e'; ctx.strokeStyle = '#292524'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.roundRect(-11, -9, 22, 18, 6); ctx.fill(); ctx.stroke();
+        // Armor Ridge Plates
+        ctx.fillStyle = '#78716c'; ctx.fillRect(-6, -7, 12, 14);
+        // Protruding Rhino Horn(s)
+        ctx.fillStyle = '#fef3c7';
+        ctx.beginPath(); ctx.moveTo(6, -4); ctx.lineTo(18, 0); ctx.lineTo(6, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+        if (evo >= 1) {
+          ctx.beginPath(); ctx.moveTo(2, -8); ctx.lineTo(11, -13); ctx.lineTo(6, -5); ctx.fill();
+          ctx.beginPath(); ctx.moveTo(2, 8); ctx.lineTo(11, 13); ctx.lineTo(6, 5); ctx.fill();
+        }
+        ctx.fillStyle = '#fbbf24'; ctx.beginPath(); ctx.arc(3, -4, 2, 0, Math.PI * 2); ctx.arc(3, 4, 2, 0, Math.PI * 2); ctx.fill();
+
+      } else if (id === 'sproutling') {
+        // NATURE LEAF DINO: Green body, leaf collar, blooming flower bud on back
+        ctx.fillStyle = '#16a34a'; ctx.strokeStyle = '#14532d'; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.ellipse(0, 1, 11, 8.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Back Leaves
+        ctx.fillStyle = '#4ade80';
+        ctx.beginPath(); ctx.ellipse(-2, -6, 6, 3, -0.5, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(-2, 6, 6, 3, 0.5, 0, Math.PI * 2); ctx.fill();
+        // Blooming Flower Bulb on Back (Bigger bloom on higher evo!)
+        ctx.fillStyle = evo >= 1 ? '#f43f5e' : '#fbbf24';
+        ctx.beginPath(); ctx.arc(-2, 0, 4.5 + evo, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fef08a'; ctx.beginPath(); ctx.arc(-2, 0, 2, 0, Math.PI * 2); ctx.fill();
+        // Eyes
+        ctx.fillStyle = '#000'; ctx.beginPath(); ctx.arc(6, -3, 2, 0, Math.PI * 2); ctx.arc(6, 3, 2, 0, Math.PI * 2); ctx.fill();
+
+      } else if (id === 'frostwing') {
+        // ICE HAWK / GRIFFIN: Outstretched flapping wings, hooked beak, crystal tail
+        const flap = Math.sin(timeGlobal * 14) * 6;
+        ctx.fillStyle = '#38bdf8'; ctx.strokeStyle = '#0284c7'; ctx.lineWidth = 1.5;
+        // Flapping Wings
+        ctx.beginPath(); ctx.moveTo(0, -4); ctx.lineTo(-4, -18 + flap); ctx.lineTo(6, -8); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, 4); ctx.lineTo(-4, 18 - flap); ctx.lineTo(6, 8); ctx.closePath(); ctx.fill(); ctx.stroke();
+        // Bird Body & Head
+        ctx.fillStyle = '#bae6fd';
+        ctx.beginPath(); ctx.ellipse(0, 0, 10, 6.5, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Golden Hooked Beak
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath(); ctx.moveTo(9, -2.5); ctx.lineTo(15, 0); ctx.lineTo(9, 2.5); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#0284c7'; ctx.beginPath(); ctx.arc(5, -2, 1.8, 0, Math.PI * 2); ctx.arc(5, 2, 1.8, 0, Math.PI * 2); ctx.fill();
+
+      } else if (id === 'shadewisp') {
+        // SHADOW PHANTOM: Wispy tattered ghost body, floating claws, 3 glowing eyes
+        ctx.fillStyle = '#3b0764'; ctx.strokeStyle = '#a855f7'; ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.arc(2, 0, 9.5, -Math.PI/2, Math.PI/2);
+        ctx.lineTo(-12, 8); ctx.lineTo(-7, 3); ctx.lineTo(-14, 0); ctx.lineTo(-7, -3); ctx.lineTo(-12, -8);
+        ctx.closePath(); ctx.fill(); ctx.stroke();
+        // 3 Glowing Crimson/Violet Eyes
+        ctx.fillStyle = '#f43f5e';
+        ctx.beginPath(); ctx.arc(5, -3.5, 2, 0, Math.PI * 2); ctx.arc(5, 3.5, 2, 0, Math.PI * 2); ctx.fill();
+        if (evo >= 1) { ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(7, 0, 2, 0, Math.PI * 2); ctx.fill(); }
+
+      } else if (id === 'auroradrake') {
+        // MYTHIC DRAGON: Bat-like dragon wings, horned head, serpentine tail
+        const wingFlap = Math.sin(timeGlobal * 11) * 5;
+        ctx.fillStyle = '#d97706'; ctx.strokeStyle = '#78350f'; ctx.lineWidth = 1.5;
+        // Dragon Wings
+        ctx.beginPath(); ctx.moveTo(-2, -4); ctx.lineTo(-10, -19 + wingFlap); ctx.lineTo(5, -9); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-2, 4); ctx.lineTo(-10, 19 - wingFlap); ctx.lineTo(5, 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+        // Whipping Tail
+        ctx.beginPath(); ctx.moveTo(-8, 0); ctx.quadraticCurveTo(-18, Math.sin(timeGlobal*8)*6, -22, 0); ctx.lineTo(-17, 3); ctx.fill();
+        // Golden Dragon Body & Horns
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath(); ctx.ellipse(1, 0, 10, 7, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath(); ctx.moveTo(2, -5); ctx.lineTo(-5, -11); ctx.lineTo(5, -6); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(2, 5); ctx.lineTo(-5, 11); ctx.lineTo(5, 6); ctx.fill();
+        ctx.fillStyle = '#dc2626'; ctx.beginPath(); ctx.arc(6, -2.5, 2, 0, Math.PI * 2); ctx.arc(6, 2.5, 2, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Apex Stage 3 Crown
+      if (evo >= 3) {
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath();
+        ctx.moveTo(-6, -12); ctx.lineTo(-3, -18); ctx.lineTo(0, -14); ctx.lineTo(3, -18); ctx.lineTo(6, -12);
+        ctx.closePath(); ctx.fill();
+      }
+
+      ctx.restore();
+
+      // Level & Stage Name Tag under Pet
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 9.5px system-ui';
+      ctx.textAlign = 'center';
+      ctx.fillText(`Lv.${pet.level}`, pet.x, pet.y + 18 * scale);
+    }
+
+    // C. 6 CUSTOM WILD MONSTER SPRITES (SLIME, BEETLE, BAT, TREANT, DRAKE, ALPHA BOSS)
+    function drawWildMonsterSprite(m) {
+      const bounce = Math.abs(Math.sin(m.anim)) * 3.5;
+      ctx.save();
+      ctx.translate(m.x, m.y - bounce);
+
+      const isFlashing = m.hitFlash > 0;
+      const isSlowed = m.slowTimer > 0;
+
+      if (m.isAlpha) {
+        // ALPHA BEHEMOTH BOSS: Menacing ground ring, 4 curved horns, spiked pauldrons, glowing magma chest
+        ctx.strokeStyle = 'rgba(244, 63, 94, 0.55)'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(0, bounce, m.size * 1.25 + Math.sin(timeGlobal * 6) * 3, 0, Math.PI * 2); ctx.stroke();
+
+        // Giant Curved Horns
+        ctx.fillStyle = '#fbbf24'; ctx.strokeStyle = '#78350f'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(-20, -15); ctx.quadraticCurveTo(-48, -36, -24, -48); ctx.quadraticCurveTo(-30, -25, -12, -22); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(20, -15); ctx.quadraticCurveTo(48, -36, 24, -48); ctx.quadraticCurveTo(30, -25, 12, -22); ctx.fill(); ctx.stroke();
+
+        // Hulking Armored Body
+        ctx.fillStyle = isFlashing ? '#ffffff' : (isSlowed ? '#0284c7' : '#881337');
+        ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3.5;
+        ctx.beginPath(); ctx.roundRect(-m.size * 0.9, -m.size * 0.8, m.size * 1.8, m.size * 1.6, 14); ctx.fill(); ctx.stroke();
+
+        // Spiked Shoulder Pads
+        ctx.fillStyle = '#4c0519';
+        ctx.beginPath(); ctx.arc(-m.size * 0.85, 0, 14, 0, Math.PI * 2); ctx.arc(m.size * 0.85, 0, 14, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Glowing Fierce Eyes & Fanged Maw
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath(); ctx.ellipse(-13, -6, 7, 4, 0.2, 0, Math.PI * 2); ctx.ellipse(13, -6, 7, 4, -0.2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#dc2626';
+        ctx.beginPath(); ctx.arc(-13, -6, 3, 0, Math.PI * 2); ctx.arc(13, -6, 3, 0, Math.PI * 2); ctx.fill();
+        // Fangs
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath(); ctx.moveTo(-12, 10); ctx.lineTo(-8, 19); ctx.lineTo(-4, 10); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(4, 10); ctx.lineTo(8, 19); ctx.lineTo(12, 10); ctx.fill();
+
+      } else if (m.species === 'beetle') {
+        // HORNED BEETLE: 6 scuttling legs, oval chitin shell with center seam, pincer mandibles
+        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 2.5;
+        for (let l = -1; l <= 1; l++) {
+          const legMove = Math.sin(m.anim * 3 + l) * 3;
+          ctx.beginPath(); ctx.moveTo(-10, l * 7); ctx.lineTo(-20, l * 9 + legMove); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(10, l * 7); ctx.lineTo(20, l * 9 - legMove); ctx.stroke();
+        }
+        // Pincers
+        ctx.strokeStyle = '#fef08a'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(-6, -m.size * 0.85, 6, Math.PI * 0.7, Math.PI * 1.9); ctx.stroke();
+        ctx.beginPath(); ctx.arc(6, -m.size * 0.85, 6, -Math.PI * 0.9, Math.PI * 0.3); ctx.stroke();
+        // Carapace Shell
+        ctx.fillStyle = isFlashing ? '#fff' : (isSlowed ? '#38bdf8' : '#0f766e');
+        ctx.strokeStyle = '#134e4a'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(0, 0, m.size * 0.85, m.size, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, -m.size); ctx.lineTo(0, m.size); ctx.stroke(); // Wing seam
+        ctx.fillStyle = '#fde047'; ctx.beginPath(); ctx.arc(-6, -10, 2.5, 0, Math.PI * 2); ctx.arc(6, -10, 2.5, 0, Math.PI * 2); ctx.fill();
+
+      } else if (m.species === 'bat') {
+        // VAMPIRE BAT: Flapping scalloped wings, pointed ears, white fangs
+        const flap = Math.sin(m.anim * 3.5) * 9;
+        ctx.fillStyle = isFlashing ? '#fff' : '#4c1d95';
+        ctx.strokeStyle = '#2e1065'; ctx.lineWidth = 1.8;
+        // Left & Right Bat Wings
+        ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(-26, -12 + flap); ctx.lineTo(-20, 6 + flap * 0.5); ctx.lineTo(-8, 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(26, -12 + flap); ctx.lineTo(20, 6 + flap * 0.5); ctx.lineTo(8, 6); ctx.closePath(); ctx.fill(); ctx.stroke();
+        // Bat Body & Ears
+        ctx.fillStyle = isFlashing ? '#fff' : (isSlowed ? '#38bdf8' : '#6d28d9');
+        ctx.beginPath(); ctx.arc(0, 0, m.size * 0.65, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(-11, -18); ctx.lineTo(-2, -11); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(8, -8); ctx.lineTo(11, -18); ctx.lineTo(2, -11); ctx.fill();
+        // Eyes & Fangs
+        ctx.fillStyle = '#f43f5e'; ctx.beginPath(); ctx.arc(-4, -2, 2.2, 0, Math.PI * 2); ctx.arc(4, -2, 2.2, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#fff'; ctx.fillRect(-4, 3, 2, 4); ctx.fillRect(2, 3, 2, 4);
+
+      } else if (m.species === 'treant') {
+        // ELDER TREANT: Gnarled wooden trunk, branch arms, leafy canopy top, hollow amber eyes
+        ctx.fillStyle = isFlashing ? '#fff' : (isSlowed ? '#38bdf8' : '#78350f');
+        ctx.strokeStyle = '#451a03'; ctx.lineWidth = 2.5;
+        // Trunk & Roots
+        ctx.beginPath(); ctx.roundRect(-m.size * 0.65, -m.size * 0.5, m.size * 1.3, m.size * 1.35, 6); ctx.fill(); ctx.stroke();
+        // Leafy Canopy Crown
+        ctx.fillStyle = isFlashing ? '#fff' : '#15803d';
+        ctx.beginPath(); ctx.arc(0, -m.size * 0.55, m.size * 0.75, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.arc(-12, -m.size * 0.35, m.size * 0.5, 0, Math.PI * 2); ctx.arc(12, -m.size * 0.35, m.size * 0.5, 0, Math.PI * 2); ctx.fill();
+        // Glowing Hollow Eyes & Bark Mouth
+        ctx.fillStyle = '#fbbf24';
+        ctx.beginPath(); ctx.arc(-6, 0, 3, 0, Math.PI * 2); ctx.arc(6, 0, 3, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#292524'; ctx.fillRect(-6, 7, 12, 4);
+
+      } else if (m.species === 'drake') {
+        // WILD FIRE DRAKE: Outstretched wyvern wings, horned snout, fiery tail
+        const wFlap = Math.sin(m.anim * 2.8) * 6;
+        ctx.fillStyle = isFlashing ? '#fff' : '#9a3412';
+        ctx.strokeStyle = '#431407'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(-6, 0); ctx.lineTo(-24, -14 + wFlap); ctx.lineTo(-16, 8); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(6, 0); ctx.lineTo(24, -14 + wFlap); ctx.lineTo(16, 8); ctx.closePath(); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = isFlashing ? '#fff' : (isSlowed ? '#38bdf8' : '#ea580c');
+        ctx.beginPath(); ctx.ellipse(0, 0, m.size * 0.75, m.size * 0.9, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Horns & Eyes
+        ctx.fillStyle = '#fde047';
+        ctx.beginPath(); ctx.moveTo(-6, -12); ctx.lineTo(-12, -22); ctx.lineTo(-1, -14); ctx.fill();
+        ctx.beginPath(); ctx.moveTo(6, -12); ctx.lineTo(12, -22); ctx.lineTo(1, -14); ctx.fill();
+        ctx.beginPath(); ctx.arc(-5, -3, 2.5, 0, Math.PI * 2); ctx.arc(5, -3, 2.5, 0, Math.PI * 2); ctx.fill();
+
+      } else {
+        // GELATINOUS SLIME: Wobbly jelly dome, floating inner core & bubbles
+        const squish = Math.sin(m.anim * 1.8) * 0.16;
+        const rx = m.size * (1 + squish);
+        const ry = m.size * (1 - squish);
+        ctx.fillStyle = isFlashing ? '#fff' : (isSlowed ? 'rgba(56, 189, 248, 0.85)' : 'rgba(16, 185, 129, 0.85)');
+        ctx.strokeStyle = '#6ee7b7'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        // Inner Nucleus Core
+        ctx.fillStyle = '#047857'; ctx.beginPath(); ctx.arc(3, 2, rx * 0.3, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#a7f3d0'; ctx.beginPath(); ctx.ellipse(-rx * 0.25, -ry * 0.25, rx * 0.28, ry * 0.2, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#064e3b'; ctx.beginPath(); ctx.arc(-5, -2, 2.5, 0, Math.PI * 2); ctx.arc(5, -2, 2.5, 0, Math.PI * 2); ctx.fill();
+      }
+
+      ctx.restore();
+    }
+
+    // =====================================================
+    // 6. MAIN GAME LOOP
     // =====================================================
     let lastTime = performance.now();
 
@@ -930,12 +1390,12 @@
         if (hero.dashCooldown > 0) hero.dashCooldown -= dt;
         if (hero.dashTimer > 0) hero.dashTimer -= dt;
 
-        // Aquafin Passive: Regenerate +4 HP/sec
+        // Aquafin Passive: Regenerate HP/sec
         if (hasPetEquipped('aquafin') && hero.hp < hero.maxHp) {
           regenAccumulator += dt;
           if (regenAccumulator >= 1.0) {
             regenAccumulator = 0;
-            hero.hp = Math.min(hero.maxHp, hero.hp + 4);
+            hero.hp = Math.min(hero.maxHp, hero.hp + getPetPassiveValue('aquafin'));
             updateHUD();
           }
         }
@@ -949,24 +1409,28 @@
         if (keys['a'] || keys['arrowleft']) { mx -= 1; hero.facing = 'left'; }
         if (keys['d'] || keys['arrowright']) { mx += 1; hero.facing = 'right'; }
         if (mx !== 0 && my !== 0) { mx *= 0.707; my *= 0.707; }
+        hero.isMoving = (mx !== 0 || my !== 0);
 
         const spd = getHeroMoveSpeed();
         hero.x = Math.max(WALL_PAD + hero.size, Math.min(W - WALL_PAD - hero.size, hero.x + mx * spd * dt));
         hero.y = Math.max(WALL_PAD + hero.size, Math.min(H - WALL_PAD - hero.size, hero.y + my * spd * dt));
 
-        // Update Active Pets (Orbit & Auto-Fire!)
+        // Update Active Pets
         equippedPetIds.forEach((id, idx) => {
           const cfg = PET_CATALOG.find(p => p.id === id);
           const pet = ownedPets[id];
-          pet.orbitAngle += dt * 2.0;
-          const targetX = hero.x + Math.cos(pet.orbitAngle + (idx * Math.PI * 2) / equippedPetIds.length) * 52;
-          const targetY = hero.y + Math.sin(pet.orbitAngle + (idx * Math.PI * 2) / equippedPetIds.length) * 52;
+          const evoStage = getEvoStage(pet.level);
+          const evoMult = getEvoMultiplier(pet.level);
+
+          pet.orbitAngle += dt * 2.1;
+          const targetX = hero.x + Math.cos(pet.orbitAngle + (idx * Math.PI * 2) / equippedPetIds.length) * 58;
+          const targetY = hero.y + Math.sin(pet.orbitAngle + (idx * Math.PI * 2) / equippedPetIds.length) * 58;
           pet.x += (targetX - pet.x) * 8 * dt;
           pet.y += (targetY - pet.y) * 8 * dt;
 
           pet.cdTimer -= dt;
           if (pet.cdTimer <= 0 && wildMonsters.length > 0) {
-            let nearest = null, minDist = 500;
+            let nearest = null, minDist = 520;
             wildMonsters.forEach(m => {
               if (m.hp > 0) {
                 const d = Math.hypot(m.x - pet.x, m.y - pet.y);
@@ -974,22 +1438,29 @@
               }
             });
             if (nearest) {
-              pet.cdTimer = Math.max(0.35, cfg.cd * Math.pow(0.93, pet.level - 1));
-              const ang = Math.atan2(nearest.y - pet.y, nearest.x - pet.x);
-              const petDmg = Math.round(cfg.baseDmg * (1 + (pet.level - 1) * 0.35));
-              heroProjectiles.push({
-                x: pet.x, y: pet.y,
-                vx: Math.cos(ang) * 560, vy: Math.sin(ang) * 560,
-                r: 6, dmg: petDmg, isCrit: false,
-                color: cfg.projColor,
-                slowEffect: (id === 'frostwing'),
-                life: 1.0
-              });
+              pet.cdTimer = Math.max(0.32, cfg.cd * Math.pow(0.94, pet.level - 1));
+              const baseAng = Math.atan2(nearest.y - pet.y, nearest.x - pet.x);
+              const petDmg = Math.round(cfg.baseDmg * (1 + (pet.level - 1) * 0.3) * evoMult);
+
+              const volleyCount = evoStage === 0 ? 1 : (evoStage === 3 ? 3 : 2);
+              const spread = 0.16;
+              for (let v = 0; v < volleyCount; v++) {
+                const ang = baseAng + (v - (volleyCount - 1) / 2) * spread;
+                heroProjectiles.push({
+                  x: pet.x, y: pet.y,
+                  vx: Math.cos(ang) * 580, vy: Math.sin(ang) * 580,
+                  r: 6 + evoStage * 1.5,
+                  dmg: petDmg, isCrit: false,
+                  color: cfg.projColor,
+                  slowEffect: (id === 'frostwing'),
+                  life: 1.05
+                });
+              }
             }
           }
         });
 
-        // Update Hero & Pet Projectiles
+        // Update Projectiles
         heroProjectiles.forEach(p => {
           p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
           wildMonsters.forEach(m => {
@@ -1008,7 +1479,8 @@
           if (m.hitFlash > 0) m.hitFlash -= dt;
           if (m.slowTimer > 0) m.slowTimer -= dt;
 
-          const slowMult = m.slowTimer > 0 ? 0.55 : 1.0;
+          const slowPct = hasPetEquipped('frostwing') ? (getPetPassiveValue('frostwing') / 100) : 0.4;
+          const slowMult = m.slowTimer > 0 ? Math.max(0.25, 1 - slowPct) : 1.0;
           const ang = Math.atan2(hero.y - m.y, hero.x - m.x);
           m.x += Math.cos(ang) * (m.spd * 88 * slowMult) * dt;
           m.y += Math.sin(ang) * (m.spd * 88 * slowMult) * dt;
@@ -1028,7 +1500,10 @@
           if (Math.hypot(hero.x - m.x, hero.y - m.y) < hero.size + m.size * 0.75 && hero.invulnTimer <= 0) {
             playSound('hit'); screenShake = 10;
             let dmg = m.isAlpha ? 28 : 16;
-            if (hasPetEquipped('geohorn')) dmg = Math.round(dmg * 0.8);
+            if (hasPetEquipped('geohorn')) {
+              const red = Math.min(0.6, getPetPassiveValue('geohorn') / 100);
+              dmg = Math.round(dmg * (1 - red));
+            }
             hero.hp = Math.max(0, hero.hp - dmg);
             hero.invulnTimer = 0.5;
             updateHUD();
@@ -1036,13 +1511,15 @@
           }
         });
 
-        // Update Enemy Projectiles
         enemyProjectiles.forEach(ep => {
           ep.x += ep.vx * dt; ep.y += ep.vy * dt; ep.life -= dt;
           if (Math.hypot(hero.x - ep.x, hero.y - ep.y) < hero.size + ep.r && hero.invulnTimer <= 0) {
             playSound('hit'); screenShake = 8;
             let dmg = 18;
-            if (hasPetEquipped('geohorn')) dmg = Math.round(dmg * 0.8);
+            if (hasPetEquipped('geohorn')) {
+              const red = Math.min(0.6, getPetPassiveValue('geohorn') / 100);
+              dmg = Math.round(dmg * (1 - red));
+            }
             hero.hp = Math.max(0, hero.hp - dmg);
             hero.invulnTimer = 0.45;
             ep.life = 0;
@@ -1105,12 +1582,29 @@
         }
       }
 
-      // Arena Border
+      // Draw Procedural Terrain Details (Grass tufts, flowers, stones)
+      terrainDetails.forEach(td => {
+        ctx.save(); ctx.translate(td.x, td.y);
+        if (td.type === 'tuft') {
+          ctx.strokeStyle = 'rgba(74, 222, 128, 0.22)'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.moveTo(-4, 4); ctx.lineTo(-6, -4); ctx.moveTo(0, 4); ctx.lineTo(0, -6); ctx.moveTo(4, 4); ctx.lineTo(6, -4); ctx.stroke();
+        } else if (td.type === 'flower') {
+          ctx.fillStyle = 'rgba(250, 204, 21, 0.35)';
+          ctx.beginPath(); ctx.arc(0, 0, 3.5, 0, Math.PI * 2); ctx.fill();
+        } else {
+          ctx.fillStyle = 'rgba(148, 163, 184, 0.2)';
+          ctx.beginPath(); ctx.ellipse(0, 0, 6, 4, 0.3, 0, Math.PI * 2); ctx.fill();
+        }
+        ctx.restore();
+      });
+
+      // Arena Border Walls
       ctx.fillStyle = z.border;
       ctx.fillRect(0, 0, W, WALL_PAD); ctx.fillRect(0, H - WALL_PAD, W, WALL_PAD);
       ctx.fillRect(0, 0, WALL_PAD, H); ctx.fillRect(W - WALL_PAD, 0, WALL_PAD, H);
+      ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 4;
+      ctx.strokeRect(WALL_PAD, WALL_PAD, W - WALL_PAD * 2, H - WALL_PAD * 2);
 
-      // Next Wave Portal
       if (nextWavePortal) {
         ctx.save(); ctx.translate(nextWavePortal.x, nextWavePortal.y); ctx.rotate(nextWavePortal.rot);
         ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 5;
@@ -1136,60 +1630,28 @@
         ctx.beginPath(); ctx.arc(ep.x, ep.y, ep.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
       });
 
-      // Wild Creatures
+      // Render Custom Wild Monster Sprites
       wildMonsters.forEach(m => {
         ctx.fillStyle = 'rgba(0,0,0,0.45)';
-        ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.75, m.size * 0.85, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.78, m.size * 0.85, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
 
-        const bounce = Math.abs(Math.sin(m.anim)) * 4;
-        ctx.save(); ctx.translate(m.x, m.y - bounce);
-
-        if (m.isAlpha) {
-          ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.arc(0, 0, m.size * 1.15, 0, Math.PI * 2); ctx.stroke();
-        }
-
-        ctx.fillStyle = m.hitFlash > 0 ? '#fff' : (m.slowTimer > 0 ? '#38bdf8' : (m.isAlpha ? '#be123c' : (m.species === 'treant' ? '#15803d' : (m.species === 'drake' ? '#ea580c' : (m.species === 'bat' ? '#6d28d9' : '#10b981')))));
-        ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.5;
-        ctx.beginPath(); ctx.arc(0, 0, m.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-
-        // Creature Eyes & Horns
-        ctx.fillStyle = '#fef08a';
-        ctx.beginPath(); ctx.arc(-m.size * 0.3, -3, m.size * 0.18, 0, Math.PI * 2); ctx.arc(m.size * 0.3, -3, m.size * 0.18, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = '#000';
-        ctx.beginPath(); ctx.arc(-m.size * 0.3, -3, m.size * 0.08, 0, Math.PI * 2); ctx.arc(m.size * 0.3, -3, m.size * 0.08, 0, Math.PI * 2); ctx.fill();
-        ctx.restore();
+        drawWildMonsterSprite(m);
 
         const bw = m.size * 2;
-        ctx.fillStyle = '#090d16'; ctx.fillRect(m.x - bw / 2, m.y - m.size - 14, bw, 5);
+        ctx.fillStyle = '#090d16'; ctx.fillRect(m.x - bw / 2, m.y - m.size - 16, bw, 5);
         ctx.fillStyle = m.isAlpha ? '#f59e0b' : '#ef4444';
-        ctx.fillRect(m.x - bw / 2, m.y - m.size - 14, (m.hp / m.maxHp) * bw, 5);
+        ctx.fillRect(m.x - bw / 2, m.y - m.size - 16, (m.hp / m.maxHp) * bw, 5);
       });
 
-      // Render Equipped Companion Pets
+      // Render Custom Animal Companion Pets
       equippedPetIds.forEach(id => {
         const cfg = PET_CATALOG.find(p => p.id === id);
         const pet = ownedPets[id];
-        const hover = Math.sin(timeGlobal * 5 + pet.orbitAngle) * 4;
-        ctx.save(); ctx.translate(pet.x, pet.y + hover);
-        ctx.fillStyle = cfg.color; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-        ctx.font = '15px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText(cfg.icon, 0, 0);
-        ctx.restore();
+        drawPetAnimalSprite(id, pet, cfg);
       });
 
-      // Render Hero Tamer
-      ctx.save(); ctx.translate(hero.x, hero.y);
-      ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(0, 14, 15, 7, 0, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = '#2563eb'; ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5;
-      ctx.beginPath(); ctx.arc(0, 0, hero.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
-      // Tamer Cap Visor
-      ctx.fillStyle = '#ef4444';
-      ctx.beginPath(); ctx.arc(0, -3, hero.size * 0.8, Math.PI, 0); ctx.fill();
-      ctx.fillStyle = '#fff';
-      ctx.beginPath(); ctx.arc(0, -3, 5, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
+      // Render Human Tamer Hero
+      drawHeroSprite();
 
       particles.forEach(p => { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); });
       damageNumbers.forEach(d => {
