@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Monster Tamer RPG • Pet Shop & Arena</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #06130e; font-family: system-ui, -apple-system, sans-serif; color: #f8fafc; }
+    #canvasGame { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 1; display: block; }
+    #hudLayer { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 10; pointer-events: none; display: flex; flex-direction: column; justify-content: space-between; padding: 0.75rem 1.1rem; }
+    .interactive { pointer-events: auto; }
+
+    .hud-top { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; max-width: 74rem; margin: 0 auto; gap: 0.5rem; flex-wrap: wrap; }
+    .hud-box { background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(71, 85, 105, 0.8); border-radius: 1rem; padding: 0.45rem 0.9rem; display: flex; align-items: center; gap: 0.75rem; box-shadow: 0 10px 25px rgba(0,0,0,0.75); backdrop-filter: blur(10px); }
+
+    .btn { background: #1e293b; color: #e2e8f0; border: 1px solid #475569; padding: 0.45rem 0.85rem; border-radius: 0.75rem; font-size: 0.78rem; font-weight: 800; cursor: pointer; text-decoration: none; transition: 0.18s; display: inline-flex; align-items: center; justify-content: center; }
+    .btn:hover { background: #334155; color: #fff; transform: translateY(-1px); }
+    .btn-shop { background: linear-gradient(135deg, #eab308, #ca8a04); border: 1px solid #fde047; color: #0f172a; box-shadow: 0 4px 15px rgba(234, 179, 8, 0.35); }
+    .btn-shop:hover { filter: brightness(1.1); transform: translateY(-2px); color: #000; }
+    .btn-shop:disabled { background: #1e293b !important; border-color: #334155 !important; color: #64748b !important; box-shadow: none !important; cursor: not-allowed; transform: none; }
+
+    .bar-bg { width: 7rem; height: 0.7rem; background: #090d16; border-radius: 9999px; overflow: hidden; border: 1px solid #334155; }
+    .bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.2s ease; }
+
+    .pet-slot-pill { background: rgba(15, 23, 42, 0.9); border: 1px solid #334155; padding: 0.25rem 0.65rem; border-radius: 0.75rem; font-size: 0.75rem; font-weight: 800; display: flex; align-items: center; gap: 0.35rem; }
+
+    .modal-backdrop { position: fixed; inset: 0; background: rgba(2, 6, 23, 0.88); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; backdrop-filter: blur(10px); }
+    .modal-card { background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border: 2px solid #eab308; border-radius: 1.5rem; max-width: 52rem; width: 100%; padding: 1.35rem 1.6rem; text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.95); max-height: 94vh; overflow-y: auto; }
+
+    .opt-grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; margin-top: 0.9rem; }
+    @media (min-width: 640px) { .opt-grid { grid-template-columns: 1fr 1fr; } }
+    .opt-btn { background: rgba(30, 41, 59, 0.9); border: 1px solid #475569; color: #f1f5f9; padding: 0.85rem; border-radius: 0.85rem; font-weight: 700; font-size: 0.88rem; cursor: pointer; text-align: left; transition: 0.15s; }
+    .opt-btn:hover { background: #422006; border-color: #eab308; color: #fff; transform: translateY(-2px); }
+    .opt-btn.correct { background: linear-gradient(135deg, #065f46, #047857) !important; border-color: #10b981 !important; color: #fff !important; }
+    .opt-btn.wrong { background: linear-gradient(135deg, #881337, #be123c) !important; border-color: #f43f5e !important; color: #fff !important; }
+
+    .shop-grid { display: grid; grid-template-columns: 1fr; gap: 0.65rem; text-align: left; margin-top: 0.75rem; }
+    @media (min-width: 720px) { .shop-grid { grid-template-columns: 1fr 1fr; } }
+    .shop-card { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 1rem; padding: 0.75rem 0.95rem; display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; }
+    .shop-card.equipped { border-color: #10b981; background: rgba(6, 78, 59, 0.25); }
+
+    .dpad-container { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .dpad-row { display: flex; gap: 0.35rem; }
+    .touch-btn { width: 3.5rem; height: 3.5rem; background: rgba(15, 23, 42, 0.75); border: 2px solid rgba(255,255,255,0.15); border-radius: 1rem; font-size: 1.35rem; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .touch-atk { width: 4.8rem; height: 4.8rem; border-radius: 50%; background: rgba(234, 179, 8, 0.85); border: 2px solid #fef08a; color: #000; font-weight: 900; font-size: 0.85rem; }
+    @media (min-width: 768px) { .mobile-ui { display: none !important; } }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <canvas id="canvasGame"></canvas>
+
+  <!-- HUD -->
+  <div id="hudLayer">
+    <div>
+      <div class="hud-top interactive">
+        <div class="hud-box">
+          <a href="index.html" class="btn">← Hub</a>
+          <div>
+            <span id="hudZoneName" style="font-size:0.65rem; color:#4ade80; font-weight:800; letter-spacing:0.05em; display:block;">VERDANT MEADOW</span>
+            <span style="font-size:0.95rem; font-weight:900;">Wave <span id="hudWave">1</span></span>
+          </div>
+        </div>
+
+        <!-- Coin Wallet & 5-Streak Tracker -->
+        <div class="hud-box" style="font-family: monospace; font-size: 0.88rem;">
+          <div title="Gold Coins">🪙 <span id="hudCoins" style="color:#fde047; font-weight:900; font-size:1.05rem;">0</span></div>
+          <div style="width:1px; height:1.3rem; background:#334155;"></div>
+          <div title="5 Correct in a row = 30s No-Question Grace Period!" style="font-size:0.76rem; color:#38bdf8;">
+            ⚡ Streak: <b id="hudStreak" style="color:#fde047;">0</b>/5
+          </div>
+        </div>
+
+        <!-- Active Pets Bar -->
+        <div id="hudActivePets" class="hud-box" style="padding:0.35rem 0.7rem; gap:0.4rem;">
+          <span style="font-size:0.7rem; color:#94a3b8;">Pets (0/3): None</span>
+        </div>
+
+        <!-- Hero HP, Question Timer & Shop Button -->
+        <div class="hud-box" style="font-family: monospace;">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.63rem; color:#cbd5e1; margin-bottom:0.15rem; font-weight:700;">
+              <span>TAMER HP</span>
+              <span id="hudHpText">120/120</span>
+            </div>
+            <div class="bar-bg">
+              <div id="hudHpFill" class="bar-fill"></div>
+            </div>
+          </div>
+          <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
+          <div style="text-align:center;">
+            <span id="hudTimerLabel" style="font-size:0.6rem; color:#cbd5e1; display:block; font-weight:700;">QUIZ IN</span>
+            <span id="hudTrialTimer" style="font-size:1.05rem; font-weight:900; color:#fbbf24;">10s</span>
+          </div>
+          <div style="width:1px; height:1.5rem; background:rgba(255,255,255,0.1);"></div>
+          <button onclick="openShop()" class="btn btn-shop">🐾 Pet & Hero Shop [P]</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <div>
+      <div class="mobile-ui interactive" style="display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:28rem; margin:0 auto; padding-bottom:0.4rem;">
+        <div class="dpad-container">
+          <button class="touch-btn" id="mUp">▲</button>
+          <div class="dpad-row">
+            <button class="touch-btn" id="mLeft">◀</button>
+            <button class="touch-btn" id="mDown">▼</button>
+            <button class="touch-btn" id="mRight">▶</button>
+          </div>
+        </div>
+        <button class="touch-btn touch-atk" id="mAtk">HOLD<br>FIRE</button>
+      </div>
+
+      <div style="text-align:center; font-size:0.73rem; color:#94a3b8; margin-bottom:0.1rem;" class="interactive">
+        Move: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">WASD / Arrows</kbd> &nbsp;•&nbsp; Hold Auto-Fire: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fff;">HOLD SPACE</kbd> &nbsp;•&nbsp; Dash: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#38bdf8;">SHIFT</kbd> &nbsp;•&nbsp; Pet & Hero Shop: <kbd style="background:#1e293b; padding:0.1rem 0.35rem; border-radius:0.3rem; border:1px solid #334155; color:#fde047;">P</kbd>
+      </div>
+    </div>
+  </div>
+
+  <!-- VOCABULARY QUESTION MODAL (PURE UNIT 4 WORDS & ROOTS) -->
+  <div id="modalTrial" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width:40rem;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.5rem;">
+        <span style="font-size:0.72rem; font-weight:900; color:#fde047; background:rgba(234,179,8,0.15); padding:0.35rem 0.85rem; border-radius:9999px; border:1px solid rgba(234,179,8,0.4);">
+          ⚡ TAMER VOCABULARY CHALLENGE
+        </span>
+        <span id="modalStreakBadge" style="font-size:0.78rem; font-weight:800; color:#38bdf8; font-family:monospace;">Streak: 0 / 5</span>
+      </div>
+      <h3 style="font-size:1.4rem; font-weight:900; color:#fff; margin-bottom:0.2rem;">Unit 4 Greek & Latin Roots</h3>
+      <p style="font-size:0.78rem; color:#cbd5e1; margin-bottom:0.9rem;">Correct answers award <b>+35 Coins 🪙</b> & heal! Hit <b>5 in a row</b> for a +100 Coin Bonus & <b>30s of no questions</b>!</p>
+
+      <div style="background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.12); border-radius:1rem; padding:1.2rem; margin-bottom:0.9rem;">
+        <p id="trialQuestion" style="font-size:1.05rem; font-weight:700; line-height:1.45; color:#f8fafc;"></p>
+        <p id="trialHint" style="font-size:0.78rem; color:#94a3b8; font-style:italic; margin-top:0.5rem;"></p>
+      </div>
+
+      <div id="trialOptions" class="opt-grid"></div>
+      <div id="trialFeedback" style="margin-top:0.9rem; padding:0.7rem; border-radius:0.75rem; font-size:0.85rem; font-weight:800;" class="hidden"></div>
+    </div>
+  </div>
+
+  <!-- HERO & PET SHOP MODAL -->
+  <div id="modalShop" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #334155; padding-bottom:0.75rem; margin-bottom:0.85rem; flex-wrap:wrap; gap:0.5rem;">
+        <div style="text-align:left;">
+          <h3 style="font-size:1.45rem; font-weight:900; color:#fde047;">🐾 Tamer & Companion Sanctuary</h3>
+          <p style="font-size:0.76rem; color:#94a3b8;">Upgrade your Hero or buy, level up, and equip up to <b>3 active Pets</b>!</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:1rem;">
+          <div style="background:#090d16; border:1px solid #eab308; padding:0.45rem 1rem; border-radius:0.85rem; font-family:monospace; font-size:1rem; font-weight:900; color:#fde047;">
+            🪙 <span id="shopCoins">0</span> Coins
+          </div>
+          <button onclick="closeShop()" class="btn" style="padding:0.55rem 1rem;">Resume Game [ESC / P]</button>
+        </div>
+      </div>
+
+      <div id="shopMsg" style="font-size:0.8rem; font-weight:800; color:#4ade80; min-height:1.2rem; margin-bottom:0.4rem;"></div>
+
+      <!-- Hero Upgrades Section -->
+      <div style="text-align:left; font-size:0.78rem; font-weight:900; color:#38bdf8; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.4rem;">
+        🛡️ Hero Gear Upgrades
+      </div>
+      <div class="shop-grid" style="margin-bottom:1.1rem;">
+        <div class="shop-card">
+          <div>
+            <b style="color:#fff; font-size:0.9rem;">⚡ Tamer Blaster (Lv. <span id="shHeroAtkLv">1</span>)</b>
+            <div style="font-size:0.73rem; color:#94a3b8;">Hero Shot Damage: <b id="shHeroAtkVal" style="color:#f87171;">22</b></div>
+          </div>
+          <button id="btnBuyHeroAtk" onclick="upgradeHero('atk')" class="btn btn-shop">🪙 <span id="costHeroAtk">30</span></button>
+        </div>
+
+        <div class="shop-card">
+          <div>
+            <b style="color:#fff; font-size:0.9rem;">❤️ Tamer Vest (Lv. <span id="shHeroHpLv">1</span>)</b>
+            <div style="font-size:0.73rem; color:#94a3b8;">Max HP & Full Heal: <b id="shHeroHpVal" style="color:#4ade80;">120</b></div>
+          </div>
+          <button id="btnBuyHeroHp" onclick="upgradeHero('hp')" class="btn btn-shop">🪙 <span id="costHeroHp">35</span></button>
+        </div>
+
+        <div class="shop-card">
+          <div>
+            <b style="color:#fff; font-size:0.9rem;">🥾 Swift Trainers (Lv. <span id="shHeroSpdLv">1</span>)</b>
+            <div style="font-size:0.73rem; color:#94a3b8;">Move Speed Bonus: <b id="shHeroSpdVal" style="color:#38bdf8;">100%</b></div>
+          </div>
+          <button id="btnBuyHeroSpd" onclick="upgradeHero('spd')" class="btn btn-shop">🪙 <span id="costHeroSpd">30</span></button>
+        </div>
+
+        <div class="shop-card">
+          <div>
+            <b style="color:#fff; font-size:0.9rem;">🧪 Emergency Medkit</b>
+            <div style="font-size:0.73rem; color:#94a3b8;">Instantly restores <b>+60 HP</b></div>
+          </div>
+          <button id="btnBuyHeal" onclick="upgradeHero('heal')" class="btn btn-shop">🪙 20</button>
+        </div>
+      </div>
+
+      <!-- Pet Shop & Menagerie Section -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem;">
+        <span style="font-size:0.78rem; font-weight:900; color:#fde047; text-transform:uppercase; letter-spacing:0.05em;">
+          🐉 Companion Pets (<span id="shEquippedCount">0</span> / 3 Equipped)
+        </span>
+        <span style="font-size:0.72rem; color:#94a3b8;">Pets auto-fire at monsters & grant passive auras while equipped!</span>
+      </div>
+      <div id="shopPetsGrid" class="shop-grid"></div>
+    </div>
+  </div>
+
+  <!-- GAME OVER MODAL -->
+  <div id="modalGameOver" class="modal-backdrop hidden">
+    <div class="modal-card" style="max-width:28rem; border-color:#ef4444;">
+      <div style="font-size:3.2rem; margin-bottom:0.4rem;">💫</div>
+      <h3 style="font-size:1.75rem; font-weight:900; color:#ef4444;">Tamer Fainted!</h3>
+      <p style="font-size:0.82rem; color:#cbd5e1; margin:0.5rem 0 1.3rem; line-height:1.5;">
+        Wild creatures overwhelmed your team. Start a fresh expedition to tame new companions!
+      </p>
+      <div style="background:rgba(0,0,0,0.5); border:1px solid rgba(255,255,255,0.1); border-radius:1rem; padding:1rem; display:flex; justify-content:space-around; font-family:monospace; margin-bottom:1.5rem;">
+        <div>
+          <span style="font-size:0.7rem; color:#94a3b8; display:block;">WAVE REACHED</span>
+          <span id="finalWave" style="font-size:1.5rem; font-weight:900; color:#fbbf24;">1</span>
+        </div>
+        <div style="width:1px; background:rgba(255,255,255,0.1);"></div>
+        <div>
+          <span style="font-size:0.7rem; color:#94a3b8; display:block;">VOCAB ACCURACY</span>
+          <span id="finalAccuracy" style="font-size:1.5rem; font-weight:900; color:#34d399;">0%</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:1rem;">
+        <a href="index.html" class="btn" style="flex:1; padding:0.85rem;">Exit Hub</a>
+        <button onclick="restartGame()" class="btn btn-shop" style="flex:1; padding:0.85rem;">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // =====================================================
+    // 1. PURE UNIT 4 VOCABULARY POOL (NO ANALOGIES OR GRAMMAR)
+    // =====================================================
+    const QUESTIONS = [
+      { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
+      { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
+      { q: "An extremely large, powerful, and destructive storm with very high winds that turn around an area of low pressure:", ans: "cyclone", dist: ["circumference", "circumvent", "cycle"], hint: "A spinning wind storm that rotates around a calm eye." },
+      { q: "The length of a line that goes around a circle or other round shape:", ans: "circumference", dist: ["circuit", "central", "concentric"], hint: "The boundary distance all the way around the edge of a circle." },
+      { q: "The complete, closed path that an electric current travels along:", ans: "circuit", dist: ["circumstance", "circumvent", "cycle"], hint: "Electricity flows around this closed loop to power a lightbulb." },
+      { q: "A condition or fact that affects a situation, environment, or event:", ans: "circumstance", dist: ["circumference", "eccentric", "cyclical"], hint: "Heavy rain was an unlucky _____ that delayed the outdoor game." },
+      { q: "To get around something in a clever and sometimes dishonest way; to bypass:", ans: "circumvent", dist: ["concentric", "circuit", "cyclone"], hint: "He tried to _____ the rules to finish first." },
+      { q: "Located in the center of a thing or place; containing the middle point:", ans: "central", dist: ["concentric", "eccentric", "cyclical"], hint: "The town fountain stood in the _____ plaza." },
+      { q: "When two or more circles or objects share the exact same center point:", ans: "concentric", dist: ["eccentric", "central", "circumference"], hint: "A bullseye target has _____ rings inside one another." },
+      { q: "Tending to act in strange, odd, or unusual ways ('out of center'):", ans: "eccentric", dist: ["central", "concentric", "circumstance"], hint: "The inventor was known for his _____ habits and mismatched clothes." },
+      { q: "What does the Greek root 'cycl' (as in cycle, cyclical, cyclone) mean?", ans: "Circle", dist: ["Around", "Middle", "Water"], hint: "Think of a wheel or spinning ring." },
+      { q: "What does the Latin root 'circ / circum' (as in circumference, circuit, circumvent) mean?", ans: "Around", dist: ["Middle", "Circle", "Under"], hint: "Think of going all the way around an obstacle or boundary." },
+      { q: "What does the Greek root 'centr / center' (as in central, concentric, eccentric) mean?", ans: "Middle", dist: ["Circle", "Around", "Beyond"], hint: "The exact core or midpoint." },
+      { q: "Which Unit 4 word describes ripples in a pond that all spread out from the exact same middle point?", ans: "concentric", dist: ["eccentric", "circumvent", "circuit"], hint: "Sharing a common center ('con-' together + 'centr' middle)." },
+      { q: "Which Unit 4 word means to cleverly find a way around an obstacle or rule?", ans: "circumvent", dist: ["circumference", "cyclical", "central"], hint: "Combines 'circum' (around) + 'venire' (to come)." },
+      { q: "Which Unit 4 word refers to a repeating sequence of events, such as a frog's growth from egg to tadpole to adult?", ans: "cycle", dist: ["circuit", "cyclone", "circumstance"], hint: "A recurring wheel of events." }
+    ];
+
+    // =====================================================
+    // 2. COMPANION PETS CATALOG (8 PETS WITH PASSIVES & ABILITIES)
+    // =====================================================
+    const PET_CATALOG = [
+      {
+        id: 'embereling', name: 'Embereling', icon: '🔥', color: '#f97316', projColor: '#fb923c',
+        baseCost: 45, baseDmg: 16, cd: 0.95,
+        passiveDesc: 'Aura: +15% Hero Attack Damage',
+        abilityDesc: 'Shoots blazing fireballs at wild creatures.'
+      },
+      {
+        id: 'aquafin', name: 'Aquafin', icon: '💧', color: '#38bdf8', projColor: '#7dd3fc',
+        baseCost: 50, baseDmg: 12, cd: 1.0,
+        passiveDesc: 'Aura: Regenerates +4 Hero HP every second',
+        abilityDesc: 'Fires pressurized hydro-bolts.'
+      },
+      {
+        id: 'voltkit', name: 'Voltkit', icon: '⚡', color: '#facc15', projColor: '#fef08a',
+        baseCost: 60, baseDmg: 14, cd: 0.75,
+        passiveDesc: 'Aura: +15% Hero Movement Speed',
+        abilityDesc: 'Zaps targets with rapid chain-sparks.'
+      },
+      {
+        id: 'geohorn', name: 'Geohorn', icon: '🪨', color: '#a8a29e', projColor: '#d6d3d1',
+        baseCost: 65, baseDmg: 22, cd: 1.35,
+        passiveDesc: 'Aura: Reduces all damage taken by 20%',
+        abilityDesc: 'Hurls heavy knockback boulders.'
+      },
+      {
+        id: 'sproutling', name: 'Sproutling', icon: '🌿', color: '#4ade80', projColor: '#86efac',
+        baseCost: 70, baseDmg: 15, cd: 0.9,
+        passiveDesc: 'Aura: Heals +4 HP whenever you defeat a monster',
+        abilityDesc: 'Lashes enemies with razor leaf darts.'
+      },
+      {
+        id: 'frostwing', name: 'Frostwing', icon: '❄️', color: '#67e8f9', projColor: '#a5f3fc',
+        baseCost: 85, baseDmg: 17, cd: 0.95,
+        passiveDesc: 'Aura: Cryo-shots slow enemy speed by 45%',
+        abilityDesc: 'Fires freezing icicle spears.'
+      },
+      {
+        id: 'shadewisp', name: 'Shadewisp', icon: '👻', color: '#c084fc', projColor: '#e879f9',
+        baseCost: 100, baseDmg: 24, cd: 0.85,
+        passiveDesc: 'Aura: Grants Hero 25% Critical Hit Chance (2x DMG)',
+        abilityDesc: 'Shoots piercing phantom orbs.'
+      },
+      {
+        id: 'auroradrake', name: 'Auroradrake', icon: '🐉', color: '#fbbf24', projColor: '#fde047',
+        baseCost: 140, baseDmg: 35, cd: 0.7,
+        passiveDesc: 'Aura: +25% Bonus Coins from all drops & quizzes',
+        abilityDesc: 'Unleashes devastating cosmic dragon breath.'
+      }
+    ];
+
+    // SOUND SYNTHESIZER
+    let audioCtx = null;
+    function getAudio() {
+      if (!audioCtx) { try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {} }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+    function playSound(type) {
+      try {
+        const a = getAudio(); if (!a) return;
+        const now = a.currentTime; const osc = a.createOscillator(); const gain = a.createGain();
+        osc.connect(gain); gain.connect(a.destination);
+        if (type === 'shoot') {
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(680, now); osc.frequency.exponentialRampToValueAtTime(260, now + 0.09);
+          gain.gain.setValueAtTime(0.14, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.09);
+          osc.start(now); osc.stop(now + 0.09);
+        } else if (type === 'coin') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(880, now); osc.frequency.setValueAtTime(1318.5, now + 0.06);
+          gain.gain.setValueAtTime(0.15, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.14);
+          osc.start(now); osc.stop(now + 0.14);
+        } else if (type === 'hit') {
+          osc.type = 'square'; osc.frequency.setValueAtTime(150, now); osc.frequency.setValueAtTime(55, now + 0.12);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.linearRampToValueAtTime(0.01, now + 0.12);
+          osc.start(now); osc.stop(now + 0.12);
+        } else if (type === 'win') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => {
+            const o = a.createOscillator(); const g = a.createGain(); o.connect(g); g.connect(a.destination);
+            o.type = 'triangle'; o.frequency.setValueAtTime(f, now + i * 0.07);
+            g.gain.setValueAtTime(0.18, now + i * 0.07); g.gain.linearRampToValueAtTime(0.01, now + i * 0.07 + 0.22);
+            o.start(now + i * 0.07); o.stop(now + i * 0.07 + 0.22);
+          });
+        }
+      } catch(e) {}
+    }
+
+    // CANVAS & STATE
+    const canvas = document.getElementById('canvasGame');
+    const ctx = canvas.getContext('2d', { alpha: false });
+    let W = window.innerWidth, H = window.innerHeight;
+    const WALL_PAD = 40;
+
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resize);
+    resize();
+
+    const ZONES = [
+      { name: "VERDANT MEADOW", bg: "#051b11", tile1: "#092618", tile2: "#071f14", border: "#14532d", accent: "#4ade80" },
+      { name: "CRYSTAL LAKE", bg: "#041624", tile1: "#082236", tile2: "#061b2b", border: "#1e3a8a", accent: "#38bdf8" },
+      { name: "EMBER VOLCANO", bg: "#1c0808", tile1: "#2b0d0d", tile2: "#210909", border: "#7f1d1d", accent: "#fb923c" },
+      { name: "THUNDER PEAK", bg: "#181404", tile1: "#292209", tile2: "#1f1a06", border: "#713f12", accent: "#facc15" },
+      { name: "MYSTIC SANCTUARY", bg: "#140824", tile1: "#22103b", tile2: "#1a0c2e", border: "#581c87", accent: "#c084fc" }
+    ];
+
+    // HERO & PET STATE
+    const hero = {
+      x: 300, y: 300, size: 22,
+      facing: 'right', isMoving: false,
+      hp: 120, maxHp: 120,
+      atkLv: 1, hpLv: 1, spdLv: 1,
+      atkTimer: 0, invulnTimer: 0, dashCooldown: 0, dashTimer: 0
+    };
+
+    let coins = 50; // Start with 50 coins so player can buy a starter pet right away if desired!
+    let waveNum = 1;
+    let streak = 0;
+    let trialTimer = 10;
+    let isGracePeriod = false;
+    let totalQuiz = 0, correctQuiz = 0;
+    let isPaused = false, isOver = false, isShopOpen = false;
+    let screenShake = 0, timeGlobal = 0;
+    let regenAccumulator = 0;
+
+    // Owned Pets Map: { id: { level: 1, equipped: true, x, y, cdTimer, orbitAngle } }
+    let ownedPets = {};
+    let equippedPetIds = [];
+
+    let wildMonsters = [];
+    let heroProjectiles = [];
+    let enemyProjectiles = [];
+    let coinDrops = [];
+    let particles = [];
+    let damageNumbers = [];
+    let nextWavePortal = null;
+    let isWaveTransition = false, transitionCountdown = 0;
+
+    // INPUTS
+    let keys = {};
+    let isHoldingFire = false;
+    window.addEventListener('keydown', e => {
+      getAudio();
+      keys[e.key.toLowerCase()] = true;
+      if (e.key === ' ' || e.key === 'Spacebar') { isHoldingFire = true; e.preventDefault(); }
+      if (e.key === 'Shift') { triggerDash(); e.preventDefault(); }
+      if (e.key === 'p' || e.key === 'P') toggleShop();
+      if (e.key === 'Escape' && isShopOpen) closeShop();
+    });
+    window.addEventListener('keyup', e => {
+      keys[e.key.toLowerCase()] = false;
+      if (e.key === ' ' || e.key === 'Spacebar') isHoldingFire = false;
+    });
+
+    function bindTouch(id, k) {
+      const el = document.getElementById(id);
+      el.onmousedown = el.ontouchstart = (e) => { e.preventDefault(); getAudio(); keys[k] = true; };
+      el.onmouseup = el.ontouchend = (e) => { e.preventDefault(); keys[k] = false; };
+    }
+    bindTouch('mUp', 'w'); bindTouch('mDown', 's'); bindTouch('mLeft', 'a'); bindTouch('mRight', 'd');
+    const mAtk = document.getElementById('mAtk');
+    mAtk.onmousedown = mAtk.ontouchstart = (e) => { e.preventDefault(); getAudio(); isHoldingFire = true; };
+    mAtk.onmouseup = mAtk.ontouchend = (e) => { e.preventDefault(); isHoldingFire = false; };
+
+    function triggerDash() {
+      if (isPaused || isOver || hero.dashCooldown > 0) return;
+      hero.dashCooldown = 2.0;
+      hero.dashTimer = 0.22;
+      hero.invulnTimer = 0.28;
+    }
+
+    // PASSIVE HELPERS
+    function hasPetEquipped(id) { return equippedPetIds.includes(id); }
+
+    function getCoinMultiplier() {
+      return hasPetEquipped('auroradrake') ? 1.25 : 1.0;
+    }
+
+    function getHeroDamage() {
+      let d = 22 + (hero.atkLv - 1) * 10;
+      if (hasPetEquipped('embereling')) d *= 1.15;
+      return Math.round(d);
+    }
+
+    function getHeroMoveSpeed() {
+      let s = 235 + (hero.spdLv - 1) * 30;
+      if (hasPetEquipped('voltkit')) s *= 1.15;
+      if (hero.dashTimer > 0) s *= 2.6;
+      return s;
+    }
+
+    // WAVE SPAWNER
+    function spawnWave(w) {
+      waveNum = w;
+      document.getElementById('hudWave').textContent = waveNum;
+      const z = ZONES[Math.floor((w - 1) / 2) % ZONES.length];
+      document.getElementById('hudZoneName').textContent = z.name;
+      document.getElementById('hudZoneName').style.color = z.accent;
+
+      hero.x = WALL_PAD + 90;
+      hero.y = H * 0.5;
+      wildMonsters = [];
+      heroProjectiles = [];
+      enemyProjectiles = [];
+      nextWavePortal = null;
+      isWaveTransition = false;
+
+      // Sync pet positions around hero
+      equippedPetIds.forEach((id, idx) => {
+        const p = ownedPets[id];
+        p.x = hero.x; p.y = hero.y;
+        p.orbitAngle = (idx * Math.PI * 2) / Math.max(1, equippedPetIds.length);
+      });
+
+      const isAlphaWave = (w % 3 === 0);
+      const numAlphas = isAlphaWave ? (1 + Math.floor((w - 1) / 5)) : 0;
+      const count = Math.min(28, 4 + Math.floor(w * 2.0) + numAlphas);
+      const spdScale = 1.0 + Math.min(0.85, (w - 1) * 0.07);
+
+      const speciesPool = ['slime', 'beetle', 'bat', 'treant', 'drake'];
+
+      for (let i = 0; i < count; i++) {
+        const isAlpha = i < numAlphas;
+        const spec = isAlpha ? 'alpha' : speciesPool[Math.floor(Math.random() * Math.min(speciesPool.length, 2 + Math.floor(w / 2)))];
+        const baseHp = isAlpha ? 300 : (spec === 'treant' ? 75 : (spec === 'drake' ? 55 : 38));
+        const hp = Math.round(baseHp * (1 + (w - 1) * 0.32));
+
+        wildMonsters.push({
+          x: W * 0.35 + Math.random() * (W * 0.55 - WALL_PAD),
+          y: WALL_PAD + 55 + Math.random() * (H - WALL_PAD * 2 - 110),
+          size: isAlpha ? 48 : (spec === 'treant' ? 30 : 22),
+          hp: hp, maxHp: hp,
+          isAlpha: isAlpha, species: spec,
+          spd: (isAlpha ? 1.05 : (spec === 'bat' ? 1.65 : (spec === 'treant' ? 0.9 : 1.3))) * spdScale,
+          shootCd: Math.random() * 2 + 1.4,
+          slowTimer: 0,
+          hitFlash: 0,
+          anim: Math.random() * Math.PI * 2
+        });
+      }
+      updateHUD();
+    }
+
+    // HERO & PET COMBAT
+    function fireHeroShot() {
+      if (isPaused || isOver || hero.atkTimer > 0) return;
+      hero.atkTimer = 0.23;
+      playSound('shoot');
+
+      // Aim toward nearest wild monster, or facing direction if none
+      let angle = 0;
+      let nearest = null, minDist = 9999;
+      wildMonsters.forEach(m => {
+        if (m.hp > 0) {
+          const d = Math.hypot(m.x - hero.x, m.y - hero.y);
+          if (d < minDist) { minDist = d; nearest = m; }
+        }
+      });
+
+      if (nearest && minDist < 550) {
+        angle = Math.atan2(nearest.y - hero.y, nearest.x - hero.x);
+      } else {
+        if (hero.facing === 'up') angle = -Math.PI/2;
+        if (hero.facing === 'down') angle = Math.PI/2;
+        if (hero.facing === 'left') angle = Math.PI;
+        if (hero.facing === 'right') angle = 0;
+      }
+
+      let dmg = getHeroDamage();
+      let isCrit = hasPetEquipped('shadewisp') && Math.random() < 0.25;
+      if (isCrit) dmg *= 2;
+
+      heroProjectiles.push({
+        x: hero.x, y: hero.y,
+        vx: Math.cos(angle) * 650, vy: Math.sin(angle) * 650,
+        r: isCrit ? 9 : 6,
+        dmg: dmg, isCrit: isCrit,
+        color: isCrit ? '#e879f9' : '#fde047',
+        slowEffect: false,
+        life: 1.1
+      });
+    }
+
+    function damageMonster(m, dmg, isCrit = false, applySlow = false) {
+      if (m.hp <= 0) return;
+      m.hp -= dmg;
+      m.hitFlash = 0.1;
+      if (applySlow) m.slowTimer = 2.5;
+      playSound('hit');
+
+      damageNumbers.push({
+        x: m.x, y: m.y - 16,
+        text: isCrit ? `💥 -${dmg}!` : `-${dmg}`,
+        color: isCrit ? '#e879f9' : '#fef08a',
+        life: 0.6, vy: -40
+      });
+
+      for (let p = 0; p < 5; p++) {
+        const a = Math.random() * Math.PI * 2;
+        particles.push({
+          x: m.x, y: m.y, vx: Math.cos(a) * 160, vy: Math.sin(a) * 160,
+          life: 0.28, color: '#fde047', size: 3
+        });
+      }
+
+      if (m.hp <= 0) {
+        // Sproutling Passive: Heal +4 HP on kill
+        if (hasPetEquipped('sproutling')) {
+          hero.hp = Math.min(hero.maxHp, hero.hp + 4);
+        }
+
+        // Drop Gold Coins
+        const numCoins = m.isAlpha ? 8 : (m.species === 'treant' || m.species === 'drake' ? 3 : 2);
+        const coinVal = Math.round((4 + Math.floor(waveNum * 0.8)) * getCoinMultiplier());
+        for (let c = 0; c < numCoins; c++) {
+          coinDrops.push({
+            x: m.x + (Math.random() - 0.5) * 36,
+            y: m.y + (Math.random() - 0.5) * 36,
+            val: coinVal,
+            autoVacuum: false
+          });
+        }
+        updateHUD();
+      }
+    }
+
+    function checkWaveCleared() {
+      wildMonsters = wildMonsters.filter(m => m.hp > 0);
+      if (wildMonsters.length === 0 && !isWaveTransition && !nextWavePortal) {
+        playSound('win');
+        isWaveTransition = true;
+        transitionCountdown = 4.0;
+        nextWavePortal = { x: W - WALL_PAD - 80, y: H * 0.5, r: 36, rot: 0 };
+        coinDrops.forEach(c => { c.autoVacuum = true; });
+      }
+    }
+
+    // =====================================================
+    // 3. QUESTION TIMER (10s NORMAL -> 5-STREAK = 30s GRACE!)
+    // =====================================================
+    function tickQuestionTimer() {
+      if (isPaused || isOver || isWaveTransition) return;
+      trialTimer--;
+      document.getElementById('hudTrialTimer').textContent = `${trialTimer}s`;
+      document.getElementById('hudTimerLabel').textContent = isGracePeriod ? 'GRACE PERIOD' : 'QUIZ IN';
+      document.getElementById('hudTrialTimer').style.color = isGracePeriod ? '#4ade80' : '#fbbf24';
+
+      if (trialTimer <= 0) {
+        isGracePeriod = false;
+        openQuizModal();
+      }
+    }
+
+    let currentQ = null, quizLocked = false;
+    function openQuizModal() {
+      isPaused = true;
+      quizLocked = false;
+      isHoldingFire = false;
+
+      currentQ = QUESTIONS[Math.floor(Math.random() * QUESTIONS.length)];
+      document.getElementById('modalStreakBadge').textContent = `Streak: ${streak} / 5`;
+      document.getElementById('trialQuestion').textContent = currentQ.q;
+      document.getElementById('trialHint').textContent = `Clue: ${currentQ.hint}`;
+
+      const grid = document.getElementById('trialOptions');
+      grid.innerHTML = '';
+      const opts = [currentQ.ans, ...currentQ.dist].sort(() => Math.random() - 0.5);
+      opts.forEach(opt => {
+        const btn = document.createElement('button');
+        btn.className = 'opt-btn';
+        btn.textContent = opt;
+        btn.onclick = () => submitQuizAnswer(opt, btn);
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('trialFeedback').className = 'hidden';
+      document.getElementById('modalTrial').classList.remove('hidden');
+    }
+
+    function submitQuizAnswer(choice, btnEl) {
+      if (quizLocked) return;
+      quizLocked = true;
+      getAudio();
+
+      totalQuiz++;
+      const isCorrect = (choice === currentQ.ans);
+      const fb = document.getElementById('trialFeedback');
+      fb.classList.remove('hidden');
+
+      document.querySelectorAll('#trialOptions .opt-btn').forEach(b => {
+        b.style.pointerEvents = 'none';
+        if (b.textContent === currentQ.ans) b.classList.add('correct');
+      });
+
+      if (isCorrect) {
+        correctQuiz++;
+        streak++;
+        playSound('win');
+
+        let coinReward = Math.round(35 * getCoinMultiplier());
+        hero.hp = Math.min(hero.maxHp, hero.hp + 15);
+
+        // CHECK 5-IN-A-ROW STREAK -> 30 SECONDS NO QUESTIONS!
+        if (streak >= 5) {
+          streak = 0;
+          isGracePeriod = true;
+          trialTimer = 30; // 30 seconds grace period!
+          const bonusCoins = Math.round(100 * getCoinMultiplier());
+          coins += coinReward + bonusCoins;
+          fb.style.background = 'rgba(6, 78, 59, 0.95)';
+          fb.style.border = '1px solid #10b981';
+          fb.style.color = '#a7f3d0';
+          fb.innerHTML = `🌟 <b>5-STREAK JACKPOT!</b> +${coinReward + bonusCoins} Coins 🪙 & <b>30 SECONDS OF NO QUESTIONS!</b>`;
+        } else {
+          isGracePeriod = false;
+          trialTimer = 10; // Normal 10 seconds
+          coins += coinReward;
+          fb.style.background = 'rgba(6, 78, 59, 0.95)';
+          fb.style.border = '1px solid #10b981';
+          fb.style.color = '#a7f3d0';
+          fb.innerHTML = `✨ <b>CORRECT!</b> +${coinReward} Coins 🪙 & +15 HP! (${streak}/5 toward 30s Grace Period)`;
+        }
+      } else {
+        btnEl.classList.add('wrong');
+        streak = 0;
+        isGracePeriod = false;
+        trialTimer = 10;
+        playSound('hit');
+        hero.hp = Math.max(0, hero.hp - 25);
+        fb.style.background = 'rgba(136, 19, 55, 0.95)';
+        fb.style.border = '1px solid #f43f5e';
+        fb.style.color = '#fecdd3';
+        fb.innerHTML = `⚠️ <b>INCORRECT!</b> Wild ambush dealt -25 HP! Correct word: <b>${currentQ.ans}</b>`;
+      }
+
+      updateHUD();
+
+      setTimeout(() => {
+        document.getElementById('modalTrial').classList.add('hidden');
+        quizLocked = false;
+        if (hero.hp <= 0) triggerGameOver();
+        else { lastTime = performance.now(); isPaused = false; }
+      }, 1250);
+    }
+
+    // =====================================================
+    // 4. HERO & PET SHOP LOGIC (BUY, UPGRADE & EQUIP UP TO 3)
+    // =====================================================
+    function toggleShop() { if (isShopOpen) closeShop(); else openShop(); }
+    function openShop() {
+      if (isPaused && !isShopOpen) return;
+      isPaused = true; isShopOpen = true; isHoldingFire = false;
+      document.getElementById('shopMsg').textContent = '';
+      renderShopUI();
+      document.getElementById('modalShop').classList.remove('hidden');
+    }
+    function closeShop() {
+      document.getElementById('modalShop').classList.add('hidden');
+      isShopOpen = false;
+      lastTime = performance.now();
+      isPaused = false;
+    }
+
+    function renderShopUI() {
+      document.getElementById('shopCoins').textContent = coins;
+
+      // Hero Upgrades
+      const cAtk = 30 * hero.atkLv;
+      document.getElementById('shHeroAtkLv').textContent = hero.atkLv;
+      document.getElementById('shHeroAtkVal').textContent = getHeroDamage();
+      document.getElementById('costHeroAtk').textContent = cAtk;
+      document.getElementById('btnBuyHeroAtk').disabled = (coins < cAtk);
+
+      const cHp = 35 * hero.hpLv;
+      document.getElementById('shHeroHpLv').textContent = hero.hpLv;
+      document.getElementById('shHeroHpVal').textContent = hero.maxHp;
+      document.getElementById('costHeroHp').textContent = cHp;
+      document.getElementById('btnBuyHeroHp').disabled = (coins < cHp);
+
+      const cSpd = 30 * hero.spdLv;
+      document.getElementById('shHeroSpdLv').textContent = hero.spdLv;
+      document.getElementById('shHeroSpdVal').textContent = `${Math.round((getHeroMoveSpeed() / 235) * 100)}%`;
+      document.getElementById('costHeroSpd').textContent = cSpd;
+      document.getElementById('btnBuyHeroSpd').disabled = (coins < cSpd);
+
+      document.getElementById('btnBuyHeal').disabled = (coins < 20 || hero.hp >= hero.maxHp);
+      document.getElementById('shEquippedCount').textContent = equippedPetIds.length;
+
+      // Render 8 Companion Pets
+      const grid = document.getElementById('shopPetsGrid');
+      grid.innerHTML = '';
+
+      PET_CATALOG.forEach(pet => {
+        const owned = ownedPets[pet.id];
+        const isEquipped = equippedPetIds.includes(pet.id);
+        const card = document.createElement('div');
+        card.className = `shop-card ${isEquipped ? 'equipped' : ''}`;
+
+        if (!owned) {
+          card.innerHTML = `
+            <div>
+              <div style="font-weight:900; font-size:0.92rem; color:${pet.color};">${pet.icon} ${pet.name}</div>
+              <div style="font-size:0.72rem; color:#fde047; font-weight:700;">${pet.passiveDesc}</div>
+              <div style="font-size:0.7rem; color:#94a3b8;">${pet.abilityDesc} (Base DMG: ${pet.baseDmg})</div>
+            </div>
+            <button class="btn btn-shop" ${coins < pet.baseCost ? 'disabled' : ''} onclick="buyPet('${pet.id}')">
+              Buy 🪙 ${pet.baseCost}
+            </button>
+          `;
+        } else {
+          const lv = owned.level;
+          const curDmg = Math.round(pet.baseDmg * (1 + (lv - 1) * 0.35));
+          const upgCost = Math.round(pet.baseCost * 0.75 * lv);
+          card.innerHTML = `
+            <div>
+              <div style="font-weight:900; font-size:0.92rem; color:${pet.color};">
+                ${pet.icon} ${pet.name} <span style="color:#fff; font-size:0.78rem;">(Lv. ${lv})</span>
+              </div>
+              <div style="font-size:0.72rem; color:#fde047; font-weight:700;">${pet.passiveDesc}</div>
+              <div style="font-size:0.7rem; color:#cbd5e1;">Pet Shot DMG: <b>${curDmg}</b></div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:0.35rem; min-width:6.8rem;">
+              <button class="btn btn-shop" ${coins < upgCost ? 'disabled' : ''} onclick="levelUpPet('${pet.id}')">
+                Lv Up 🪙 ${upgCost}
+              </button>
+              <button class="btn" style="border-color:${isEquipped ? '#10b981' : '#475569'}; color:${isEquipped ? '#4ade80' : '#cbd5e1'};" onclick="toggleEquipPet('${pet.id}')">
+                ${isEquipped ? '✓ Equipped' : 'Equip'}
+              </button>
+            </div>
+          `;
+        }
+        grid.appendChild(card);
+      });
+
+      updateHUD();
+    }
+
+    function upgradeHero(type) {
+      const msg = document.getElementById('shopMsg');
+      if (type === 'atk') {
+        const c = 30 * hero.atkLv;
+        if (coins >= c) { coins -= c; hero.atkLv++; playSound('win'); msg.textContent = `⚡ Blaster upgraded to Lv. ${hero.atkLv}!`; }
+      } else if (type === 'hp') {
+        const c = 35 * hero.hpLv;
+        if (coins >= c) {
+          coins -= c; hero.hpLv++;
+          hero.maxHp = 120 + (hero.hpLv - 1) * 35;
+          hero.hp = hero.maxHp;
+          playSound('win'); msg.textContent = `❤️ Max HP increased to ${hero.maxHp} & fully healed!`;
+        }
+      } else if (type === 'spd') {
+        const c = 30 * hero.spdLv;
+        if (coins >= c) { coins -= c; hero.spdLv++; playSound('win'); msg.textContent = `🥾 Trainers upgraded to Lv. ${hero.spdLv}!`; }
+      } else if (type === 'heal') {
+        if (coins >= 20 && hero.hp < hero.maxHp) {
+          coins -= 20; hero.hp = Math.min(hero.maxHp, hero.hp + 60);
+          playSound('win'); msg.textContent = `🧪 Restored +60 HP!`;
+        }
+      }
+      renderShopUI();
+    }
+
+    function buyPet(id) {
+      const pet = PET_CATALOG.find(p => p.id === id);
+      if (!pet || ownedPets[id] || coins < pet.baseCost) return;
+      coins -= pet.baseCost;
+      ownedPets[id] = { level: 1, x: hero.x, y: hero.y, cdTimer: 0.5, orbitAngle: 0 };
+
+      const msg = document.getElementById('shopMsg');
+      if (equippedPetIds.length < 3) {
+        equippedPetIds.push(id);
+        msg.textContent = `🎉 Tamed ${pet.icon} ${pet.name} and added to your active team!`;
+      } else {
+        msg.textContent = `🎉 Tamed ${pet.icon} ${pet.name}! Click 'Equip' to swap it into your 3 active slots.`;
+      }
+      playSound('win');
+      renderShopUI();
+    }
+
+    function levelUpPet(id) {
+      const pet = PET_CATALOG.find(p => p.id === id);
+      const owned = ownedPets[id];
+      if (!pet || !owned) return;
+      const cost = Math.round(pet.baseCost * 0.75 * owned.level);
+      if (coins < cost) return;
+      coins -= cost;
+      owned.level++;
+      playSound('win');
+      document.getElementById('shopMsg').textContent = `⬆️ ${pet.icon} ${pet.name} leveled up to Lv. ${owned.level}!`;
+      renderShopUI();
+    }
+
+    function toggleEquipPet(id) {
+      const idx = equippedPetIds.indexOf(id);
+      const msg = document.getElementById('shopMsg');
+      if (idx !== -1) {
+        equippedPetIds.splice(idx, 1);
+        msg.textContent = `Unequipped companion.`;
+      } else {
+        if (equippedPetIds.length >= 3) {
+          msg.textContent = `⚠️ You already have 3 active pets! Unequip one first.`;
+          return;
+        }
+        equippedPetIds.push(id);
+        ownedPets[id].x = hero.x;
+        ownedPets[id].y = hero.y;
+        msg.textContent = `Equipped companion to active team!`;
+      }
+      renderShopUI();
+    }
+
+    function updateHUD() {
+      document.getElementById('hudCoins').textContent = coins;
+      document.getElementById('hudStreak').textContent = streak;
+      document.getElementById('hudHpText').textContent = `${Math.ceil(hero.hp)}/${hero.maxHp}`;
+      const pct = Math.max(0, (hero.hp / hero.maxHp) * 100);
+      document.getElementById('hudHpFill').style.width = `${pct}%`;
+
+      const petBox = document.getElementById('hudActivePets');
+      if (equippedPetIds.length === 0) {
+        petBox.innerHTML = `<span style="font-size:0.72rem; color:#94a3b8;">Pets (0/3): Buy in Shop [P]</span>`;
+      } else {
+        petBox.innerHTML = equippedPetIds.map(id => {
+          const cfg = PET_CATALOG.find(p => p.id === id);
+          const st = ownedPets[id];
+          return `<div class="pet-slot-pill" style="border-color:${cfg.color};"><span>${cfg.icon}</span> <span>Lv.${st.level}</span></div>`;
+        }).join('');
+      }
+    }
+
+    function triggerGameOver() {
+      isOver = true; isHoldingFire = false;
+      const acc = totalQuiz > 0 ? Math.round((correctQuiz / totalQuiz) * 100) : 0;
+      document.getElementById('finalWave').textContent = waveNum;
+      document.getElementById('finalAccuracy').textContent = `${acc}%`;
+      document.getElementById('modalGameOver').classList.remove('hidden');
+    }
+
+    function restartGame() {
+      document.getElementById('modalGameOver').classList.add('hidden');
+      coins = 50;
+      hero.atkLv = 1; hero.hpLv = 1; hero.spdLv = 1;
+      hero.maxHp = 120; hero.hp = 120;
+      ownedPets = {};
+      equippedPetIds = [];
+      streak = 0;
+      isGracePeriod = false;
+      trialTimer = 10;
+      totalQuiz = 0; correctQuiz = 0;
+      isOver = false; isPaused = false;
+      spawnWave(1);
+      lastTime = performance.now();
+    }
+
+    // =====================================================
+    // 5. MAIN LOOP & RENDERING
+    // =====================================================
+    let lastTime = performance.now();
+
+    function gameLoop(time) {
+      requestAnimationFrame(gameLoop);
+      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      lastTime = time;
+      timeGlobal += dt;
+
+      if (!isPaused && !isOver) {
+        if (hero.atkTimer > 0) hero.atkTimer -= dt;
+        if (hero.invulnTimer > 0) hero.invulnTimer -= dt;
+        if (hero.dashCooldown > 0) hero.dashCooldown -= dt;
+        if (hero.dashTimer > 0) hero.dashTimer -= dt;
+
+        // Aquafin Passive: Regenerate +4 HP/sec
+        if (hasPetEquipped('aquafin') && hero.hp < hero.maxHp) {
+          regenAccumulator += dt;
+          if (regenAccumulator >= 1.0) {
+            regenAccumulator = 0;
+            hero.hp = Math.min(hero.maxHp, hero.hp + 4);
+            updateHUD();
+          }
+        }
+
+        if (isHoldingFire && hero.atkTimer <= 0) fireHeroShot();
+
+        // Hero Movement
+        let mx = 0, my = 0;
+        if (keys['w'] || keys['arrowup']) { my -= 1; hero.facing = 'up'; }
+        if (keys['s'] || keys['arrowdown']) { my += 1; hero.facing = 'down'; }
+        if (keys['a'] || keys['arrowleft']) { mx -= 1; hero.facing = 'left'; }
+        if (keys['d'] || keys['arrowright']) { mx += 1; hero.facing = 'right'; }
+        if (mx !== 0 && my !== 0) { mx *= 0.707; my *= 0.707; }
+
+        const spd = getHeroMoveSpeed();
+        hero.x = Math.max(WALL_PAD + hero.size, Math.min(W - WALL_PAD - hero.size, hero.x + mx * spd * dt));
+        hero.y = Math.max(WALL_PAD + hero.size, Math.min(H - WALL_PAD - hero.size, hero.y + my * spd * dt));
+
+        // Update Active Pets (Orbit & Auto-Fire!)
+        equippedPetIds.forEach((id, idx) => {
+          const cfg = PET_CATALOG.find(p => p.id === id);
+          const pet = ownedPets[id];
+          pet.orbitAngle += dt * 2.0;
+          const targetX = hero.x + Math.cos(pet.orbitAngle + (idx * Math.PI * 2) / equippedPetIds.length) * 52;
+          const targetY = hero.y + Math.sin(pet.orbitAngle + (idx * Math.PI * 2) / equippedPetIds.length) * 52;
+          pet.x += (targetX - pet.x) * 8 * dt;
+          pet.y += (targetY - pet.y) * 8 * dt;
+
+          pet.cdTimer -= dt;
+          if (pet.cdTimer <= 0 && wildMonsters.length > 0) {
+            let nearest = null, minDist = 500;
+            wildMonsters.forEach(m => {
+              if (m.hp > 0) {
+                const d = Math.hypot(m.x - pet.x, m.y - pet.y);
+                if (d < minDist) { minDist = d; nearest = m; }
+              }
+            });
+            if (nearest) {
+              pet.cdTimer = Math.max(0.35, cfg.cd * Math.pow(0.93, pet.level - 1));
+              const ang = Math.atan2(nearest.y - pet.y, nearest.x - pet.x);
+              const petDmg = Math.round(cfg.baseDmg * (1 + (pet.level - 1) * 0.35));
+              heroProjectiles.push({
+                x: pet.x, y: pet.y,
+                vx: Math.cos(ang) * 560, vy: Math.sin(ang) * 560,
+                r: 6, dmg: petDmg, isCrit: false,
+                color: cfg.projColor,
+                slowEffect: (id === 'frostwing'),
+                life: 1.0
+              });
+            }
+          }
+        });
+
+        // Update Hero & Pet Projectiles
+        heroProjectiles.forEach(p => {
+          p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt;
+          wildMonsters.forEach(m => {
+            if (p.life > 0 && m.hp > 0 && Math.hypot(m.x - p.x, m.y - p.y) < m.size + p.r) {
+              damageMonster(m, p.dmg, p.isCrit, p.slowEffect);
+              p.life = 0;
+            }
+          });
+        });
+        heroProjectiles = heroProjectiles.filter(p => p.life > 0 && p.x > WALL_PAD && p.x < W - WALL_PAD && p.y > WALL_PAD && p.y < H - WALL_PAD);
+        checkWaveCleared();
+
+        // Update Wild Monsters
+        wildMonsters.forEach(m => {
+          m.anim += dt * 4;
+          if (m.hitFlash > 0) m.hitFlash -= dt;
+          if (m.slowTimer > 0) m.slowTimer -= dt;
+
+          const slowMult = m.slowTimer > 0 ? 0.55 : 1.0;
+          const ang = Math.atan2(hero.y - m.y, hero.x - m.x);
+          m.x += Math.cos(ang) * (m.spd * 88 * slowMult) * dt;
+          m.y += Math.sin(ang) * (m.spd * 88 * slowMult) * dt;
+
+          if (m.species === 'drake' || m.isAlpha) {
+            m.shootCd -= dt;
+            if (m.shootCd <= 0) {
+              m.shootCd = m.isAlpha ? 2.1 : 2.6;
+              enemyProjectiles.push({
+                x: m.x, y: m.y,
+                vx: Math.cos(ang) * 240, vy: Math.sin(ang) * 240,
+                r: m.isAlpha ? 9 : 6, life: 3.5
+              });
+            }
+          }
+
+          if (Math.hypot(hero.x - m.x, hero.y - m.y) < hero.size + m.size * 0.75 && hero.invulnTimer <= 0) {
+            playSound('hit'); screenShake = 10;
+            let dmg = m.isAlpha ? 28 : 16;
+            if (hasPetEquipped('geohorn')) dmg = Math.round(dmg * 0.8);
+            hero.hp = Math.max(0, hero.hp - dmg);
+            hero.invulnTimer = 0.5;
+            updateHUD();
+            if (hero.hp <= 0) triggerGameOver();
+          }
+        });
+
+        // Update Enemy Projectiles
+        enemyProjectiles.forEach(ep => {
+          ep.x += ep.vx * dt; ep.y += ep.vy * dt; ep.life -= dt;
+          if (Math.hypot(hero.x - ep.x, hero.y - ep.y) < hero.size + ep.r && hero.invulnTimer <= 0) {
+            playSound('hit'); screenShake = 8;
+            let dmg = 18;
+            if (hasPetEquipped('geohorn')) dmg = Math.round(dmg * 0.8);
+            hero.hp = Math.max(0, hero.hp - dmg);
+            hero.invulnTimer = 0.45;
+            ep.life = 0;
+            updateHUD();
+            if (hero.hp <= 0) triggerGameOver();
+          }
+        });
+        enemyProjectiles = enemyProjectiles.filter(ep => ep.life > 0);
+
+        // Coin Drops Vacuum
+        coinDrops.forEach(c => {
+          const d = Math.hypot(hero.x - c.x, hero.y - c.y);
+          if (c.autoVacuum || d < 120) {
+            const ang = Math.atan2(hero.y - c.y, hero.x - c.x);
+            const pull = c.autoVacuum ? 640 : 340;
+            c.x += Math.cos(ang) * pull * dt;
+            c.y += Math.sin(ang) * pull * dt;
+          }
+          if (d < hero.size + 14) {
+            c.collected = true;
+            coins += c.val;
+            playSound('coin');
+            damageNumbers.push({ x: hero.x, y: hero.y - 22, text: `+${c.val} 🪙`, color: '#fde047', life: 0.65, vy: -35 });
+            updateHUD();
+          }
+        });
+        coinDrops = coinDrops.filter(c => !c.collected);
+
+        damageNumbers.forEach(d => { d.y += d.vy * dt; d.life -= dt; });
+        damageNumbers = damageNumbers.filter(d => d.life > 0);
+        particles.forEach(p => { p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; });
+        particles = particles.filter(p => p.life > 0);
+
+        if (isWaveTransition) {
+          transitionCountdown -= dt;
+          if (nextWavePortal) {
+            nextWavePortal.rot += dt * 3.5;
+            if (Math.hypot(hero.x - nextWavePortal.x, hero.y - nextWavePortal.y) < nextWavePortal.r + hero.size || transitionCountdown <= 0) {
+              spawnWave(waveNum + 1);
+            }
+          }
+        }
+      }
+
+      // RENDER PIPELINE
+      ctx.save();
+      if (screenShake > 0) {
+        ctx.translate((Math.random() - 0.5) * screenShake, (Math.random() - 0.5) * screenShake);
+        screenShake = Math.max(0, screenShake - dt * 35);
+      }
+
+      const z = ZONES[Math.floor((waveNum - 1) / 2) % ZONES.length];
+      ctx.fillStyle = z.bg; ctx.fillRect(0, 0, W, H);
+
+      const gridSize = 64;
+      for (let gx = WALL_PAD; gx < W - WALL_PAD; gx += gridSize) {
+        for (let gy = WALL_PAD; gy < H - WALL_PAD; gy += gridSize) {
+          ctx.fillStyle = ((Math.floor(gx / gridSize) + Math.floor(gy / gridSize)) % 2 === 0) ? z.tile1 : z.tile2;
+          ctx.fillRect(gx, gy, gridSize, gridSize);
+        }
+      }
+
+      // Arena Border
+      ctx.fillStyle = z.border;
+      ctx.fillRect(0, 0, W, WALL_PAD); ctx.fillRect(0, H - WALL_PAD, W, WALL_PAD);
+      ctx.fillRect(0, 0, WALL_PAD, H); ctx.fillRect(W - WALL_PAD, 0, WALL_PAD, H);
+
+      // Next Wave Portal
+      if (nextWavePortal) {
+        ctx.save(); ctx.translate(nextWavePortal.x, nextWavePortal.y); ctx.rotate(nextWavePortal.rot);
+        ctx.strokeStyle = '#4ade80'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.arc(0, 0, nextWavePortal.r, 0, Math.PI * 1.5); ctx.stroke();
+        ctx.restore();
+        ctx.fillStyle = '#fde047'; ctx.font = 'bold 12px system-ui'; ctx.textAlign = 'center';
+        ctx.fillText(`NEXT WAVE IN ${Math.ceil(transitionCountdown)}s`, nextWavePortal.x, nextWavePortal.y - nextWavePortal.r - 12);
+      }
+
+      // Coin Drops
+      coinDrops.forEach(c => {
+        ctx.font = '20px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText('🪙', c.x, c.y + Math.sin(timeGlobal * 5) * 4);
+      });
+
+      // Projectiles
+      heroProjectiles.forEach(p => {
+        ctx.fillStyle = p.color; ctx.shadowBlur = 10; ctx.shadowColor = p.color;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      });
+      enemyProjectiles.forEach(ep => {
+        ctx.fillStyle = '#f43f5e'; ctx.shadowBlur = 10; ctx.shadowColor = '#f43f5e';
+        ctx.beginPath(); ctx.arc(ep.x, ep.y, ep.r, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+      });
+
+      // Wild Creatures
+      wildMonsters.forEach(m => {
+        ctx.fillStyle = 'rgba(0,0,0,0.45)';
+        ctx.beginPath(); ctx.ellipse(m.x, m.y + m.size * 0.75, m.size * 0.85, m.size * 0.35, 0, 0, Math.PI * 2); ctx.fill();
+
+        const bounce = Math.abs(Math.sin(m.anim)) * 4;
+        ctx.save(); ctx.translate(m.x, m.y - bounce);
+
+        if (m.isAlpha) {
+          ctx.strokeStyle = '#f43f5e'; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(0, 0, m.size * 1.15, 0, Math.PI * 2); ctx.stroke();
+        }
+
+        ctx.fillStyle = m.hitFlash > 0 ? '#fff' : (m.slowTimer > 0 ? '#38bdf8' : (m.isAlpha ? '#be123c' : (m.species === 'treant' ? '#15803d' : (m.species === 'drake' ? '#ea580c' : (m.species === 'bat' ? '#6d28d9' : '#10b981')))));
+        ctx.strokeStyle = '#0f172a'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(0, 0, m.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+
+        // Creature Eyes & Horns
+        ctx.fillStyle = '#fef08a';
+        ctx.beginPath(); ctx.arc(-m.size * 0.3, -3, m.size * 0.18, 0, Math.PI * 2); ctx.arc(m.size * 0.3, -3, m.size * 0.18, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#000';
+        ctx.beginPath(); ctx.arc(-m.size * 0.3, -3, m.size * 0.08, 0, Math.PI * 2); ctx.arc(m.size * 0.3, -3, m.size * 0.08, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+
+        const bw = m.size * 2;
+        ctx.fillStyle = '#090d16'; ctx.fillRect(m.x - bw / 2, m.y - m.size - 14, bw, 5);
+        ctx.fillStyle = m.isAlpha ? '#f59e0b' : '#ef4444';
+        ctx.fillRect(m.x - bw / 2, m.y - m.size - 14, (m.hp / m.maxHp) * bw, 5);
+      });
+
+      // Render Equipped Companion Pets
+      equippedPetIds.forEach(id => {
+        const cfg = PET_CATALOG.find(p => p.id === id);
+        const pet = ownedPets[id];
+        const hover = Math.sin(timeGlobal * 5 + pet.orbitAngle) * 4;
+        ctx.save(); ctx.translate(pet.x, pet.y + hover);
+        ctx.fillStyle = cfg.color; ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+        ctx.font = '15px system-ui'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(cfg.icon, 0, 0);
+        ctx.restore();
+      });
+
+      // Render Hero Tamer
+      ctx.save(); ctx.translate(hero.x, hero.y);
+      ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.beginPath(); ctx.ellipse(0, 14, 15, 7, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#2563eb'; ctx.strokeStyle = '#fde047'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(0, 0, hero.size, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      // Tamer Cap Visor
+      ctx.fillStyle = '#ef4444';
+      ctx.beginPath(); ctx.arc(0, -3, hero.size * 0.8, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.beginPath(); ctx.arc(0, -3, 5, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+
+      particles.forEach(p => { ctx.fillStyle = p.color; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2); ctx.fill(); });
+      damageNumbers.forEach(d => {
+        ctx.font = '900 16px system-ui'; ctx.fillStyle = d.color; ctx.textAlign = 'center';
+        ctx.fillText(d.text, d.x, d.y);
+      });
+
+      ctx.restore();
+    }
+
+    window.addEventListener('load', () => {
+      resize();
+      spawnWave(1);
+      setInterval(tickQuestionTimer, 1000);
+      lastTime = performance.now();
+      requestAnimationFrame(gameLoop);
+    });
+  </script>
+</body>
+</html>
