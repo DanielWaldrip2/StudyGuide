@@ -236,28 +236,11 @@
     </div>
   </div>
 
+<script src="vocab-data.js"></script>
   <script>
-    // =====================================================
-    // 1. PURE UNIT 4 VOCABULARY POOL (NO ANALOGIES OR GRAMMAR)
-    // =====================================================
-    const QUESTIONS = [
-      { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
-      { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
-      { q: "An extremely large, powerful, and destructive storm with very high winds that turn around an area of low pressure:", ans: "cyclone", dist: ["circumference", "circumvent", "cycle"], hint: "A spinning wind storm that rotates around a calm eye." },
-      { q: "The length of a line that goes around a circle or other round shape:", ans: "circumference", dist: ["circuit", "central", "concentric"], hint: "The boundary distance all the way around the edge of a circle." },
-      { q: "The complete, closed path that an electric current travels along:", ans: "circuit", dist: ["circumstance", "circumvent", "cycle"], hint: "Electricity flows around this closed loop to power a lightbulb." },
-      { q: "A condition or fact that affects a situation, environment, or event:", ans: "circumstance", dist: ["circumference", "eccentric", "cyclical"], hint: "Heavy rain was an unlucky _____ that delayed the outdoor game." },
-      { q: "To get around something in a clever and sometimes dishonest way; to bypass:", ans: "circumvent", dist: ["concentric", "circuit", "cyclone"], hint: "He tried to _____ the rules to finish first." },
-      { q: "Located in the center of a thing or place; containing the middle point:", ans: "central", dist: ["concentric", "eccentric", "cyclical"], hint: "The town fountain stood in the _____ plaza." },
-      { q: "When two or more circles or objects share the exact same center point:", ans: "concentric", dist: ["eccentric", "central", "circumference"], hint: "A bullseye target has _____ rings inside one another." },
-      { q: "Tending to act in strange, odd, or unusual ways ('out of center'):", ans: "eccentric", dist: ["central", "concentric", "circumstance"], hint: "The inventor was known for his _____ habits and mismatched clothes." },
-      { q: "What does the Greek root 'cycl' (as in cycle, cyclical, cyclone) mean?", ans: "Circle", dist: ["Around", "Middle", "Water"], hint: "Think of a wheel or spinning ring." },
-      { q: "What does the Latin root 'circ / circum' (as in circumference, circuit, circumvent) mean?", ans: "Around", dist: ["Middle", "Circle", "Under"], hint: "Think of going all the way around an obstacle or boundary." },
-      { q: "What does the Greek root 'centr / center' (as in central, concentric, eccentric) mean?", ans: "Middle", dist: ["Circle", "Around", "Beyond"], hint: "The exact core or midpoint." },
-      { q: "Which Unit 4 word describes ripples in a pond that all spread out from the exact same middle point?", ans: "concentric", dist: ["eccentric", "circumvent", "circuit"], hint: "Sharing a common center ('con-' together + 'centr' middle)." },
-      { q: "Which Unit 4 word means to cleverly find a way around an obstacle or rule?", ans: "circumvent", dist: ["circumference", "cyclical", "central"], hint: "Combines 'circum' (around) + 'venire' (to come)." },
-      { q: "Which Unit 4 word refers to a repeating sequence of events, such as a frog's growth from egg to tadpole to adult?", ans: "cycle", dist: ["circuit", "cyclone", "circumstance"], hint: "A recurring wheel of events." }
-    ];
+    // SHARED VOCABULARY QUESTION POOL
+    const ACTIVE_DATA = (typeof getActiveVocabData === 'function') ? getActiveVocabData() : null;
+    const QUESTIONS = ACTIVE_DATA ? ACTIVE_DATA.questions : [];
 
     // =====================================================
     // 2. COMPANION PETS CATALOG WITH 4 EVOLUTION STAGES
