@@ -325,24 +325,12 @@
       </div>
     </div>
   </div>
-
+  <script src="vocab-data.js"></script>
   <script>
-    // UNIT 4 VOCABULARY QUESTION POOL
-    const QUESTIONS = [
-      { q: "A set of events or actions that happen again and again in the same order; a repeating series:", ans: "cycle", dist: ["cyclone", "circuit", "circumstance"], hint: "The water _____ consists of evaporation, condensation, and precipitation." },
-      { q: "Happening again and again in the same order; occurring in recurring cycles:", ans: "cyclical", dist: ["central", "concentric", "eccentric"], hint: "The four seasons of Earth change in a _____ manner." },
-      { q: "An extremely large, powerful, destructive storm with very high winds that turn around low pressure:", ans: "cyclone", dist: ["circumference", "circumvent", "cycle"], hint: "A spinning vortex that can rip trees out of the ground." },
-      { q: "The length of a line that goes around a circle or other round shape:", ans: "circumference", dist: ["circuit", "central", "concentric"], hint: "In math, this is the perimeter or distance around a circle." },
-      { q: "The complete, closed path that an electric current travels along:", ans: "circuit", dist: ["circumstance", "circumvent", "cycle"], hint: "In science, electricity travels around this to light a bulb." },
-      { q: "A condition or situation that surrounds or causes an event to happen:", ans: "circumstance", dist: ["circumference", "eccentric", "cyclical"], hint: "A flat tire or traffic can be a bad _____ that makes you late." },
-      { q: "To get around something in a clever or dishonest way; to bypass or avoid:", ans: "circumvent", dist: ["concentric", "circuit", "cyclone"], hint: "He tried to _____ the password screen to access the computer." },
-      { q: "Located directly in the center or middle of a thing or place:", ans: "central", dist: ["concentric", "eccentric", "cyclical"], hint: "Kansas is located in the _____ United States." },
-      { q: "When two or more circles or objects share the exact same center point:", ans: "concentric", dist: ["eccentric", "central", "circumference"], hint: "Target rings and ripple circles in water are _____." },
-      { q: "Tending to act in strange, odd, or unusual ways ('out of center'):", ans: "eccentric", dist: ["central", "concentric", "circumstance"], hint: "Someone with wacky hairstyles and wild colorful clothes." },
-      { q: "What does the Greek root 'cycl' mean?", ans: "Circle", dist: ["Around", "Middle", "Water"], hint: "Seen in cycle, cyclical, cyclone, and bicycle." },
-      { q: "What does the Latin root 'circ / circum' mean?", ans: "Around", dist: ["Middle", "Circle", "Heat"], hint: "Seen in circumference, circumvent, and circumstance." },
-      { q: "What does the Greek root 'centr / center' mean?", ans: "Middle", dist: ["Circle", "Around", "Time"], hint: "Seen in central, concentric, and eccentric." }      
-    ];
+    // SHARED VOCABULARY QUESTION POOL
+    const ACTIVE_DATA = (typeof getActiveVocabData === 'function') ? getActiveVocabData() : null;
+    const QUESTIONS = ACTIVE_DATA ? ACTIVE_DATA.questions : [];
+  
 
     // AUDIO ENGINE
     let audioCtx = null;
