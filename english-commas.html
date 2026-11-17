@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comma Quest • The 7 Sacred Rules</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap');
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
+    
+    /* Custom Scrollbar & Animations */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #020617; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.35); }
+      50% { box-shadow: 0 0 28px rgba(245, 158, 11, 0.65); }
+    }
+    .comma-active {
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+      color: #020617 !important;
+      border-color: #fde047 !important;
+      animation: pulseGlow 1.8s infinite;
+      transform: translateY(-2px) scale(1.08);
+    }
+    .gap-slot {
+      transition: all 0.16s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gap-slot:hover {
+      border-color: #fbbf24;
+      transform: translateY(-2px);
+    }
+    
+    /* 3D Card Flip */
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1); }
+    .backface-hidden { backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col selection:bg-amber-500 selection:text-slate-950">
+
+  <!-- Sticky Top Header -->
+  <header class="bg-slate-900/90 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-4 py-3.5 shadow-xl">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+          <span>←</span> <span>Hub</span>
+        </a>
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-orange-500 to-rose-500 flex items-center justify-center shadow-lg shadow-amber-500/20 font-black text-2xl text-slate-950">
+          ,
+        </div>
+        <div>
+          <h1 class="font-black text-base md:text-lg bg-gradient-to-r from-amber-300 via-orange-300 to-rose-400 bg-clip-text text-transparent tracking-wide">
+            COMMA QUEST: THE 7 SACRED RULES
+          </h1>
+          <p class="text-xs text-slate-400 font-medium">6th Grade Punctuation Surgery & Boss Arena</p>
+        </div>
+      </div>
+
+      <!-- Global Score & Streak Pill -->
+      <div class="flex items-center gap-2 md:gap-3 font-mono text-xs">
+        <div class="bg-slate-950/90 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+          <span>⭐ XP:</span>
+          <span id="globalXp" class="text-amber-400 font-extrabold text-sm">0</span>
+        </div>
+        <div class="bg-slate-950/90 border border-slate-800 px-3 py-1.5 rounded-xl flex items-center gap-1.5">
+          <span>🔥 Streak:</span>
+          <span id="globalStreak" class="text-emerald-400 font-extrabold text-sm">0</span>
+        </div>
+        <button id="soundToggleBtn" onclick="toggleSound()" class="bg-slate-800 hover:bg-slate-700 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-300 transition" title="Toggle Sound Effects">
+          🔊 SFX
+        </button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="max-w-6xl mx-auto mt-3 pt-2 border-t border-slate-800/80 flex gap-2 overflow-x-auto pb-1">
+      <button onclick="switchTab('rules')" id="tabBtn-rules" class="tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-extrabold whitespace-nowrap transition bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20">
+        📖 1. The 7 Comma Rules
+      </button>
+      <button onclick="switchTab('surgeon')" id="tabBtn-surgeon" class="tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition bg-slate-800/80 text-slate-300 hover:bg-slate-800 border border-slate-700/70">
+        🛠️ 2. Comma Surgeon (Click-the-Gap)
+      </button>
+      <button onclick="switchTab('defender')" id="tabBtn-defender" class="tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition bg-slate-800/80 text-slate-300 hover:bg-slate-800 border border-slate-700/70">
+        ⚔️ 3. Comma Defender (Boss Battle)
+      </button>
+      <button onclick="switchTab('traps')" id="tabBtn-traps" class="tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition bg-slate-800/80 text-slate-300 hover:bg-slate-800 border border-slate-700/70">
+        🃏 4. Flashcards & Trap Spotter
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="max-w-6xl mx-auto w-full px-4 py-6 flex-1">
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: THE 7 COMMA RULES (INTERACTIVE CHEAT SHEET)        -->
+    <!-- ========================================================= -->
+    <section id="tab-rules" class="space-y-6">
+      <div class="bg-gradient-to-r from-slate-900 via-amber-950/30 to-slate-900 border border-amber-500/40 rounded-3xl p-6 shadow-xl">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <span class="text-xs font-black px-2.5 py-1 bg-amber-500/20 text-amber-300 rounded-md border border-amber-500/30 uppercase tracking-wider">
+              Interactive Study Guide
+            </span>
+            <h2 class="text-2xl md:text-3xl font-black text-white">Master the 7 Sacred Comma Rules</h2>
+            <p class="text-slate-300 text-xs md:text-sm leading-relaxed max-w-3xl">
+              Don't just guess where to "take a breath"! Commas follow 7 specific structural rules. Click the <b class="text-amber-300">"Test the Trick / X-Ray"</b> buttons on each card below to see how tests try to trick you.
+            </p>
+          </div>
+          <button onclick="switchTab('surgeon')" class="self-start md:self-center bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-5 py-3 rounded-2xl text-xs md:text-sm transition shadow-lg shadow-amber-500/25 whitespace-nowrap">
+            Practice in Comma Surgeon →
+          </button>
+        </div>
+      </div>
+
+      <!-- 7 Rules Grid -->
+      <div id="rulesGrid" class="grid grid-cols-1 md:grid-cols-2 gap-5"></div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: COMMA SURGEON (CLICK-THE-GAP BUILDER)              -->
+    <!-- ========================================================= -->
+    <section id="tab-surgeon" class="hidden space-y-6">
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6">
+        <!-- Top Status Bar -->
+        <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-black px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-md border border-emerald-500/30 uppercase">
+              Interactive Punctuation Lab
+            </span>
+            <h2 class="text-2xl font-black text-white mt-1">🛠️ Comma Surgeon: Click the Gaps!</h2>
+            <p class="text-xs text-slate-400">Click the <kbd class="bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700 text-slate-300">+</kbd> slots between words to insert or remove commas. Watch out for sentences that need <b>two</b> or <b>three</b> commas!</p>
+          </div>
+          <div class="flex items-center gap-3 font-mono text-xs">
+            <div class="bg-slate-950 border border-slate-800 px-3.5 py-2 rounded-xl">
+              Patient: <span id="surgProgress" class="text-amber-400 font-bold">1 / 12</span>
+            </div>
+            <div class="bg-slate-950 border border-slate-800 px-3.5 py-2 rounded-xl">
+              Score: <span id="surgScore" class="text-emerald-400 font-bold">0</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hint Tag -->
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="text-xs font-bold text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1.5 rounded-xl">
+            💡 Rule Clue: <span id="surgCategory" class="text-white font-semibold">Loading...</span>
+          </div>
+          <button onclick="clearSurgeonGaps()" class="text-xs text-slate-400 hover:text-white bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700 transition">
+            ↺ Clear Commas
+          </button>
+        </div>
+
+        <!-- Interactive Sentence Operating Table -->
+        <div class="bg-slate-950/90 border-2 border-slate-800 rounded-2xl p-6 md:p-8 shadow-inner min-h-[9rem] flex items-center justify-center">
+          <div id="surgeonSentenceBox" class="flex flex-wrap items-center gap-y-4 gap-x-1.5 text-lg md:text-xl font-bold leading-relaxed select-none"></div>
+        </div>
+
+        <!-- Feedback Banner -->
+        <div id="surgFeedback" class="hidden p-4 rounded-2xl border text-sm font-medium leading-relaxed"></div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pt-2">
+          <div class="flex gap-2">
+            <button onclick="prevSurgeon()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">
+              ← Previous
+            </button>
+            <button onclick="nextSurgeon()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-4 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">
+              Skip / Next →
+            </button>
+          </div>
+          <div class="flex gap-3">
+            <button id="btnCheckSurgery" onclick="checkSurgery()" class="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black px-6 py-3 rounded-xl text-sm shadow-lg shadow-amber-500/20 transition">
+              🩺 Check Surgery
+            </button>
+            <button id="btnNextSurgery" onclick="nextSurgeon()" class="hidden bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black px-6 py-3 rounded-xl text-sm shadow-lg shadow-emerald-500/20 transition">
+              Next Patient →
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: COMMA DEFENDER (2D BOSS BATTLE & MASTERY TEST)     -->
+    <!-- ========================================================= -->
+    <section id="tab-defender" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left Column: 2D Animated Boss Arena Canvas (5 cols) -->
+        <div class="lg:col-span-5 bg-slate-900 border border-slate-800 rounded-3xl p-4 flex flex-col justify-between shadow-2xl">
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black px-2.5 py-1 bg-rose-500/20 text-rose-300 rounded-md border border-rose-500/30">
+                ⚔️ BOSS ARENA
+              </span>
+              <span id="bossStageLabel" class="text-xs font-mono font-bold text-amber-400"> STAGE 1 / 3</span>
+            </div>
+
+            <!-- Canvas Viewport -->
+            <div class="relative rounded-2xl overflow-hidden border-2 border-slate-800 bg-slate-950 aspect-[16/10] w-full">
+              <canvas id="defenderCanvas" class="w-full h-full block"></canvas>
+            </div>
+
+            <!-- Health Bars -->
+            <div class="grid grid-cols-2 gap-3 pt-1 font-mono text-xs">
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="flex justify-between text-emerald-400 font-bold mb-1">
+                  <span>🛡️COMMA KNIGHT</span>
+                  <span id="heroHpLabel">100/100</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div id="heroHpBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300" style="width:100%"></div>
+                </div>
+              </div>
+
+              <div class="bg-slate-950 p-3 rounded-xl border border-slate-800">
+                <div class="flex justify-between text-rose-400 font-bold mb-1">
+                  <span id="bossNameLabel">👹 RUN-ON GOLEM</span>
+                  <span id="bossHpLabel">100/100</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+                  <div id="bossHpBar" class="h-full bg-gradient-to-r from-rose-600 to-amber-500 transition-all duration-300" style="width:100%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-xs text-slate-400">
+            <span>Accuracy: <b id="defAccuracy" class="text-emerald-400 font-mono">100%</b></span>
+            <span>Retry Queue: <b id="defRetryCount" class="text-amber-400 font-mono">0</b></span>
+            <button onclick="resetDefenderGame()" class="text-rose-400 hover:text-rose-300 font-bold">↺ Reset Battle</button>
+          </div>
+        </div>
+
+        <!-- Right Column: 15-Question Mastery Quiz (7 cols) -->
+        <div class="lg:col-span-7 bg-slate-900 border border-slate-800 rounded-3xl p-6 flex flex-col justify-between shadow-2xl space-y-4">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div class="flex items-center gap-2">
+                <span id="defQuestionBadge" class="text-xs font-black px-2.5 py-1 bg-indigo-500/20 text-indigo-300 rounded-md border border-indigo-500/30">
+                  QUESTION 1 OF 15
+                </span>
+                <span id="defRuleTag" class="text-xs font-semibold text-slate-400">Rule Check</span>
+              </div>
+              <span id="defStreakBadge" class="text-xs font-mono font-bold text-amber-400">🔥 0 Streak</span>
+            </div>
+
+            <div class="bg-slate-950 border border-slate-800 rounded-2xl p-5">
+              <p id="defPrompt" class="text-base md:text-lg font-bold text-white leading-relaxed"></p>
+            </div>
+
+            <!-- Options List -->
+            <div id="defOptionsBox" class="space-y-2.5"></div>
+
+            <!-- Explanation Box -->
+            <div id="defFeedbackBox" class="hidden p-4 rounded-2xl border text-xs md:text-sm leading-relaxed"></div>
+          </div>
+
+          <div class="flex justify-end pt-2">
+            <button id="btnNextDefQ" onclick="nextDefenderQuestion()" class="hidden bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black px-6 py-3 rounded-xl text-xs md:text-sm shadow-lg transition">
+              Next Attack →
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: FLASHCARDS & TRAP SPOTTER                          -->
+    <!-- ========================================================= -->
+    <section id="tab-traps" class="hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: Interactive Flip Flashcards (6 cols) -->
+        <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-5 shadow-xl flex flex-col justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black px-2.5 py-1 bg-purple-500/20 text-purple-300 rounded-md border border-purple-500/30">
+                3D FLIP FLASHCARDS
+              </span>
+              <span id="fcCounter" class="text-xs font-mono text-slate-400">Card 1 / 10</span>
+            </div>
+            <h3 class="text-xl font-black text-white">🃏 Rapid Rule Recall</h3>
+            <p class="text-xs text-slate-400">Click the card to flip between the tricky sentence challenge and the punctuated answer.</p>
+          </div>
+
+          <!-- 3D Flip Card -->
+          <div onclick="flipFlashcard()" class="perspective-1000 cursor-pointer select-none my-2">
+            <div id="flashcardInner" class="transform-style-3d relative w-full h-64 rounded-2xl">
+              <!-- Front -->
+              <div class="backface-hidden absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-900 to-indigo-950/60 border-2 border-indigo-500/50 rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+                <div class="flex justify-between items-center text-xs text-indigo-300 font-bold">
+                  <span id="fcFrontCategory">COMMA TRAP</span>
+                  <span>Click to Flip ↻</span>
+                </div>
+                <div class="my-auto text-center">
+                  <p id="fcFrontText" class="text-lg md:text-xl font-bold text-white leading-relaxed"></p>
+                </div>
+                <div class="text-center text-xs text-slate-500">Where do the commas go—and why?</div>
+              </div>
+
+              <!-- Back -->
+              <div class="backface-hidden rotate-y-180 absolute inset-0 bg-gradient-to-br from-slate-950 via-emerald-950/40 to-slate-900 border-2 border-emerald-500/60 rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+                <div class="flex justify-between items-center text-xs text-emerald-300 font-bold">
+                  <span>✓ ANSWER & RULE</span>
+                  <span>Click to Flip ↻</span>
+                </div>
+                <div class="my-auto space-y-3 text-center">
+                  <p id="fcBackAnswer" class="text-base md:text-lg font-black text-emerald-300 leading-relaxed"></p>
+                  <p id="fcBackRule" class="text-xs md:text-sm text-slate-300 leading-relaxed"></p>
+                </div>
+                <div class="text-center text-xs text-emerald-400/70 font-mono">6th Grade ELA Standard</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between gap-3 pt-2">
+            <button onclick="changeFlashcard(-1)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">
+              ← Previous Card
+            </button>
+            <button onclick="flipFlashcard()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-xs font-bold transition">
+              Flip Card
+            </button>
+            <button onclick="changeFlashcard(1)" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-2.5 rounded-xl text-xs font-bold border border-slate-700 transition">
+              Next Card →
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: The 4 Biggest 6th-Grade Test Traps (6 cols) -->
+        <div class="lg:col-span-6 bg-slate-900 border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
+          <div>
+            <span class="text-xs font-black px-2.5 py-1 bg-rose-500/20 text-rose-300 rounded-md border border-rose-500/30">
+              ⚠️ WATCH OUT!
+            </span>
+            <h3 class="text-xl font-black text-white mt-1">The 4 Biggest Test Traps</h3>
+            <p class="text-xs text-slate-400">Teachers love putting these 4 traps on 6th-grade comma tests. Learn how to spot them instantly:</p>
+          </div>
+
+          <div class="space-y-3 text-xs md:text-sm">
+            <div class="bg-slate-950 border border-rose-500/30 rounded-2xl p-4 space-y-1.5">
+              <div class="font-black text-rose-400">Trap #1: The "Fake FANBOYS" (Compound Predicate)</div>
+              <p class="text-slate-300">Only put a comma before <b>and / but / so</b> if there is a <b>second subject</b> after it!</p>
+              <div class="font-mono text-xs bg-slate-900 p-2.5 rounded-xl space-y-1">
+                <div class="text-emerald-400">✓ Correct: Leo ran down the field<b>, and he</b> kicked the ball. (Two subjects: Leo + he)</div>
+                <div class="text-rose-400">✗ Wrong: Leo ran down the field<b>, and</b> kicked the ball. (No subject after 'and' = NO COMMA!)</div>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 border border-amber-500/30 rounded-2xl p-4 space-y-1.5">
+              <div class="font-black text-amber-400">Trap #2: The Dreaded "Comma Splice"</div>
+              <p class="text-slate-300">A comma is too weak to glue two complete sentences together by itself without a FANBOYS word!</p>
+              <div class="font-mono text-xs bg-slate-900 p-2.5 rounded-xl space-y-1">
+                <div class="text-rose-400">✗ Comma Splice: The storm knocked out the power<b>,</b> we lit candles.</div>
+                <div class="text-emerald-400">✓ Fixed: The storm knocked out the power<b>, so</b> we lit candles.</div>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 border border-cyan-500/30 rounded-2xl p-4 space-y-1.5">
+              <div class="font-black text-cyan-400">Trap #3: The "One-Comma" Interrupter Mistake</div>
+              <p class="text-slate-300">When a nonessential clause or appositive is in the middle of a sentence, it acts like a pair of handles—you need <b>BOTH</b> commas (opening and closing), never just one!</p>
+              <div class="font-mono text-xs bg-slate-900 p-2.5 rounded-xl space-y-1">
+                <div class="text-emerald-400">✓ Correct: Mrs. Davis<b>, our science teacher,</b> loves astronomy.</div>
+              </div>
+            </div>
+
+            <div class="bg-slate-950 border border-purple-500/30 rounded-2xl p-4 space-y-1.5">
+              <div class="font-black text-purple-400">Trap #4: Trailing Comma in Dates & States</div>
+              <p class="text-slate-300">In the middle of a sentence, put a comma <b>after the year</b> and <b>after the state</b> too!</p>
+              <div class="font-mono text-xs bg-slate-900 p-2.5 rounded-xl space-y-1">
+                <div class="text-emerald-400">✓ Correct: On May 12<b>,</b> 2026<b>,</b> we drove to Mobile<b>,</b> Alabama<b>,</b> for the game.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-slate-800/80 py-5 text-center text-xs text-slate-500 mt-8">
+    Study Quest Hub • 6th Grade ELA Comma Mastery Arena
+  </footer>
+
+  <!-- ========================================================= -->
+  <!-- JAVASCRIPT ENGINE                                         -->
+  <!-- ========================================================= -->
+  <script>
+    // ---------------------------------------------------------
+    // 1. WEB AUDIO API SOUND EFFECTS & GLOBAL STATE
+    // ---------------------------------------------------------
+    let soundEnabled = true;
+    let audioCtx = null;
+    let globalXp = 0;
+    let globalStreak = 0;
+
+    function getAudio() {
+      if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+      }
+      if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    function toggleSound() {
+      soundEnabled = !soundEnabled;
+      document.getElementById('soundToggleBtn').textContent = soundEnabled ? '🔊 SFX' : '🔇 Muted';
+    }
+
+    function playSfx(type) {
+      if (!soundEnabled) return;
+      try {
+        const a = getAudio();
+        if (!a) return;
+        const now = a.currentTime;
+        const osc = a.createOscillator();
+        const gain = a.createGain();
+        osc.connect(gain);
+        gain.connect(a.destination);
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(580, now);
+          osc.frequency.exponentialRampToValueAtTime(840, now + 0.06);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.06);
+          osc.start(now); osc.stop(now + 0.06);
+        } else if (type === 'win') {
+          [523.25, 659.25, 783.99, 1046.5].forEach((freq, idx) => {
+            const o = a.createOscillator();
+            const g = a.createGain();
+            o.connect(g); g.connect(a.destination);
+            o.type = 'triangle';
+            o.frequency.setValueAtTime(freq, now + idx * 0.065);
+            g.gain.setValueAtTime(0.16, now + idx * 0.065);
+            g.gain.linearRampToValueAtTime(0.01, now + idx * 0.065 + 0.2);
+            o.start(now + idx * 0.065);
+            o.stop(now + idx * 0.065 + 0.2);
+          });
+        } else if (type === 'wrong') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(170, now);
+          osc.frequency.linearRampToValueAtTime(95, now + 0.22);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.linearRampToValueAtTime(0.01, now + 0.22);
+          osc.start(now); osc.stop(now + 0.22);
+        }
+      } catch(e) {}
+    }
+
+    function addXp(amount, resetStreak = false) {
+      if (resetStreak) {
+        globalStreak = 0;
+      } else {
+        globalStreak++;
+        globalXp += amount + (globalStreak * 2);
+      }
+      document.getElementById('globalXp').textContent = globalXp;
+      document.getElementById('globalStreak').textContent = globalStreak;
+    }
+
+    function switchTab(tabId) {
+      playSfx('click');
+      ['rules', 'surgeon', 'defender', 'traps'].forEach(id => {
+        document.getElementById(`tab-${id}`).classList.toggle('hidden', id !== tabId);
+        const btn = document.getElementById(`tabBtn-${id}`);
+        if (id === tabId) {
+          btn.className = "tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-extrabold whitespace-nowrap transition bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 shadow-lg shadow-amber-500/20";
+        } else {
+          btn.className = "tab-btn px-4 py-2 rounded-xl text-xs md:text-sm font-bold whitespace-nowrap transition bg-slate-800/80 text-slate-300 hover:bg-slate-800 border border-slate-700/70";
+        }
+      });
+    }
+
+    // ---------------------------------------------------------
+    // 2. TAB 1 DATA: THE 7 SACRED COMMA RULES
+    // ---------------------------------------------------------
+    const SEVEN_RULES = [
+      {
+        num: 1,
+        title: "Items in a Series (The Oxford Comma)",
+        badge: "3+ LIST ITEMS",
+        color: "amber",
+        summary: "Use commas to separate three or more words, phrases, or clauses in a list. Always include the 'Oxford Comma' right before the final 'and' or 'or' so items don't accidentally blend together!",
+        normalEx: "We packed sandwiches<b class='text-amber-400'>,</b> apples<b class='text-amber-400'>,</b> and water bottles for the hike.",
+        xrayEx: "<span class='bg-slate-800 px-1.5 py-0.5 rounded'>Item 1: sandwiches</span> <b class='text-amber-400'>,</b> <span class='bg-slate-800 px-1.5 py-0.5 rounded'>Item 2: apples</span> <b class='text-amber-400'>, [Oxford Comma]</b> and <span class='bg-slate-800 px-1.5 py-0.5 rounded'>Item 3: water bottles</span>"
+      },
+      {
+        num: 2,
+        title: "Compound Sentences (FANBOYS)",
+        badge: "2 COMPLETE SENTENCES",
+        color: "emerald",
+        summary: "Use a comma BEFORE a coordinating conjunction (For, And, Nor, But, Or, Yet, So) ONLY when it connects two complete independent clauses (each side has its own subject and verb).",
+        normalEx: "The thunder rumbled across the bay<b class='text-emerald-400'>, so</b> the referee paused the soccer match.",
+        xrayEx: "<span class='text-emerald-300'>[Sentence 1: The thunder rumbled]</span> <b class='text-amber-400'>, + SO +</b> <span class='text-cyan-300'>[Sentence 2: the referee paused the match]</span>. Both sides can stand alone!"
+      },
+      {
+        num: 3,
+        title: "Introductory Words, Phrases & Clauses",
+        badge: "SENTENCE OPENER",
+        color: "cyan",
+        summary: "When you start a sentence with a transition word (Suddenly, However, Yes, First), a prepositional phrase of 4+ words, or a dependent clause (Although, After, Because, When, If...), put a comma right where the main sentence begins.",
+        normalEx: "When the library bell rang<b class='text-cyan-400'>,</b> the students quietly closed their books.",
+        xrayEx: "<span class='text-amber-300'>[Opener: When the library bell rang]</span> <b class='text-cyan-400'>, &larr; Comma signals the main subject is starting!</b> <span class='text-emerald-300'>[Main Clause: the students closed their books.]</span>"
+      },
+      {
+        num: 4,
+        title: "Direct Address (Talking to Someone)",
+        badge: "SAVES LIVES!",
+        color: "rose",
+        summary: "Always use commas to separate the name or title of the person being spoken to from the rest of the sentence—whether their name is at the beginning, middle, or end.",
+        normalEx: "Let's eat<b class='text-rose-400'>,</b> Grandpa! &nbsp;|&nbsp; I think<b class='text-rose-400'>,</b> Maya<b class='text-rose-400'>,</b> that you won.",
+        xrayEx: "Without the comma: <span class='text-rose-400'>\"Let's eat Grandpa!\"</span> (Cannibalism! 😱) vs. With the comma: <span class='text-emerald-400'>\"Let's eat, Grandpa!\"</span> (Dinner time! 🍽️)"
+      },
+      {
+        num: 5,
+        title: "Nonessential Clauses & Appositives",
+        badge: "THE LIFT-OUT TEST",
+        color: "purple",
+        summary: "If you insert extra information into the middle of a sentence that can be lifted out without changing who or what the sentence is about, wrap it in a PAIR of commas (like handlebars).",
+        normalEx: "Mr. Henderson<b class='text-purple-400'>,</b> our band director<b class='text-purple-400'>,</b> plays the trumpet.",
+        xrayEx: "Lift out <span class='line-through text-slate-500'>, our band director,</span> &rarr; <span class='text-emerald-300'>\"Mr. Henderson plays the trumpet.\"</span> Still a complete, specific sentence!"
+      },
+      {
+        num: 6,
+        title: "Coordinate Adjectives (Equal Describers)",
+        badge: "'AND' & FLIP TEST",
+        color: "indigo",
+        summary: "Put a comma between two adjectives ONLY if they pass the 2-part test: (1) Can you put 'AND' between them? (2) Can you flip their order and it still sounds natural?",
+        normalEx: "We explored the dark<b class='text-indigo-400'>,</b> creepy hallway. (vs. bright red sports car — no comma)",
+        xrayEx: "Test: <span class='text-emerald-300'>\"dark AND creepy hallway\"</span> / <span class='text-emerald-300'>\"creepy, dark hallway\"</span> ✓ Passes! (You wouldn't say 'red bright car', so no comma there!)"
+      },
+      {
+        num: 7,
+        title: "Dates, Locations & Letters",
+        badge: "DON'T FORGET TRAILING COMMA",
+        color: "amber",
+        summary: "Separate the day from the year AND put a comma after the year if the sentence continues. Separate a city from its state/country AND put a comma after the state if the sentence continues!",
+        normalEx: "On November 16<b class='text-amber-400'>,</b> 2026<b class='text-amber-400'>,</b> we traveled to Fairhope<b class='text-amber-400'>,</b> Alabama<b class='text-amber-400'>,</b> for the finals.",
+        xrayEx: "Notice the <b>2nd comma</b> after <span class='text-amber-300'>2026,</span> and after <span class='text-amber-300'>Alabama,</span> before the sentence keeps going!"
+      }
+    ];
+
+    function renderRulesCards() {
+      const grid = document.getElementById('rulesGrid');
+      grid.innerHTML = SEVEN_RULES.map((r, idx) => `
+        <div class="bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-2xl p-5 flex flex-col justify-between space-y-4 shadow-lg">
+          <div class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black px-2.5 py-1 bg-slate-800 text-amber-400 rounded-lg border border-slate-700">
+                RULE #${r.num}
+              </span>
+              <span class="text-xs font-mono font-bold text-slate-400">${r.badge}</span>
+            </div>
+            <h3 class="text-lg font-black text-white">${r.title}</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">${r.summary}</p>
+          </div>
+
+          <div class="space-y-2.5 pt-2 border-t border-slate-800/80">
+            <div id="ruleEx-${idx}" class="bg-slate-950 border border-slate-800 rounded-xl p-3.5 text-xs md:text-sm font-mono text-slate-200 leading-relaxed">
+              ${r.normalEx}
+            </div>
+            <button onclick="toggleRuleXray(${idx})" id="ruleBtn-${idx}" class="w-full bg-slate-800 hover:bg-slate-700 text-amber-300 border border-slate-700 py-2 rounded-xl text-xs font-bold transition">
+              🔍 Toggle Comma X-Ray Trick
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    const xrayState = {};
+    function toggleRuleXray(idx) {
+      playSfx('click');
+      xrayState[idx] = !xrayState[idx];
+      const box = document.getElementById(`ruleEx-${idx}`);
+      const btn = document.getElementById(`ruleBtn-${idx}`);
+      if (xrayState[idx]) {
+        box.innerHTML = SEVEN_RULES[idx].xrayEx;
+        box.classList.add('border-amber-500/50');
+        btn.textContent = "↺ Show Standard Sentence";
+      } else {
+        box.innerHTML = SEVEN_RULES[idx].normalEx;
+        box.classList.remove('border-amber-500/50');
+        btn.textContent = "🔍 Toggle Comma X-Ray Trick";
+      }
+    }
+
+    // ---------------------------------------------------------
+    // 3. TAB 2: COMMA SURGEON (CLICK-THE-GAP BUILDER)
+    // ---------------------------------------------------------
+    const SURGEON_LEVELS = [
+      {
+        category: "Rule 3: Introductory Dependent Clause",
+        words: ["Although", "it", "was", "pouring", "rain", "outside", "the", "marching", "band", "kept", "practicing."],
+        correctGaps: [5], // After "outside"
+        explanation: "When a sentence begins with a dependent clause ('Although it was pouring rain outside'), place a comma right where the main independent clause ('the marching band kept practicing') begins."
+      },
+      {
+        category: "Rule 5: Nonessential Appositive (Needs 2 Commas!)",
+        words: ["My", "younger", "sister", "a", "talented", "violinist", "performed", "in", "the", "spring", "concert."],
+        correctGaps: [2, 5], // After "sister" and "violinist"
+        explanation: "The appositive phrase 'a talented violinist' is extra, nonessential information interrupting the sentence, so it must be enclosed with BOTH an opening comma after 'sister' and a closing comma after 'violinist'."
+      },
+      {
+        category: "Rule 1: Items in a Series (Oxford Comma)",
+        words: ["For", "the", "camping", "trip", "we", "packed", "flashlights", "sleeping", "bags", "and", "marshmallows."],
+        correctGaps: [3, 6, 8], // After "trip", "flashlights", "bags"
+        explanation: "First, put a comma after the introductory phrase ('For the camping trip,'). Then separate the three items in the list ('flashlights, sleeping bags, and marshmallows')."
+      },
+      {
+        category: "Rule 2: Compound Sentence (FANBOYS)",
+        words: ["Maya", "wanted", "to", "adopt", "the", "golden", "puppy", "but", "her", "apartment", "was", "too", "small."],
+        correctGaps: [6], // Before "but"
+        explanation: "Place a comma before the coordinating conjunction 'but' because it joins two complete sentences ('Maya wanted to adopt the golden puppy' + 'her apartment was too small')."
+      },
+      {
+        category: "Rule 2 TRAP: Fake FANBOYS (Compound Predicate)",
+        words: ["The", "quarterback", "dodged", "two", "defenders", "and", "threw", "a", "touchdown", "pass."],
+        correctGaps: [], // ZERO COMMAS!
+        explanation: "TRICK PATIENT! Zero commas are needed here! There is NO second subject after 'and' ('threw a touchdown pass' is not a full sentence by itself), so do not put a comma before 'and'."
+      },
+      {
+        category: "Rule 4: Direct Address in the Middle",
+        words: ["I", "believe", "Captain", "that", "our", "spaceship", "is", "ready", "for", "launch."],
+        correctGaps: [1, 2], // Around "Captain"
+        explanation: "When addressing someone directly ('Captain') in the middle of a sentence, set their name/title off with a comma on BOTH sides!"
+      },
+      {
+        category: "Rule 6: Coordinate Adjectives ('AND' Test)",
+        words: ["A", "steep", "narrow", "trail", "led", "up", "to", "the", "ancient", "castle."],
+        correctGaps: [1], // Between "steep" and "narrow"
+        explanation: "Can you say 'steep AND narrow trail' or 'narrow, steep trail'? Yes! They are coordinate adjectives, so put a comma between 'steep' and 'narrow'."
+      },
+      {
+        category: "Rule 7: Full Date & City/State in a Sentence",
+        words: ["On", "May", "14", "2026", "our", "team", "traveled", "to", "Fairhope", "Alabama", "for", "the", "finals."],
+        correctGaps: [2, 3, 8, 9], // After 14, 2026, Fairhope, Alabama
+        explanation: "Separate day and year ('May 14, 2026,') AND city and state ('Fairhope, Alabama,')—including the trailing commas after the year and state!"
+      },
+      {
+        category: "Rule 5: Nonessential 'Which' Clause",
+        words: ["The", "science", "museum", "which", "opened", "last", "month", "has", "a", "giant", "planetarium."],
+        correctGaps: [2, 6], // After "museum" and "month"
+        explanation: "The clause 'which opened last month' is nonessential extra info. Wrap it in a pair of commas!"
+      },
+      {
+        category: "Rule 3: Introductory Transition Word",
+        words: ["Suddenly", "a", "bolt", "of", "lightning", "illuminated", "the", "dark", "sky."],
+        correctGaps: [0], // After "Suddenly"
+        explanation: "Place a comma immediately after an introductory transition word like 'Suddenly,'."
+      },
+      {
+        category: "Rule 4: Direct Address at the End",
+        words: ["Don't", "forget", "to", "bring", "your", "chromebook", "charger", "tomorrow", "Ethan."],
+        correctGaps: [7], // Before "Ethan."
+        explanation: "When speaking directly to Ethan at the end of the sentence, put a comma right before his name."
+      },
+      {
+        category: "Rule 2 & 3 Combo: Opener + Compound Sentence",
+        words: ["After", "the", "storm", "ended", "we", "went", "outside", "and", "we", "built", "a", "fort."],
+        correctGaps: [3, 6], // After "ended" and before "and"
+        explanation: "Two commas! One after the introductory clause ('After the storm ended,') and one before 'and' because a second complete clause ('we built a fort') follows it."
+      }
+    ];
+
+    let curSurgeonIdx = 0;
+    let activeUserGaps = new Set();
+    let surgScore = 0;
+    let surgChecked = false;
+
+    function loadSurgeonLevel() {
+      surgChecked = false;
+      activeUserGaps.clear();
+      const lvl = SURGEON_LEVELS[curSurgeonIdx];
+      document.getElementById('surgProgress').textContent = `${curSurgeonIdx + 1} / ${SURGEON_LEVELS.length}`;
+      document.getElementById('surgCategory').textContent = lvl.category;
+      document.getElementById('surgFeedback').className = "hidden";
+      document.getElementById('btnCheckSurgery').classList.remove('hidden');
+      document.getElementById('btnNextSurgery').classList.add('hidden');
+      renderSurgeonSentence();
+    }
+
+    function renderSurgeonSentence(evaluation = null) {
+      const lvl = SURGEON_LEVELS[curSurgeonIdx];
+      const box = document.getElementById('surgeonSentenceBox');
+      let html = '';
+
+      lvl.words.forEach((word, idx) => {
+        html += `<span class="text-slate-100 px-1">${word}</span>`;
+        if (idx < lvl.words.length - 1) {
+          const isSelected = activeUserGaps.has(idx);
+          const isCorrectGap = lvl.correctGaps.includes(idx);
+
+          let btnStyle = "bg-slate-800/90 text-slate-400 border-slate-700";
+          let label = isSelected ? "," : "+";
+
+          if (evaluation) {
+            if (isSelected && isCorrectGap) {
+              btnStyle = "bg-emerald-500 text-slate-950 border-emerald-300 scale-110";
+              label = "✓ ,";
+            } else if (!isSelected && isCorrectGap) {
+              btnStyle = "bg-amber-500 text-slate-950 border-amber-300 animate-bounce";
+              label = "!,";
+            } else if (isSelected && !isCorrectGap) {
+              btnStyle = "bg-rose-600 text-white border-rose-400";
+              label = "✗ ,";
+            }
+          } else if (isSelected) {
+            btnStyle = "comma-active";
+          }
+
+          html += `
+            <button onclick="toggleGap(${idx})" class="gap-slot w-8 h-9 rounded-lg border font-mono text-sm font-black flex items-center justify-center cursor-pointer ${btnStyle}" title="Click to toggle comma">
+              ${label}
+            </button>
+          `;
+        }
+      });
+
+      box.innerHTML = html;
+    }
+
+    function toggleGap(idx) {
+      if (surgChecked) return;
+      playSfx('click');
+      if (activeUserGaps.has(idx)) activeUserGaps.delete(idx);
+      else activeUserGaps.add(idx);
+      renderSurgeonSentence();
+    }
+
+    function clearSurgeonGaps() {
+      if (surgChecked) return;
+      playSfx('click');
+      activeUserGaps.clear();
+      renderSurgeonSentence();
+    }
+
+    function checkSurgery() {
+      if (surgChecked) return;
+      surgChecked = true;
+      const lvl = SURGEON_LEVELS[curSurgeonIdx];
+      const required = new Set(lvl.correctGaps);
+
+      let perfect = (activeUserGaps.size === required.size);
+      if (perfect) {
+        activeUserGaps.forEach(g => { if (!required.has(g)) perfect = false; });
+      }
+
+      renderSurgeonSentence(true);
+      const fb = document.getElementById('surgFeedback');
+      fb.classList.remove('hidden');
+
+      if (perfect) {
+        playSfx('win');
+        surgScore += 10;
+        addXp(15, false);
+        document.getElementById('surgScore').textContent = surgScore;
+        fb.className = "p-4 rounded-2xl border bg-emerald-950/70 border-emerald-500/60 text-emerald-200 text-sm leading-relaxed";
+        fb.innerHTML = `✨ <b>FLAWLESS SURGERY!</b> ${lvl.explanation}`;
+      } else {
+        playSfx('wrong');
+        addXp(0, true);
+        fb.className = "p-4 rounded-2xl border bg-rose-950/70 border-rose-500/60 text-rose-200 text-sm leading-relaxed";
+        fb.innerHTML = `⚠️ <b>PUNCTUATION MISMATCH:</b> Green (<b class="text-emerald-400">✓,</b>) = Correct | Amber (<b class="text-amber-400">!,</b>) = Missed Comma | Red (<b class="text-rose-400">✗,</b>) = Unnecessary Comma.<br><span class="text-slate-200 mt-1 block">${lvl.explanation}</span>`;
+      }
+
+      document.getElementById('btnCheckSurgery').classList.add('hidden');
+      document.getElementById('btnNextSurgery').classList.remove('hidden');
+    }
+
+    function nextSurgeon() {
+      curSurgeonIdx = (curSurgeonIdx + 1) % SURGEON_LEVELS.length;
+      loadSurgeonLevel();
+    }
+
+    function prevSurgeon() {
+      curSurgeonIdx = (curSurgeonIdx - 1 + SURGEON_LEVELS.length) % SURGEON_LEVELS.length;
+      loadSurgeonLevel();
+    }
+
+    // ---------------------------------------------------------
+    // 4. TAB 3: COMMA DEFENDER (2D BOSS ARENA + 15 QUESTIONS)
+    // ---------------------------------------------------------
+    const DEFENDER_QUESTIONS = [
+      {
+        rule: "Rule 1: Items in a Series",
+        q: "Which sentence uses commas correctly?",
+        opts: [
+          "We visited the museum, the aquarium, and the lighthouse.",
+          "We visited, the museum, the aquarium, and the lighthouse.",
+          "We visited the museum the aquarium, and the lighthouse.",
+          "We visited the museum, the aquarium and, the lighthouse."
+        ],
+        ans: 0,
+        exp: "Commas separate the 3 items in the list (museum, aquarium, and lighthouse). Do not put a comma right after the verb 'visited'."
+      },
+      {
+        rule: "Rule 2: Compound Sentences (FANBOYS)",
+        q: "Which sentence is punctuated CORRECTLY?",
+        opts: [
+          "I studied all evening for the comma test, so I felt confident.",
+          "I studied all evening for the comma test so, I felt confident.",
+          "I studied all evening, for the comma test so I felt confident.",
+          "I studied all evening for the comma test, I felt confident."
+        ],
+        ans: 0,
+        exp: "Put the comma BEFORE the coordinating conjunction 'so' because it joins two complete sentences. (Choice D is a comma splice!)"
+      },
+      {
+        rule: "Rule 2 TRAP: Compound Predicate",
+        q: "Why is NO comma needed in this sentence? 'The detective examined the footprints and solved the mystery.'",
+        opts: [
+          "Because 'solved the mystery' is not a complete independent clause (it has no subject after 'and').",
+          "Because you never use a comma before the word 'and'.",
+          "Because the sentence is too short for a comma.",
+          "Because 'and' is not one of the FANBOYS conjunctions."
+        ],
+        ans: 0,
+        exp: "Only use a comma before 'and' in a compound sentence when there is a second subject + verb after 'and'."
+      },
+      {
+        rule: "Rule 3: Introductory Clauses",
+        q: "Where should the comma be placed in this sentence? 'Before the curtain rose on stage the actors took a deep breath.'",
+        opts: [
+          "After 'stage'",
+          "After 'Before'",
+          "After 'actors'",
+          "No comma is needed"
+        ],
+        ans: 0,
+        exp: "'Before the curtain rose on stage,' is an introductory dependent clause. Put the comma right where the main clause ('the actors took a deep breath') starts."
+      },
+      {
+        rule: "Rule 4: Direct Address",
+        q: "Which sentence correctly shows that someone is speaking directly to Mrs. Walker?",
+        opts: [
+          "Do you know when the science fair projects are due, Mrs. Walker?",
+          "Do you know, when the science fair projects are due Mrs. Walker?",
+          "Do you know when the science fair projects, are due Mrs. Walker?",
+          "Do you know when the science fair projects are due Mrs. Walker?"
+        ],
+        ans: 0,
+        exp: "Always separate the name of the person being spoken to ('Mrs. Walker') with a comma."
+      },
+      {
+        rule: "Rule 5: Nonessential Clauses & Appositives",
+        q: "Which sentence correctly punctuates the nonessential interrupter?",
+        opts: [
+          "Mount Everest, the tallest mountain on Earth, is located in the Himalayas.",
+          "Mount Everest, the tallest mountain on Earth is located in the Himalayas.",
+          "Mount Everest the tallest mountain on Earth, is located in the Himalayas.",
+          "Mount Everest the tallest mountain, on Earth, is located in the Himalayas."
+        ],
+        ans: 0,
+        exp: "The appositive 'the tallest mountain on Earth' is extra info in the middle of the sentence, so it needs a comma at BOTH ends."
+      },
+      {
+        rule: "Rule 6: Coordinate Adjectives",
+        q: "Which sentence needs a comma between the two adjectives?",
+        opts: [
+          "The hiker crossed the cold, rushing river.",
+          "My uncle drives a shiny red truck.",
+          "She wore her favorite cotton hoodie.",
+          "Three large owls sat in the oak tree."
+        ],
+        ans: 0,
+        exp: "'Cold AND rushing river' / 'rushing, cold river' passes the Coordinate Adjective test! The others do not."
+      },
+      {
+        rule: "Rule 7: Dates & Locations",
+        q: "Which sentence uses commas correctly for dates and locations?",
+        opts: [
+          "On July 4, 1776, leaders in Philadelphia, Pennsylvania, signed the Declaration.",
+          "On July 4, 1776 leaders in Philadelphia, Pennsylvania signed the Declaration.",
+          "On July, 4, 1776, leaders in Philadelphia Pennsylvania, signed the Declaration.",
+          "On July 4 1776, leaders in, Philadelphia, Pennsylvania signed the Declaration."
+        ],
+        ans: 0,
+        exp: "When a date (Month Day, Year,) or location (City, State,) appears in the middle of a sentence, include the trailing commas after the year and state!"
+      },
+      {
+        rule: "Trap Spotter: Comma Splice",
+        q: "Which of the following sentences contains a COMMA SPLICE error?",
+        opts: [
+          "The pizza was piping hot, I burned the roof of my mouth.",
+          "Because the pizza was piping hot, I burned the roof of my mouth.",
+          "The pizza was piping hot, so I burned the roof of my mouth.",
+          "The hot, cheesy pizza came straight out of the oven."
+        ],
+        ans: 0,
+        exp: "Joining two complete sentences ('The pizza was piping hot' + 'I burned the roof of my mouth') with ONLY a comma is a comma splice error!"
+      },
+      {
+        rule: "Rule 3: Introductory Yes/No & Transitions",
+        q: "Which sentence is punctuated correctly?",
+        opts: [
+          "Yes, I would love to join the robotics club this semester.",
+          "Yes I would love, to join the robotics club this semester.",
+          "Yes I would love to join, the robotics club this semester.",
+          "Yes, I would, love to join the robotics club this semester."
+        ],
+        ans: 0,
+        exp: "Always place a comma after introductory words like 'Yes,' 'No,' 'Well,' 'First,' or 'However,'."
+      },
+      {
+        rule: "Rule 5: Essential vs. Nonessential",
+        q: "Why are there NO commas in this sentence? 'Students who forget their permission slips cannot ride the bus.'",
+        opts: [
+          "Because 'who forget their permission slips' is essential to know WHICH students cannot ride the bus.",
+          "Because you never use commas with the word 'who'.",
+          "Because there are fewer than ten words in the sentence.",
+          "Because 'students' is a plural noun."
+        ],
+        ans: 0,
+        exp: "Restrictive/essential clauses are required for the sentence's meaning—if you removed it, it would say 'Students cannot ride the bus,' which changes the whole meaning!"
+      },
+      {
+        rule: "Rule 4: Direct Address in the Middle",
+        q: "Choose the sentence with the correct punctuation:",
+        opts: [
+          "Tell me, Leo, where did you hide the treasure map?",
+          "Tell me Leo, where did you hide the treasure map?",
+          "Tell me, Leo where did you hide the treasure map?",
+          "Tell, me Leo, where did you hide the treasure map?"
+        ],
+        ans: 0,
+        exp: "When a direct address name ('Leo') interrupts the middle of a sentence, surround it with two commas."
+      },
+      {
+        rule: "Rule 1 & 3 Combo",
+        q: "Which sentence is punctuated completely correctly?",
+        opts: [
+          "In the tide pool, we spotted hermit crabs, sea stars, and anemones.",
+          "In the tide pool we spotted hermit crabs, sea stars, and anemones.",
+          "In the tide pool, we spotted, hermit crabs, sea stars and anemones.",
+          "In, the tide pool we spotted hermit crabs, sea stars, and anemones."
+        ],
+        ans: 0,
+        exp: "Comma after the introductory phrase ('In the tide pool,') plus commas separating the 3 sea creatures in the series."
+      },
+      {
+        rule: "Rule 2: Compound Sentences (Nor / Yet)",
+        q: "Which sentence uses commas correctly?",
+        opts: [
+          "The trail was steep and rocky, yet the hikers reached the summit before noon.",
+          "The trail was steep, and rocky yet the hikers reached the summit before noon.",
+          "The trail was steep and rocky yet, the hikers reached the summit before noon.",
+          "The trail, was steep and rocky, yet the hikers reached the summit before noon."
+        ],
+        ans: 0,
+        exp: "'Yet' is one of the FANBOYS conjunctions joining two independent clauses, so the comma goes right before 'yet'."
+      },
+      {
+        rule: "Rule 5: Appositive Phrase",
+        q: "Which sentence is punctuated correctly?",
+        opts: [
+          "Babe Ruth, a legendary baseball player, hit 714 home runs.",
+          "Babe Ruth a legendary baseball player, hit 714 home runs.",
+          "Babe Ruth, a legendary baseball player hit 714 home runs.",
+          "Babe, Ruth a legendary baseball player, hit 714 home runs."
+        ],
+        ans: 0,
+        exp: "'A legendary baseball player' renames Babe Ruth (an appositive) and must be set off with commas on both sides."
+      }
+    ];
+
+    let defQueue = [];
+    let defRetryQueue = [];
+    let curDefQ = null;
+    let defIndex = 0;
+    let defCorrectCount = 0;
+    let defTotalAnswered = 0;
+    let defStreak = 0;
+    let heroHp = 100;
+    let bossHp = 100;
+    let bossStage = 1;
+    let defLocked = false;
+    let animAttackEffect = { type: null, timer: 0 };
+
+    const BOSS_ROSTER = [
+      { name: "👹 RUN-ON GOLEM", color: "#f43f5e", sub: "#881337" },
+      { name: "🐍 SPLICE SERPENT", color: "#a855f7", sub: "#4c1d95" },
+      { name: "🐉 CLAUSE DRAGON", color: "#f59e0b", sub: "#78350f" }
+    ];
+
+    function initDefenderGame() {
+      defQueue = [...DEFENDER_QUESTIONS].sort(() => Math.random() - 0.5);
+      defRetryQueue = [];
+      defIndex = 0;
+      defCorrectCount = 0;
+      defTotalAnswered = 0;
+      defStreak = 0;
+      heroHp = 100;
+      bossHp = 100;
+      bossStage = 1;
+      updateDefenderHud();
+      loadNextDefenderQuestion();
+    }
+
+    function resetDefenderGame() {
+      playSfx('click');
+      initDefenderGame();
+    }
+
+    function loadNextDefenderQuestion() {
+      defLocked = false;
+      document.getElementById('defFeedbackBox').className = "hidden";
+      document.getElementById('btnNextDefQ').classList.add('hidden');
+
+      if (defQueue.length === 0 && defRetryQueue.length > 0) {
+        defQueue = [...defRetryQueue];
+        defRetryQueue = [];
+      } else if (defQueue.length === 0) {
+        defQueue = [...DEFENDER_QUESTIONS].sort(() => Math.random() - 0.5);
+        defIndex = 0;
+      }
+
+      curDefQ = defQueue.shift();
+      defIndex++;
+
+      document.getElementById('defQuestionBadge').textContent = `QUESTION ${defIndex}`;
+      document.getElementById('defRuleTag').textContent = curDefQ.rule;
+      document.getElementById('defPrompt').textContent = curDefQ.q;
+
+      // Shuffle options while tracking correct answer
+      const indexedOpts = curDefQ.opts.map((text, i) => ({ text, isCorrect: i === curDefQ.ans }));
+      indexedOpts.sort(() => Math.random() - 0.5);
+
+      const box = document.getElementById('defOptionsBox');
+      box.innerHTML = '';
+      indexedOpts.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = "w-full text-left bg-slate-950 hover:bg-slate-800 border border-slate-800 hover:border-amber-500/60 p-3.5 rounded-xl text-xs md:text-sm font-semibold text-slate-200 transition flex items-start gap-3";
+        btn.innerHTML = `<span class="bg-slate-800 text-amber-400 font-mono font-bold px-2 py-0.5 rounded">${String.fromCharCode(65 + idx)}</span> <span class="flex-1">${opt.text}</span>`;
+        btn.onclick = () => answerDefenderQ(opt.isCorrect, btn, indexedOpts);
+        box.appendChild(btn);
+      });
+
+      updateDefenderHud();
+    }
+
+    function answerDefenderQ(isCorrect, clickedBtn, allOpts) {
+      if (defLocked) return;
+      defLocked = true;
+      defTotalAnswered++;
+
+      const buttons = document.getElementById('defOptionsBox').querySelectorAll('button');
+      buttons.forEach((b, i) => {
+        b.style.pointerEvents = 'none';
+        if (allOpts[i].isCorrect) {
+          b.className = "w-full text-left bg-emerald-950/80 border-2 border-emerald-500 p-3.5 rounded-xl text-xs md:text-sm font-bold text-emerald-200 flex items-start gap-3";
+        }
+      });
+
+      const fb = document.getElementById('defFeedbackBox');
+      fb.classList.remove('hidden');
+
+      if (isCorrect) {
+        playSfx('win');
+        defCorrectCount++;
+        defStreak++;
+        addXp(20, false);
+        animAttackEffect = { type: 'heroHit', timer: 0.6 };
+
+        bossHp = Math.max(0, bossHp - 25);
+        if (bossHp === 0) {
+          bossStage = (bossStage % 3) + 1;
+          bossHp = 100;
+        }
+
+        fb.className = "p-4 rounded-2xl border bg-emerald-950/70 border-emerald-500/60 text-emerald-200 text-xs md:text-sm";
+        fb.innerHTML = `⚔️ <b>CRITICAL COMMA STRIKE! (-25 Boss HP)</b><br>${curDefQ.exp}`;
+      } else {
+        playSfx('wrong');
+        defStreak = 0;
+        addXp(0, true);
+        defRetryQueue.push(curDefQ);
+        animAttackEffect = { type: 'bossHit', timer: 0.6 };
+
+        clickedBtn.className = "w-full text-left bg-rose-950/80 border-2 border-rose-500 p-3.5 rounded-xl text-xs md:text-sm font-bold text-rose-200 flex items-start gap-3";
+        heroHp = Math.max(10, heroHp - 20);
+
+        fb.className = "p-4 rounded-2xl border bg-rose-950/70 border-rose-500/60 text-rose-200 text-xs md:text-sm";
+        fb.innerHTML = `🛡️ <b>BOSS COUNTER-ATTACK! (Added to Retry Queue)</b><br>${curDefQ.exp}`;
+      }
+
+      updateDefenderHud();
+      document.getElementById('btnNextDefQ').classList.remove('hidden');
+    }
+
+    function nextDefenderQuestion() {
+      playSfx('click');
+      loadNextDefenderQuestion();
+    }
+
+    function updateDefenderHud() {
+      const boss = BOSS_ROSTER[(bossStage - 1) % BOSS_ROSTER.length];
+      document.getElementById('bossStageLabel').textContent = `STAGE ${bossStage} / 3`;
+      document.getElementById('bossNameLabel').textContent = boss.name;
+      document.getElementById('heroHpLabel').textContent = `${heroHp}/100`;
+      document.getElementById('bossHpLabel').textContent = `${bossHp}/100`;
+      document.getElementById('heroHpBar').style.width = `${heroHp}%`;
+      document.getElementById('bossHpBar').style.width = `${bossHp}%`;
+      document.getElementById('defStreakBadge').textContent = `🔥 ${defStreak} Streak`;
+      document.getElementById('defRetryCount').textContent = defRetryQueue.length;
+      const acc = defTotalAnswered > 0 ? Math.round((defCorrectCount / defTotalAnswered) * 100) : 100;
+      document.getElementById('defAccuracy').textContent = `${acc}%`;
+    }
+
+    // 2D Canvas Renderer for Comma Defender Arena
+    const defCanvas = document.getElementById('defenderCanvas');
+    const defCtx = defCanvas.getContext('2d');
+    let animTime = 0;
+
+    function renderDefenderArena() {
+      requestAnimationFrame(renderDefenderArena);
+      animTime += 0.04;
+      if (animAttackEffect.timer > 0) animAttackEffect.timer = Math.max(0, animAttackEffect.timer - 0.03);
+
+      const cw = defCanvas.width = defCanvas.clientWidth || 420;
+      const ch = defCanvas.height = defCanvas.clientHeight || 260;
+
+      // Background
+      defCtx.fillStyle = "#040914";
+      defCtx.fillRect(0, 0, cw, ch);
+
+      // Floor Grid
+      defCtx.strokeStyle = "rgba(56, 189, 248, 0.08)";
+      defCtx.lineWidth = 1;
+      for (let x = 0; x < cw; x += 36) {
+        defCtx.beginPath(); defCtx.moveTo(x, ch * 0.65); defCtx.lineTo(x, ch); defCtx.stroke();
+      }
+      defCtx.fillStyle = "#0f172a";
+      defCtx.fillRect(0, ch * 0.72, cw, ch * 0.28);
+
+      // Draw Hero (Comma Knight) on Left
+      const hx = cw * 0.23 + (animAttackEffect.type === 'heroHit' ? Math.sin(animAttackEffect.timer * 10) * 35 : 0);
+      const hy = ch * 0.62 + Math.sin(animTime * 2) * 4;
+
+      defCtx.save();
+      defCtx.translate(hx, hy);
+      // Cape
+      defCtx.fillStyle = "#dc2626";
+      defCtx.beginPath(); defCtx.moveTo(-8, -14); defCtx.lineTo(-28, 18); defCtx.lineTo(-8, 16); defCtx.fill();
+      // Armor Body
+      defCtx.fillStyle = "#38bdf8";
+      defCtx.strokeStyle = "#e0f2fe";
+      defCtx.lineWidth = 2;
+      defCtx.beginPath(); defCtx.roundRect(-14, -18, 28, 34, 8); defCtx.fill(); defCtx.stroke();
+      // Helmet & Visor
+      defCtx.fillStyle = "#cbd5e1";
+      defCtx.beginPath(); defCtx.arc(0, -24, 13, 0, Math.PI * 2); defCtx.fill(); defCtx.stroke();
+      defCtx.fillStyle = "#0f172a";
+      defCtx.fillRect(2, -27, 9, 5);
+      // Golden Comma Blade
+      defCtx.fillStyle = "#fbbf24";
+      defCtx.font = "900 38px serif";
+      defCtx.fillText(",", 18, 0);
+      defCtx.restore();
+
+      // Draw Boss on Right
+      const boss = BOSS_ROSTER[(bossStage - 1) % BOSS_ROSTER.length];
+      const bx = cw * 0.76 - (animAttackEffect.type === 'bossHit' ? Math.sin(animAttackEffect.timer * 10) * 35 : 0);
+      const by = ch * 0.56 + Math.cos(animTime * 1.8) * 6;
+
+      defCtx.save();
+      defCtx.translate(bx, by);
+      // Boss Aura
+      defCtx.strokeStyle = boss.color;
+      defCtx.lineWidth = 2;
+      defCtx.beginPath(); defCtx.arc(0, 0, 42 + Math.sin(animTime * 3) * 4, 0, Math.PI * 2); defCtx.stroke();
+      // Boss Body
+      defCtx.fillStyle = animAttackEffect.type === 'heroHit' && animAttackEffect.timer > 0.3 ? "#ffffff" : boss.sub;
+      defCtx.strokeStyle = boss.color;
+      defCtx.lineWidth = 3;
+      defCtx.beginPath(); defCtx.roundRect(-30, -30, 60, 60, 14); defCtx.fill(); defCtx.stroke();
+      // Boss Horns
+      defCtx.fillStyle = "#fbbf24";
+      defCtx.beginPath(); defCtx.moveTo(-20, -30); defCtx.lineTo(-32, -48); defCtx.lineTo(-8, -30); defCtx.fill();
+      defCtx.beginPath(); defCtx.moveTo(20, -30); defCtx.lineTo(32, -48); defCtx.lineTo(8, -30); defCtx.fill();
+      // Boss Eyes
+      defCtx.fillStyle = "#fef08a";
+      defCtx.beginPath(); defCtx.arc(-11, -6, 5, 0, Math.PI * 2); defCtx.arc(11, -6, 5, 0, Math.PI * 2); defCtx.fill();
+      defCtx.restore();
+
+      // Projectile slash effect
+      if (animAttackEffect.timer > 0) {
+        defCtx.fillStyle = animAttackEffect.type === 'heroHit' ? "#fde047" : "#f43f5e";
+        defCtx.font = "900 22px monospace";
+        defCtx.textAlign = "center";
+        defCtx.fillText(animAttackEffect.type === 'heroHit' ? "💥 COMMA SLASH!" : "⚠️ SYNTAX ERROR!", cw * 0.5, ch * 0.25);
+      }
+    }
+
+    // ---------------------------------------------------------
+    // 5. TAB 4: FLASHCARDS DATA & LOGIC
+    // ---------------------------------------------------------
+    const FLASHCARDS = [
+      {
+        cat: "RULE 4: DIRECT ADDRESS",
+        front: "Let's eat Grandpa!",
+        ans: "Let's eat, Grandpa!",
+        rule: "Without a comma before 'Grandpa', you are suggesting eating Grandpa! Direct address always requires a comma."
+      },
+      {
+        cat: "TRAP #1: FAKE FANBOYS",
+        front: "Maya opened her notebook, and wrote down the assignment.",
+        ans: "NO COMMA! (Maya opened her notebook and wrote down the assignment.)",
+        rule: "There is no subject after 'and'. Do not use a comma before 'and' when one subject ('Maya') is just doing two verbs."
+      },
+      {
+        cat: "TRAP #2: COMMA SPLICE",
+        front: "The bell rang, the students hurried to class.",
+        ans: "COMMA SPLICE! Fix: The bell rang, so the students hurried to class.",
+        rule: "Two complete sentences cannot be joined with just a comma alone—add a FANBOYS conjunction (, so) or a semicolon."
+      },
+      {
+        cat: "RULE 5: APPOSITIVE INTERRUPTER",
+        front: "Mr. Alvarez our soccer coach gave us a pep talk.",
+        ans: "Mr. Alvarez, our soccer coach, gave us a pep talk.",
+        rule: "'Our soccer coach' is a nonessential appositive interrupting the sentence—wrap it in TWO commas!"
+      },
+      {
+        cat: "RULE 3: INTRODUCTORY CLAUSE",
+        front: "Whenever my dog hears thunder he hides under the bed.",
+        ans: "Whenever my dog hears thunder, he hides under the bed.",
+        rule: "Put a comma after an introductory dependent clause ('Whenever my dog hears thunder,')."
+      },
+      {
+        cat: "RULE 6: COORDINATE ADJECTIVES",
+        front: "The explorer stepped into the cold damp cave.",
+        ans: "The explorer stepped into the cold, damp cave.",
+        rule: "'Cold AND damp cave' / 'damp, cold cave' passes the Coordinate Adjective test, so put a comma between them."
+      },
+      {
+        cat: "RULE 7: DATES & PLACES",
+        front: "On August 24 2026 we moved to Fairhope Alabama for school.",
+        ans: "On August 24, 2026, we moved to Fairhope, Alabama, for school.",
+        rule: "Don't forget the trailing commas after the year (2026,) and after the state (Alabama,)!"
+      },
+      {
+        cat: "RULE 5: ESSENTIAL CLAUSE",
+        front: "The book that I borrowed from the library is due tomorrow.",
+        ans: "NO COMMAS NEEDED!",
+        rule: "Clauses starting with 'that' are essential (restrictive) to identify which book you mean, so never wrap them in commas."
+      },
+      {
+        cat: "RULE 1: OXFORD COMMA",
+        front: "We studied fractions decimals and percentages in math class.",
+        ans: "We studied fractions, decimals, and percentages in math class.",
+        rule: "Separate three or more items in a series with commas, including the Oxford comma before 'and'."
+      },
+      {
+        cat: "RULE 4: MIDDLE DIRECT ADDRESS",
+        front: "I think Noah that your science project will win first prize.",
+        ans: "I think, Noah, that your science project will win first prize.",
+        rule: "When addressing someone ('Noah') in the middle of a sentence, put a comma both before and after their name."
+      }
+    ];
+
+    let curFcIdx = 0;
+    let isFcFlipped = false;
+
+    function renderFlashcard() {
+      const card = FLASHCARDS[curFcIdx];
+      isFcFlipped = false;
+      document.getElementById('flashcardInner').classList.remove('rotate-y-180');
+      document.getElementById('fcCounter').textContent = `Card ${curFcIdx + 1} / ${FLASHCARDS.length}`;
+      document.getElementById('fcFrontCategory').textContent = card.cat;
+      document.getElementById('fcFrontText').textContent = `"${card.front}"`;
+      document.getElementById('fcBackAnswer').textContent = card.ans;
+      document.getElementById('fcBackRule').textContent = card.rule;
+    }
+
+    function flipFlashcard() {
+      playSfx('click');
+      isFcFlipped = !isFcFlipped;
+      document.getElementById('flashcardInner').classList.toggle('rotate-y-180', isFcFlipped);
+    }
+
+    function changeFlashcard(dir) {
+      playSfx('click');
+      curFcIdx = (curFcIdx + dir + FLASHCARDS.length) % FLASHCARDS.length;
+      renderFlashcard();
+    }
+
+    // Initialize All Tabs on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      renderRulesCards();
+      loadSurgeonLevel();
+      initDefenderGame();
+      renderDefenderArena();
+      renderFlashcard();
+    });
+  </script>
+</body>
+</html>
