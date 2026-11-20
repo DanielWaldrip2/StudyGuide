@@ -3,9 +3,28 @@
 // Change ACTIVE_VOCAB_UNIT below to switch units across all games!
 // ==========================================================
 
-const ACTIVE_VOCAB_UNIT = "lesson3_synonyms";
+const ACTIVE_VOCAB_UNIT = "unit5_roots";
 
 const VOCAB_BANK = {
+    "unit5_roots": {
+    title: "Unit 5: Speak & Write Roots",
+    subtitle: "Roots: dic/dict, scrib/script, graph/gram",
+    questions: [
+      { q: "What does the Latin root 'dic / dict' mean?", ans: "Speak / Say", dist: ["Write / Draw", "Hear / Listen", "Around"], hint: "Seen in dictate, contradict, and edict." },
+      { q: "What does the Latin root 'scrib / script' mean?", ans: "Write", dist: ["Speak", "Send", "Middle"], hint: "Seen in inscription, transcript, and prescription." },
+      { q: "What does the Greek root 'graph / gram' mean?", ans: "Write / Draw", dist: ["Speak / Say", "Rule / Command", "Circle"], hint: "Seen in autobiography, telegram, calligraphy, and graphic." },
+      { q: "To speak or say words aloud for someone else to write down:", ans: "dictate", dist: ["contradict", "edict", "transcript"], hint: "A teacher might _____ a spelling test." },
+      { q: "To say the opposite of what someone else said; to disagree:", ans: "contradict", dist: ["dictate", "edict", "graphic"], hint: "Contains 'contra' (against) + 'dict' (say)." },
+      { q: "An official order or command that is required and forced by a ruler:", ans: "edict", dist: ["telegram", "prescription", "calligraphy"], hint: "The opposite of optional or voluntary." },
+      { q: "A nonfiction, self-written story of a person's own life:", ans: "autobiography", dist: ["transcript", "inscription", "telegram"], hint: "'Auto' (self) + 'bio' (life) + 'graph' (write)." },
+      { q: "A message sent over a wire (before e-mail existed):", ans: "telegram", dist: ["transcript", "edict", "calligraphy"], hint: "'Tele' (far) + 'gram' (written message)." },
+      { q: "Fancy, decorative handwriting:", ans: "calligraphy", dist: ["graphic", "inscription", "autobiography"], hint: "Often used on fancy invitations and awards." },
+      { q: "Giving a very vivid, clear, and detailed description:", ans: "graphic", dist: ["edict", "contradict", "telegram"], hint: "The opposite of vague or unclear." },
+      { q: "Words etched or engraved into a hard surface like stone or metal:", ans: "inscription", dist: ["prescription", "transcript", "calligraphy"], hint: "Found on trophies, monuments, and rings." },
+      { q: "An official written record of what was spoken or of school grades:", ans: "transcript", dist: ["inscription", "prescription", "telegram"], hint: "Written record, not audio or verbal." },
+      { q: "Written directions from a doctor for medicine:", ans: "prescription", dist: ["inscription", "transcript", "edict"], hint: "You take this to a pharmacy." }
+    ]
+  },
   
   // --------------------------------------------------------
   // LESSON 3: HOME & COMMUNITY (DEFINITIONS + CONTEXT + SYNONYMS)
